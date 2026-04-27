@@ -1,0 +1,143 @@
+<!DOCTYPE html>
+<html lang="id" class="scroll-smooth">
+<head>
+    <meta charset="UTF-8"/>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
+    <title>{{ $title ?? ($settings->nama_sekolah ?? 'SMPN 3 Ajibarang') }} – Sekolah Adiwiyata</title>
+    <meta name="description" content="{{ $metaDesc ?? 'Website resmi SMPN 3 Ajibarang – Berkomitmen mencetak generasi yang berkarakter, berprestasi, dan peduli lingkungan.' }}">
+
+    {{-- Google Fonts --}}
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700;800&family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+
+    {{-- Font Awesome --}}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
+
+    {{-- Vite --}}
+    @vite(['resources/css/app.css', 'resources/js/app.js'])
+
+    <style>
+        :root {
+            --navy:       #0d2b6b;
+            --navy-light: #1a3f8f;
+            --gold:       #e8a020;
+            --gold-light: #f5c842;
+            --bg:         #f7f9fc;
+        }
+        body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #1e293b; }
+        .font-display { font-family: 'Playfair Display', serif; }
+
+        /* Gold underline decoration */
+        .gold-underline::after {
+            content: ''; display: block;
+            width: 52px; height: 4px;
+            background: var(--gold); border-radius: 2px; margin-top: 8px;
+        }
+        .gold-underline-center::after {
+            content: ''; display: block;
+            width: 52px; height: 4px;
+            background: var(--gold); border-radius: 2px;
+            margin: 8px auto 0;
+        }
+
+        /* Smooth nav underline on hover */
+        .nav-link { position: relative; }
+        .nav-link::after {
+            content: ''; position: absolute;
+            left: 0; bottom: -3px;
+            width: 0; height: 2px;
+            background: var(--gold); transition: width 0.3s;
+        }
+        .nav-link:hover::after,
+        .nav-link.active::after { width: 100%; }
+
+        /* Scrolled navbar */
+        #navbar { transition: background 0.35s, box-shadow 0.35s; }
+        #navbar.scrolled {
+            background: var(--navy) !important;
+            box-shadow: 0 4px 30px rgba(0,0,0,0.28);
+        }
+
+        /* Animations */
+        @keyframes fadeUp {
+            from { opacity: 0; transform: translateY(28px); }
+            to   { opacity: 1; transform: translateY(0); }
+        }
+        .anim-fade-up { animation: fadeUp 0.7s ease forwards; }
+        .delay-1 { animation-delay: 0.1s; }
+        .delay-2 { animation-delay: 0.25s; }
+        .delay-3 { animation-delay: 0.4s; }
+
+        /* Form focus */
+        input:focus, textarea:focus, select:focus {
+            outline: none;
+            border-color: var(--navy-light);
+            box-shadow: 0 0 0 3px rgba(26,63,143,0.14);
+        }
+
+        /* Toast */
+        #toast { transition: opacity 0.3s; }
+    </style>
+
+    @stack('styles')
+</head>
+<body class="antialiased">
+
+    {{-- Navbar --}}
+    @include('components.navbar')
+
+    {{-- Konten Halaman --}}
+    <main>
+        @yield('content')
+    </main>
+
+    {{-- Footer --}}
+    @include('components.footer')
+
+    {{-- Toast Notifikasi --}}
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 px-6 py-3 rounded-2xl shadow-2xl text-white font-semibold text-sm">
+        <i id="toast-icon" class="text-xl"></i>
+        <span id="toast-msg">Pesan berhasil dikirim!</span>
+    </div>
+
+    <script>
+        // ── Navbar scroll effect ──────────────────────────
+        window.addEventListener('scroll', () => {
+            const nav = document.getElementById('navbar');
+            nav.classList.toggle('scrolled', window.scrollY > 60);
+        });
+
+        // ── Mobile menu toggle ────────────────────────────
+        document.getElementById('mob-btn')?.addEventListener('click', () => {
+            document.getElementById('mob-menu').classList.toggle('hidden');
+        });
+
+        // ── Toast helper ──────────────────────────────────
+        function showToast(msg = 'Berhasil!', type = 'success') {
+            const toast = document.getElementById('toast');
+            const icon  = document.getElementById('toast-icon');
+            const msgEl = document.getElementById('toast-msg');
+            toast.className = toast.className.replace(/bg-\w+-\d+/g, '');
+            toast.classList.add(type === 'success' ? 'bg-green-600' : 'bg-red-500');
+            icon.className  = `text-xl fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}`;
+            msgEl.textContent = msg;
+            toast.classList.remove('hidden');
+            setTimeout(() => toast.classList.add('hidden'), 3200);
+        }
+
+        // ── Active nav highlight ──────────────────────────
+        const currentPath = window.location.pathname;
+        document.querySelectorAll('.nav-link[data-path]').forEach(el => {
+            if (el.dataset.path === currentPath || (el.dataset.path !== '/' && currentPath.startsWith(el.dataset.path))) {
+                el.classList.add('active');
+            }
+        });
+    </script>
+
+    @stack('scripts')
+</body>
+</html>

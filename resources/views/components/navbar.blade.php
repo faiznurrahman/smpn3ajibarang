@@ -4,7 +4,7 @@
     Transparent di top, solid navy setelah scroll
 --}}
 
-<nav id="navbar" class="fixed top-0 w-full z-50 bg-transparent">
+<nav id="navbar" class="fixed top-0 w-full z-50 {{ request()->routeIs('home') ? 'bg-transparent' : 'bg-[#0d2b6b] shadow-lg' }}">
     <div class="max-w-7xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
 
         {{-- ── Logo & Nama Sekolah ── --}}
@@ -37,7 +37,7 @@
             {{-- Dropdown Tentang Kami --}}
             <li class="relative group">
                 <button class="nav-link hover:text-yellow-300 transition flex items-center gap-1
-                               {{ request()->routeIs('about') ? 'active text-yellow-300' : '' }}">
+                               {{ request()->routeIs('about.*') ? 'active text-yellow-300' : '' }}">
                     Tentang Kami <i class="fas fa-chevron-down text-[10px] mt-0.5"></i>
                 </button>
                 <ul class="absolute top-full left-1/2 -translate-x-1/2 mt-3 bg-white shadow-2xl rounded-2xl py-2 w-52
@@ -45,32 +45,37 @@
                            opacity-0 invisible group-hover:opacity-100 group-hover:visible
                            translate-y-2 group-hover:translate-y-0 transition-all duration-200">
                     <li>
-                        <a href="{{ route('about') }}#sejarah"
-                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1">
+                        <a href="{{ route('about.sejarah') }}"
+                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1
+                                  {{ request()->routeIs('about.sejarah') ? 'bg-blue-50 text-blue-700' : '' }}">
                             <i class="fas fa-landmark text-blue-400 text-xs w-4"></i> Sejarah Sekolah
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('about') }}#visi-misi"
-                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1">
+                        <a href="{{ route('about.visi-misi') }}"
+                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1
+                                  {{ request()->routeIs('about.visi-misi') ? 'bg-blue-50 text-blue-700' : '' }}">
                             <i class="fas fa-bullseye text-green-500 text-xs w-4"></i> Visi & Misi
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('about') }}#struktur"
-                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1">
+                        <a href="{{ route('about.struktur-organisasi') }}"
+                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1
+                                  {{ request()->routeIs('about.struktur-organisasi') ? 'bg-blue-50 text-blue-700' : '' }}">
                             <i class="fas fa-sitemap text-purple-400 text-xs w-4"></i> Struktur Organisasi
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('about') }}#guru"
-                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1">
+                        <a href="{{ route('about.pengajar') }}"
+                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1
+                                  {{ request()->routeIs('about.pengajar') ? 'bg-blue-50 text-blue-700' : '' }}">
                             <i class="fas fa-chalkboard-teacher text-yellow-500 text-xs w-4"></i> Data Pengajar
                         </a>
                     </li>
                     <li>
-                        <a href="{{ route('about') }}#ekskul"
-                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1">
+                        <a href="{{ route('about.ekstrakurikuler') }}"
+                           class="flex items-center gap-2 px-4 py-2.5 hover:bg-blue-50 hover:text-blue-700 transition rounded-xl mx-1
+                                  {{ request()->routeIs('about.ekstrakurikuler') ? 'bg-blue-50 text-blue-700' : '' }}">
                             <i class="fas fa-running text-red-400 text-xs w-4"></i> Ekstrakurikuler
                         </a>
                     </li>
@@ -148,24 +153,29 @@
         {{-- Tentang Kami sub-links --}}
         <div class="border-b border-white/10 py-3 space-y-1">
             <div class="text-xs text-blue-300 font-semibold uppercase tracking-widest mb-2">Tentang Kami</div>
-            <a href="{{ route('about') }}#sejarah"
-               class="flex items-center gap-2 text-sm text-white hover:text-yellow-300 transition py-1 pl-2">
+            <a href="{{ route('about.sejarah') }}"
+               class="flex items-center gap-2 text-sm hover:text-yellow-300 transition py-1 pl-2
+                      {{ request()->routeIs('about.sejarah') ? 'text-yellow-300' : 'text-white' }}">
                 <i class="fas fa-landmark text-blue-300 text-xs"></i> Sejarah Sekolah
             </a>
-            <a href="{{ route('about') }}#visi-misi"
-               class="flex items-center gap-2 text-sm text-white hover:text-yellow-300 transition py-1 pl-2">
+            <a href="{{ route('about.visi-misi') }}"
+               class="flex items-center gap-2 text-sm hover:text-yellow-300 transition py-1 pl-2
+                      {{ request()->routeIs('about.visi-misi') ? 'text-yellow-300' : 'text-white' }}">
                 <i class="fas fa-bullseye text-green-400 text-xs"></i> Visi & Misi
             </a>
-            <a href="{{ route('about') }}#struktur"
-               class="flex items-center gap-2 text-sm text-white hover:text-yellow-300 transition py-1 pl-2">
+            <a href="{{ route('about.struktur-organisasi') }}"
+               class="flex items-center gap-2 text-sm hover:text-yellow-300 transition py-1 pl-2
+                      {{ request()->routeIs('about.struktur-organisasi') ? 'text-yellow-300' : 'text-white' }}">
                 <i class="fas fa-sitemap text-purple-300 text-xs"></i> Struktur Organisasi
             </a>
-            <a href="{{ route('about') }}#guru"
-               class="flex items-center gap-2 text-sm text-white hover:text-yellow-300 transition py-1 pl-2">
+            <a href="{{ route('about.pengajar') }}"
+               class="flex items-center gap-2 text-sm hover:text-yellow-300 transition py-1 pl-2
+                      {{ request()->routeIs('about.pengajar') ? 'text-yellow-300' : 'text-white' }}">
                 <i class="fas fa-chalkboard-teacher text-yellow-400 text-xs"></i> Data Pengajar
             </a>
-            <a href="{{ route('about') }}#ekskul"
-               class="flex items-center gap-2 text-sm text-white hover:text-yellow-300 transition py-1 pl-2">
+            <a href="{{ route('about.ekstrakurikuler') }}"
+               class="flex items-center gap-2 text-sm hover:text-yellow-300 transition py-1 pl-2
+                      {{ request()->routeIs('about.ekstrakurikuler') ? 'text-yellow-300' : 'text-white' }}">
                 <i class="fas fa-running text-red-400 text-xs"></i> Ekstrakurikuler
             </a>
         </div>

@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\Profiles\Schemas;
 
-use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\RichEditor;
 use Filament\Schemas\Schema;
 
 class ProfileForm
@@ -11,13 +11,34 @@ class ProfileForm
     {
         return $schema
             ->components([
-                Textarea::make('sejarah')
+                RichEditor::make('sejarah')
+    ->toolbarButtons([
+        'bold', 'italic', 'underline',
+        'bulletList', 'orderedList',
+        'h2', 'h3',
+        'attachFiles', // ← ini untuk upload gambar
+        'undo', 'redo',
+    ])
+    ->fileAttachmentsDisk('public')
+    ->fileAttachmentsDirectory('sejarah')
+    ->required()
+    ->columnSpanFull(),
+                RichEditor::make('visi')
+                    ->toolbarButtons([
+                        'bold', 'italic', 'underline',
+                        'bulletList', 'orderedList',
+                        'h2', 'h3',
+                        'undo', 'redo',
+                    ])
                     ->required()
                     ->columnSpanFull(),
-                Textarea::make('visi')
-                    ->required()
-                    ->columnSpanFull(),
-                Textarea::make('misi')
+                RichEditor::make('misi')
+                    ->toolbarButtons([
+                        'bold', 'italic', 'underline',
+                        'bulletList', 'orderedList',
+                        'h2', 'h3',
+                        'undo', 'redo',
+                    ])
                     ->required()
                     ->columnSpanFull(),
             ]);

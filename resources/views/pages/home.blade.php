@@ -185,7 +185,7 @@
         <div id="teacherDots" class="flex justify-center gap-2 mt-8"></div>
 
         <div class="text-center mt-6">
-            <a href="{{ route('about') }}#guru"
+            <a href="{{ route('about.pengajar') }}"
                class="text-blue-700 font-semibold hover:text-blue-900 text-sm inline-flex items-center gap-2 transition">
                 Lihat Semua Pengajar <i class="fas fa-arrow-right"></i>
             </a>
@@ -194,8 +194,10 @@
 </section>
 @endif
 {{-- ===================== INFORMASI TERBARU ===================== --}}
-<section id="informasi" class="py-20 bg-white">
+<section id="informasi" class="py-20 bg-gray-50">
     <div class="max-w-7xl mx-auto px-4">
+
+        {{-- Header --}}
         <div class="text-center mb-12">
             <div class="text-xs font-bold text-blue-600 tracking-widest uppercase mb-2">Update Terkini</div>
             <h2 class="font-display text-3xl md:text-4xl font-black text-blue-900 gold-underline-center">
@@ -203,92 +205,144 @@
             </h2>
         </div>
 
-        <div class="grid grid-cols-1 lg:grid-cols-2 gap-10">
+        <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
 
-            {{-- Berita --}}
-            <div>
-                <div class="flex items-center justify-between mb-5">
-                    <h3 class="font-bold text-blue-900 text-lg flex items-center gap-2">
-                        <i class="fas fa-newspaper text-blue-500"></i> Berita
-                    </h3>
-                    <a href="{{ route('information', ['type' => 'berita']) }}"
-                       class="text-xs text-blue-600 hover:underline font-semibold">Lihat semua →</a>
-                </div>
-                <div class="space-y-4">
-                    @forelse($posts as $post)
-                    <a href="{{ route('information.detail', $post->slug) }}" class="flex gap-4 group">
-                        @if(!empty($post->thumbnail))
-                            <img src="{{ Storage::url($post->thumbnail) }}"
-                                 class="w-20 h-16 rounded-xl object-cover flex-shrink-0 group-hover:opacity-80 transition"
-                                 alt="{{ $post->judul }}"/>
-                        @else
-                            <div class="w-20 h-16 rounded-xl flex-shrink-0 bg-blue-100 flex items-center justify-center">
-                                <i class="fas fa-newspaper text-blue-300"></i>
-                            </div>
-                        @endif
-                        <div>
-                            <div class="font-semibold text-sm text-gray-800 group-hover:text-blue-700 leading-tight line-clamp-2">
-                                {{ $post->judul }}
-                            </div>
-                            <div class="text-xs text-gray-400 mt-1">
-                                <i class="fas fa-calendar-alt mr-1"></i>
-                                {{ $post->tanggal_publish
-                                    ? \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y')
-                                    : $post->created_at->translatedFormat('d F Y') }}
-                            </div>
+            {{-- ── Berita ── --}}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+                {{-- Header Kolom --}}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 bg-blue-900 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-newspaper text-yellow-300 text-xs"></i>
                         </div>
+                        <h3 class="font-bold text-blue-900 text-base">Berita Terbaru</h3>
+                    </div>
+                    <a href="{{ route('information', ['type' => 'berita']) }}"
+                       class="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 transition">
+                        Semua <i class="fas fa-arrow-right text-[10px]"></i>
                     </a>
+                </div>
+
+                {{-- List Berita --}}
+                <div class="divide-y divide-gray-50">
+                    @forelse($posts as $post)
+                        <a href="{{ route('information.detail', $post->slug) }}"
+                           class="flex gap-4 px-6 py-4 group hover:bg-blue-50 transition">
+                            @if(!empty($post->thumbnail))
+                                <img src="{{ Storage::url($post->thumbnail) }}"
+                                     class="w-20 h-16 rounded-xl object-cover flex-shrink-0 group-hover:opacity-90 transition"
+                                     alt="{{ $post->judul }}"/>
+                            @else
+                                <div class="w-20 h-16 rounded-xl flex-shrink-0 bg-blue-50 flex items-center justify-center">
+                                    <i class="fas fa-newspaper text-blue-200 text-xl"></i>
+                                </div>
+                            @endif
+                            <div class="flex-1 min-w-0">
+                                <div class="font-semibold text-sm text-gray-800 group-hover:text-blue-700 leading-snug line-clamp-2 transition">
+                                    {{ $post->judul }}
+                                </div>
+                                <div class="text-xs text-gray-400 mt-2 flex items-center gap-1.5">
+                                    <i class="fas fa-calendar-alt"></i>
+                                    {{ $post->tanggal_publish
+                                        ? \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y')
+                                        : $post->created_at->translatedFormat('d F Y') }}
+                                </div>
+                            </div>
+                            <i class="fas fa-chevron-right text-gray-200 group-hover:text-blue-400 transition text-xs mt-1 flex-shrink-0"></i>
+                        </a>
                     @empty
-                    <p class="text-sm text-gray-400 italic">Belum ada berita.</p>
+                        <div class="px-6 py-10 text-center text-gray-400 text-sm">
+                            <i class="fas fa-newspaper text-3xl mb-2 block text-gray-200"></i>
+                            Belum ada berita.
+                        </div>
                     @endforelse
                 </div>
+
             </div>
 
-            {{-- Pengumuman --}}
-            <div>
-                <div class="flex items-center justify-between mb-5">
-                    <h3 class="font-bold text-blue-900 text-lg flex items-center gap-2">
-                        <i class="fas fa-bullhorn text-yellow-500"></i> Pengumuman
-                    </h3>
-                    <a href="{{ route('information', ['type' => 'pengumuman']) }}"
-                       class="text-xs text-blue-600 hover:underline font-semibold">Lihat semua →</a>
-                </div>
-                <div class="space-y-2">
-                    @forelse($pengumuman as $item)
-                    <a href="{{ route('information.detail', $item->slug) }}"
-                       class="flex gap-3 items-start group p-3 rounded-xl hover:bg-blue-50 transition">
-                        <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center flex-shrink-0">
-                            @if($item->is_pinned)
-                                <i class="fas fa-thumbtack text-yellow-600 text-sm"></i>
-                            @else
-                                <i class="fas fa-bullhorn text-yellow-600 text-sm"></i>
-                            @endif
+            {{-- ── Pengumuman ── --}}
+            <div class="bg-white rounded-2xl border border-gray-100 shadow-sm overflow-hidden">
+
+                {{-- Header Kolom --}}
+                <div class="flex items-center justify-between px-6 py-4 border-b border-gray-100">
+                    <div class="flex items-center gap-2.5">
+                        <div class="w-8 h-8 bg-yellow-400 rounded-lg flex items-center justify-center">
+                            <i class="fas fa-bullhorn text-white text-xs"></i>
                         </div>
-                        <div>
-                            <div class="font-semibold text-sm text-gray-800 group-hover:text-blue-700 leading-tight line-clamp-2">
-                                {{ $item->judul }}
-                            </div>
-                            <div class="text-xs text-gray-400 mt-1">
-                                @if($item->start_date && $item->end_date)
-                                    {{ \Carbon\Carbon::parse($item->start_date)->translatedFormat('d M') }}
-                                    – {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d M Y') }}
+                        <h3 class="font-bold text-blue-900 text-base">Pengumuman</h3>
+                    </div>
+                    <a href="{{ route('information', ['type' => 'pengumuman']) }}"
+                       class="text-xs text-blue-600 hover:text-blue-800 font-semibold flex items-center gap-1 transition">
+                        Semua <i class="fas fa-arrow-right text-[10px]"></i>
+                    </a>
+                </div>
+
+                {{-- List Pengumuman --}}
+                <div class="divide-y divide-gray-50">
+                    @forelse($pengumuman as $item)
+                        @php
+                            $expired = $item->end_date && now()->gt($item->end_date);
+                        @endphp
+                        <a href="{{ route('information.detail', $item->slug) }}"
+                           class="flex gap-4 px-6 py-4 group hover:bg-yellow-50 transition
+                                  {{ $expired ? 'opacity-60' : '' }}">
+
+                            <div class="w-10 h-10 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5
+                                        {{ $item->is_pinned ? 'bg-yellow-400' : ($expired ? 'bg-gray-100' : 'bg-blue-100') }}">
+                                @if($item->is_pinned)
+                                    <i class="fas fa-thumbtack text-white text-sm"></i>
+                                @elseif($expired)
+                                    <i class="fas fa-archive text-gray-400 text-sm"></i>
                                 @else
-                                    {{ $item->tanggal_publish
-                                        ? \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d F Y')
-                                        : $item->created_at->translatedFormat('d F Y') }}
+                                    <i class="fas fa-bullhorn text-blue-500 text-sm"></i>
                                 @endif
                             </div>
-                        </div>
-                    </a>
+
+                            <div class="flex-1 min-w-0">
+                                <div class="flex items-center gap-2 mb-1">
+                                    @if($item->is_pinned)
+                                        <span class="text-[10px] font-bold text-yellow-600 bg-yellow-100 px-2 py-0.5 rounded-full">
+                                            Disematkan
+                                        </span>
+                                    @endif
+                                    @if($expired)
+                                        <span class="text-[10px] font-bold text-gray-400 bg-gray-100 px-2 py-0.5 rounded-full">
+                                            Berakhir
+                                        </span>
+                                    @endif
+                                </div>
+                                <div class="font-semibold text-sm text-gray-800 group-hover:text-blue-700 leading-snug line-clamp-2 transition">
+                                    {{ $item->judul }}
+                                </div>
+                                <div class="text-xs mt-2 flex items-center gap-1.5
+                                            {{ $expired ? 'text-gray-400' : ($item->end_date ? 'text-orange-500' : 'text-gray-400') }}">
+                                    <i class="fas {{ $item->end_date ? 'fa-clock' : 'fa-calendar-alt' }}"></i>
+                                    @if($item->end_date)
+                                        Sampai {{ \Carbon\Carbon::parse($item->end_date)->translatedFormat('d M Y') }}
+                                    @else
+                                        {{ $item->tanggal_publish
+                                            ? \Carbon\Carbon::parse($item->tanggal_publish)->translatedFormat('d F Y')
+                                            : $item->created_at->translatedFormat('d F Y') }}
+                                    @endif
+                                </div>
+                            </div>
+
+                            <i class="fas fa-chevron-right text-gray-200 group-hover:text-yellow-400 transition text-xs mt-1 flex-shrink-0"></i>
+                        </a>
                     @empty
-                    <p class="text-sm text-gray-400 italic px-3">Belum ada pengumuman.</p>
+                        <div class="px-6 py-10 text-center text-gray-400 text-sm">
+                            <i class="fas fa-bullhorn text-3xl mb-2 block text-gray-200"></i>
+                            Belum ada pengumuman.
+                        </div>
                     @endforelse
                 </div>
+
             </div>
 
         </div>
     </div>
-</section>
+</section>  
 
 {{-- ===================== PRESTASI ===================== --}}
 @if($prestasi->count())

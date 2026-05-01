@@ -28,35 +28,35 @@ class PageController extends Controller
     }
 
     public function home()
-    {
-        $data = array_merge($this->getSharedData(), [
-            'greeting'   => PrincipalGreeting::first(),
-            'video'      => VideoProfile::where('is_active', true)->orderBy('order')->first(),
-            'teachers'   => Teacher::where('is_active', true)
-                                ->where('jenis', 'guru')
-                                ->orderBy('order')
-                                ->take(10)
-                                ->get(),
-            'posts'      => Post::where('status', 'published')
-                                ->where('type', 'berita')
-                                ->orderBy('tanggal_publish', 'desc')
-                                ->take(3)
-                                ->get(),
-            'pengumuman' => Post::where('status', 'published')
-                                ->where('type', 'pengumuman')
-                                ->orderBy('is_pinned', 'desc')
-                                ->orderBy('tanggal_publish', 'desc')
-                                ->take(3)
-                                ->get(),
-            'prestasi'   => Post::where('status', 'published')
-                                ->where('type', 'prestasi')
-                                ->orderBy('tanggal_publish', 'desc')
-                                ->take(4)
-                                ->get(),
-        ]);
+{
+    $data = array_merge($this->getSharedData(), [
+        'greeting'   => PrincipalGreeting::first(),
+        'video'      => VideoProfile::where('is_active', true)->orderBy('order')->first(),
+        'teachers'   => Teacher::where('is_active', true)
+                            ->where('jenis', 'guru')
+                            ->orderBy('order')
+                            ->take(10)
+                            ->get(),
+        'posts'      => Post::where('status', 'published')
+                            ->where('type', 'berita')
+                            ->orderBy('tanggal_publish', 'desc')
+                            ->take(5)  // ← diubah
+                            ->get(),
+        'pengumuman' => Post::where('status', 'published')
+                            ->where('type', 'pengumuman')
+                            ->orderBy('is_pinned', 'desc')
+                            ->orderBy('tanggal_publish', 'desc')
+                            ->take(5)  // ← diubah
+                            ->get(),
+        'prestasi'   => Post::where('status', 'published')
+                            ->where('type', 'prestasi')
+                            ->orderBy('tanggal_publish', 'desc')
+                            ->take(4)
+                            ->get(),
+    ]);
 
-        return view('pages.home', $data);
-    }
+    return view('pages.home', $data);
+}
 
     public function about()
     {
@@ -72,14 +72,20 @@ class PageController extends Controller
 
     public function information(Request $request)
     {
-        $type = $request->query('type', 'berita');
+        $type   = $request->query('type', 'berita');
+        $search = $request->query('search');
+
+        $query = Post::where('status', 'published')
+                     ->where('type', $type);
+
+        if ($search) {
+            $query->where('judul', 'like', "%{$search}%");
+        }
 
         $data = array_merge($this->getSharedData(), [
-            'posts' => Post::where('status', 'published')
-                          ->where('type', $type)
-                          ->orderBy('tanggal_publish', 'desc')
-                          ->paginate(9),
-            'type'  => $type,
+            'posts'  => $query->orderBy('tanggal_publish', 'desc')->paginate(9),
+            'type'   => $type,
+            'search' => $search,
         ]);
 
         return view('pages.information', $data);
@@ -127,5 +133,76 @@ class PageController extends Controller
         ]));
 
         return redirect()->route('contact')->with('success', 'Pesan berhasil dikirim!');
+    }
+
+    // Shared data untuk sidebar halaman tentang
+    private function getAboutSidebar(): array
+    {
+        return [
+            'sidebarBerita'     => Post::where('status', 'published')
+                                       ->where('type', 'berita')
+                                       ->orderBy('tanggal_publish', 'desc')
+                                       ->take(4)
+                                       ->get(),
+            'sidebarPengumuman' => Post::where('status', 'published')
+                                       ->where('type', 'pengumuman')
+                                       ->orderBy('is_pinned', 'desc')
+                                       ->orderBy('tanggal_publish', 'desc')
+                                       ->take(4)
+                                       ->get(),
+        ];
+    }
+
+    public function sejarah()
+    {
+        $data = array_merge(
+            $this->getSharedData(),
+            $this->getAboutSidebar(),
+            ['profile' => Profile::first()]
+        );
+        return view('pages.about.sejarah', $data);
+    }
+
+    public function visiMisi()
+    {
+        $data = array_merge(
+            $this->getSharedData(),
+            $this->getAboutSidebar(),
+            ['profile' => Profile::first()]
+        );
+        return view('pages.about.visi-misi', $data);
+    }
+
+    public function strukturOrganisasi()
+    {
+        $data = array_merge(
+            $this->getSharedData(),
+            $this->getAboutSidebar(),
+            ['structures' => OrganizationalStructure::orderBy('order')->get()]
+        );
+        return view('pages.about.struktur-organisasi', $data);
+    }
+
+    public function pengajar()
+    {
+        $data = array_merge(
+            $this->getSharedData(),
+            $this->getAboutSidebar(),
+            [
+                'guru'  => Teacher::where('is_active', true)->where('jenis', 'guru')->orderBy('order')->get(),
+                'staff' => Teacher::where('is_active', true)->where('jenis', 'staff')->orderBy('order')->get(),
+            ]
+        );
+        return view('pages.about.pengajar', $data);
+    }
+
+    public function ekstrakurikuler()
+    {
+        $data = array_merge(
+            $this->getSharedData(),
+            $this->getAboutSidebar(),
+            ['extracurriculars' => Extracurricular::where('is_active', true)->orderBy('order')->get()]
+        );
+        return view('pages.about.ekstrakurikuler', $data);
     }
 }

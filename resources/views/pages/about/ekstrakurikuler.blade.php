@@ -1,0 +1,139 @@
+@extends('layouts.app')
+
+@section('content')
+    <div class="pt-28 pb-2 px-4 max-w-7xl mx-auto">
+        <div class="text-xs text-gray-500 mb-3 flex items-center gap-2">
+            <a href="{{ route('home') }}" class="hover:text-blue-700 transition">Beranda</a>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span>Tentang Kami</span>
+            <i class="fas fa-chevron-right text-xs"></i>
+            <span class="text-blue-700 font-medium">Ekstrakurikuler</span>
+        </div>
+    </div>
+
+    <div class="pb-8 bg-gray-50">
+        <div class="max-w-7xl mx-auto px-4">
+            <div class="flex flex-col lg:flex-row gap-8">
+                <main class="flex-1 min-w-0">
+                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
+                        <div class="flex items-center gap-3 mb-6">
+                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
+                                <i class="fas fa-star text-orange-500"></i>
+                            </div>
+                            <h2 class="font-display text-2xl font-black text-blue-900">Ekstrakurikuler</h2>
+                        </div>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                            @forelse($extracurriculars as $ekstra)
+                                <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition cursor-pointer"
+                                     onclick="openModal(
+                                         '{{ $ekstra->nama }}',
+                                         '{{ !empty($ekstra->gambar) ? Storage::url($ekstra->gambar) : '' }}',
+                                         `{!! addslashes($ekstra->deskripsi) !!}`
+                                     )">
+                                    @if(!empty($ekstra->gambar))
+                                        <img src="{{ Storage::url($ekstra->gambar) }}"
+                                             class="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                                             alt="{{ $ekstra->nama }}"/>
+                                    @else
+                                        <div class="w-16 h-16 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-star text-orange-300 text-xl"></i>
+                                        </div>
+                                    @endif
+                                    <div class="flex-1 min-w-0">
+                                        <div class="font-semibold text-blue-900 text-sm">{{ $ekstra->nama }}</div>
+                                        @if(!empty($ekstra->deskripsi))
+                                            <div class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-3">
+                                                {{ strip_tags($ekstra->deskripsi) }}
+                                            </div>
+                                        @endif
+                                        <div class="mt-2 text-xs text-blue-600 font-medium flex items-center gap-1">
+                                            Lihat Detail <i class="fas fa-arrow-right text-[10px]"></i>
+                                        </div>
+                                    </div>
+                                </div>
+                            @empty
+                                <p class="text-gray-400 italic text-sm col-span-2">Data ekstrakurikuler belum tersedia.</p>
+                            @endforelse
+                        </div>
+                    </div>
+                </main>
+                @include('components.about-sidebar')
+            </div>
+        </div>
+    </div>
+
+    {{-- Modal --}}
+    <div id="ekstra-modal"
+         class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
+         onclick="closeModal(event)">
+
+        {{-- Backdrop --}}
+        <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
+
+        {{-- Modal Box --}}
+        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10">
+
+            {{-- Gambar --}}
+            <div id="modal-img-wrap" class="hidden">
+                <img id="modal-img" src="" alt=""
+                     class="w-full h-52 object-cover rounded-t-2xl"/>
+            </div>
+
+            {{-- Konten --}}
+            <div class="p-6">
+                <div class="flex items-start justify-between gap-4 mb-4">
+                    <h3 id="modal-title" class="font-display text-xl font-black text-blue-900"></h3>
+                    <button onclick="closeModalBtn()"
+                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition flex-shrink-0">
+                        <i class="fas fa-times text-gray-500 text-sm"></i>
+                    </button>
+                </div>
+                <div id="modal-desc"
+                     class="text-gray-600 text-sm leading-relaxed
+                            [&_p]:mb-3 [&_ul]:list-disc [&_ul]:pl-5 [&_ul]:mb-3
+                            [&_ol]:list-decimal [&_ol]:pl-5 [&_ol]:mb-3 [&_li]:mb-1">
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+@endsection
+
+@push('scripts')
+<script>
+    function openModal(nama, gambar, deskripsi) {
+        document.getElementById('modal-title').textContent = nama;
+        document.getElementById('modal-desc').innerHTML = deskripsi;
+
+        const imgWrap = document.getElementById('modal-img-wrap');
+        const img = document.getElementById('modal-img');
+        if (gambar) {
+            img.src = gambar;
+            img.alt = nama;
+            imgWrap.classList.remove('hidden');
+        } else {
+            imgWrap.classList.add('hidden');
+        }
+
+        document.getElementById('ekstra-modal').classList.remove('hidden');
+        document.body.style.overflow = 'hidden';
+    }
+
+    function closeModalBtn() {
+        document.getElementById('ekstra-modal').classList.add('hidden');
+        document.body.style.overflow = '';
+    }
+
+    function closeModal(event) {
+        if (event.target === document.getElementById('ekstra-modal') ||
+            event.target.classList.contains('absolute')) {
+            closeModalBtn();
+        }
+    }
+
+    document.addEventListener('keydown', function(e) {
+        if (e.key === 'Escape') closeModalBtn();
+    });
+</script>
+@endpush

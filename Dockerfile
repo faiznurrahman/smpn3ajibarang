@@ -29,5 +29,6 @@ RUN composer install --no-interaction --optimize-autoloader --no-scripts
 EXPOSE 8000
 
 CMD php artisan config:clear && \
+    php artisan migrate:install && \
     php artisan migrate --force && \
     php artisan serve --host=0.0.0.0 --port=8000

@@ -15,11 +15,10 @@ WORKDIR /app
 
 COPY . .
 
-# 🔥 penting
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔥 COPY ENV BIAR LARAVEL NGGAK ERROR
-RUN cp .env.example .env || true
+# 🔥 FIX ENV (INI YANG KAMU BUTUH SEKARANG)
+RUN cp .env.example .env
 
 # 🔥 FIX STORAGE
 RUN mkdir -p storage/framework/views \
@@ -28,9 +27,9 @@ RUN mkdir -p storage/framework/views \
     && mkdir -p bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-# 🔥 INSTALL TANPA SCRIPT (INI KUNCI)
+# 🔥 INSTALL TANPA SCRIPT
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 EXPOSE 8000
 
-CMD php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan key:generate && php artisan migrate && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=8000

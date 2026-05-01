@@ -27,7 +27,8 @@ ENV VIEW_COMPILED_PATH=/app/storage/framework/views
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 RUN chmod +x /app/start.sh
+RUN cat /app/start.sh
 
 EXPOSE 8000
 
-CMD ["/app/start.sh"]
+CMD ["/bin/bash", "/app/start.sh"]

@@ -12,15 +12,18 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# buat env
 RUN cp .env.example .env || true
 
-# fix permission
-RUN mkdir -p storage/framework/{views,cache,sessions} \
-    && mkdir -p bootstrap/cache \
+# 🔥 FIX STORAGE
+RUN mkdir -p storage/framework/views \
+    storage/framework/cache \
+    storage/framework/sessions \
+    bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-# install dependency (tanpa script biar gak error)
+# 🔥 FIX CACHE PATH
+ENV VIEW_COMPILED_PATH=/app/storage/framework/views
+
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 EXPOSE 8000

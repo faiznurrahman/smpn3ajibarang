@@ -12,7 +12,8 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-RUN cp .env.example .env || true
+# 🔥 HAPUS ENV LOCAL
+RUN rm -f .env
 
 # 🔥 FIX STORAGE
 RUN mkdir -p storage/framework/views \
@@ -21,7 +22,6 @@ RUN mkdir -p storage/framework/views \
     bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-# 🔥 FIX CACHE PATH
 ENV VIEW_COMPILED_PATH=/app/storage/framework/views
 
 RUN composer install --no-interaction --optimize-autoloader --no-scripts

@@ -12,10 +12,8 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔥 HAPUS ENV LOCAL
 RUN rm -f .env
 
-# 🔥 FIX STORAGE
 RUN mkdir -p storage/framework/views \
     storage/framework/cache \
     storage/framework/sessions \
@@ -26,8 +24,9 @@ ENV VIEW_COMPILED_PATH=/app/storage/framework/views
 
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
-RUN chmod +x /app/start.sh
-RUN cat /app/start.sh
+RUN printf '#!/bin/bash\nset -e\necho "Clearing config..."\nphp artisan config:clear\necho "Installing migration table..."\nphp artisan migrate:install || true\necho "Running migrations..."\nphp artisan migrate --force\necho "Starting server..."\nexec php artisan serve --host=0.0.0.0 --port=8000\n' > /app/start.sh \
+    && chmod +x /app/start.sh \
+    && cat /app/start.sh
 
 EXPOSE 8000
 

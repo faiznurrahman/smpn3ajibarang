@@ -18,12 +18,18 @@ COPY . .
 # 🔥 penting
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
+# 🔥 COPY ENV BIAR LARAVEL NGGAK ERROR
+RUN cp .env.example .env || true
+
 # 🔥 FIX STORAGE
-RUN mkdir -p storage/framework/{sessions,views,cache} \
+RUN mkdir -p storage/framework/views \
+    && mkdir -p storage/framework/cache \
+    && mkdir -p storage/framework/sessions \
     && mkdir -p bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-RUN composer install --no-interaction --optimize-autoloader
+# 🔥 INSTALL TANPA SCRIPT (INI KUNCI)
+RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 EXPOSE 8000
 

@@ -15,6 +15,9 @@ WORKDIR /app
 
 COPY . .
 
+# 🔥 ini penting banget
+ENV COMPOSER_ALLOW_SUPERUSER=1
+
 RUN composer install --no-interaction --optimize-autoloader
 
 EXPOSE 8000

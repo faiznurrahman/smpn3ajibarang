@@ -15,8 +15,13 @@ WORKDIR /app
 
 COPY . .
 
-# 🔥 ini penting banget
+# 🔥 penting
 ENV COMPOSER_ALLOW_SUPERUSER=1
+
+# 🔥 FIX STORAGE
+RUN mkdir -p storage/framework/{sessions,views,cache} \
+    && mkdir -p bootstrap/cache \
+    && chmod -R 777 storage bootstrap/cache
 
 RUN composer install --no-interaction --optimize-autoloader
 

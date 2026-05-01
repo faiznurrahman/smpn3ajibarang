@@ -24,10 +24,6 @@ ENV VIEW_COMPILED_PATH=/app/storage/framework/views
 
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
-RUN printf '#!/bin/bash\nset -e\necho "Clearing config..."\nphp artisan config:clear\necho "Installing migration table..."\nphp artisan migrate:install || true\necho "Running migrations..."\nphp artisan migrate --force\necho "Starting server..."\nexec php artisan serve --host=0.0.0.0 --port=8000\n' > /app/start.sh \
-    && chmod +x /app/start.sh \
-    && cat /app/start.sh
-
 EXPOSE 8000
 
-CMD ["/bin/bash", "/app/start.sh"]
+CMD php artisan config:clear ; php artisan migrate:install ; php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000

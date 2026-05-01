@@ -1,12 +1,7 @@
 FROM php:8.3-cli
 
 RUN apt-get update && apt-get install -y \
-    libzip-dev \
-    zip \
-    unzip \
-    libicu-dev \
-    git \
-    curl \
+    libzip-dev zip unzip libicu-dev git curl \
     && docker-php-ext-install zip intl
 
 COPY --from=composer:2 /usr/bin/composer /usr/bin/composer
@@ -17,19 +12,17 @@ COPY . .
 
 ENV COMPOSER_ALLOW_SUPERUSER=1
 
-# 🔥 FIX ENV (INI YANG KAMU BUTUH SEKARANG)
-RUN cp .env.example .env
+# buat env
+RUN cp .env.example .env || true
 
-# 🔥 FIX STORAGE
-RUN mkdir -p storage/framework/views \
-    && mkdir -p storage/framework/cache \
-    && mkdir -p storage/framework/sessions \
+# fix permission
+RUN mkdir -p storage/framework/{views,cache,sessions} \
     && mkdir -p bootstrap/cache \
     && chmod -R 777 storage bootstrap/cache
 
-# 🔥 INSTALL TANPA SCRIPT
+# install dependency (tanpa script biar gak error)
 RUN composer install --no-interaction --optimize-autoloader --no-scripts
 
 EXPOSE 8000
 
-CMD php artisan key:generate && php artisan migrate && php artisan storage:link && php artisan serve --host=0.0.0.0 --port=8000
+CMD php artisan config:clear && php artisan cache:clear && php artisan migrate --force && php artisan serve --host=0.0.0.0 --port=8000

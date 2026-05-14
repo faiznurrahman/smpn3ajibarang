@@ -3,14 +3,13 @@
 namespace App\Filament\Resources\Posts\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Actions\DeleteAction;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Table;
 
 class PostsTable
 {
@@ -18,24 +17,17 @@ class PostsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('thumbnail')
-                    ->label('Thumbnail')
-                    ->defaultImageUrl(asset('images/no-image.png'))
-                    ->visibility('public'),
-
                 TextColumn::make('judul')
                     ->label('Judul')
                     ->searchable()
                     ->sortable()
-                    ->limit(50),
-
-                TextColumn::make('type')
-                    ->label('Tipe')
-                    ->badge()
-                    ->color(fn (string $state): string => match ($state) {
-                        'berita'      => 'info',
-                        'pengumuman'  => 'warning',
-                        'prestasi'    => 'success',
+                    ->limit(55)
+                    ->grow()
+                    ->description(fn ($record) => match ($record->type) {
+                        'berita'     => 'Berita',
+                        'pengumuman' => 'Pengumuman',
+                        'prestasi'   => 'Prestasi',
+                        default      => $record->type,
                     }),
 
                 TextColumn::make('status')
@@ -44,6 +36,12 @@ class PostsTable
                     ->color(fn (string $state): string => match ($state) {
                         'draft'     => 'gray',
                         'published' => 'success',
+                        default     => 'gray',
+                    })
+                    ->formatStateUsing(fn (string $state): string => match ($state) {
+                        'draft'     => 'Draft',
+                        'published' => 'Tayang',
+                        default     => $state,
                     }),
 
                 IconColumn::make('is_pinned')
@@ -51,16 +49,14 @@ class PostsTable
                     ->boolean()
                     ->trueIcon('heroicon-o-star')
                     ->falseIcon('heroicon-o-minus')
-                    ->trueColor('warning'),
-
-                TextColumn::make('user.nama')
-                    ->label('Dibuat Oleh')
-                    ->sortable(),
+                    ->trueColor('warning')
+                    ->falseColor('gray'),
 
                 TextColumn::make('tanggal_publish')
-                    ->label('Tanggal Publish')
+                    ->label('Tanggal')
                     ->date('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('—'),
             ])
             ->filters([
                 SelectFilter::make('type')
@@ -75,12 +71,12 @@ class PostsTable
                     ->label('Status')
                     ->options([
                         'draft'     => 'Draft',
-                        'published' => 'Published',
+                        'published' => 'Tayang',
                     ]),
             ])
             ->recordActions([
-                EditAction::make(),
-                DeleteAction::make(),
+                EditAction::make()->label('Edit'),
+                DeleteAction::make()->label('Hapus'),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

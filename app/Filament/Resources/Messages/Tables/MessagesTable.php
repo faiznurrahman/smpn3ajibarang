@@ -2,21 +2,18 @@
 
 namespace App\Filament\Resources\Messages\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
-use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
-use Filament\Tables\Table;
-use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\Filter;
+use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 
 class MessagesTable
 {
     public static function configure(Table $table): Table
     {
-         return $table
+        return $table
             ->columns([
                 IconColumn::make('is_read')
                     ->label('')
@@ -24,23 +21,22 @@ class MessagesTable
                     ->trueIcon('heroicon-o-envelope-open')
                     ->falseIcon('heroicon-o-envelope')
                     ->trueColor('gray')
-                    ->falseColor('warning'),
+                    ->falseColor('warning')
+                    ->width('40px'),
 
                 TextColumn::make('nama')
-                    ->label('Nama')
+                    ->label('Pengirim')
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('email')
-                    ->label('Email')
-                    ->searchable(),
-
-                TextColumn::make('nomor_telepon')
-                    ->label('No. Telepon'),
+                    ->sortable()
+                    ->weight(fn ($record) => $record->is_read ? null : 'semibold')
+                    ->description(fn ($record) => $record->email ?: $record->nomor_telepon ?: '—'),
 
                 TextColumn::make('subjek')
                     ->label('Subjek')
-                    ->limit(40),
+                    ->searchable()
+                    ->limit(50)
+                    ->grow()
+                    ->placeholder('(tanpa subjek)'),
 
                 TextColumn::make('created_at')
                     ->label('Dikirim')
@@ -53,7 +49,7 @@ class MessagesTable
                     ->query(fn (Builder $query) => $query->where('is_read', false)),
             ])
             ->recordActions([
-                \Filament\Actions\ViewAction::make(),
+                ViewAction::make()->label('Baca'),
             ])
             ->toolbarActions([])
             ->defaultSort('created_at', 'desc');

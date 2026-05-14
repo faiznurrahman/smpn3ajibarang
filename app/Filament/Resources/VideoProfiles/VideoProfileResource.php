@@ -18,7 +18,10 @@ class VideoProfileResource extends Resource
 {
     protected static ?string $model = VideoProfile::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Video Profil';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedVideoCamera;
+    protected static ?int    $navigationSort  = 3;
 
     protected static ?string $recordTitleAttribute = 'judul';
 

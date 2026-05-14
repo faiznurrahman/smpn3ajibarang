@@ -23,7 +23,7 @@
                                 <div class="w-10 h-10 bg-yellow-100 rounded-xl flex items-center justify-center">
                                     <i class="fas fa-eye text-yellow-600"></i>
                                 </div>
-                                <h2 class="font-display text-2xl font-black text-blue-900">Visi</h2>
+                                <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Visi</h2>
                             </div>
                             <div class="bg-blue-50 border-l-4 border-blue-500 rounded-r-xl p-5">
                                 <div class="text-blue-900 font-medium leading-relaxed
@@ -42,7 +42,7 @@
                                 <div class="w-10 h-10 bg-green-100 rounded-xl flex items-center justify-center">
                                     <i class="fas fa-bullseye text-green-600"></i>
                                 </div>
-                                <h2 class="font-display text-2xl font-black text-blue-900">Misi</h2>
+                                <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Misi</h2>
                             </div>
                             <div class="prose prose-blue max-w-none text-gray-700 leading-relaxed
                                         [&_p]:mb-4 [&_img]:rounded-xl [&_img]:my-6

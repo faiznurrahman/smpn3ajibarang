@@ -2,12 +2,13 @@
 
 namespace App\Filament\Resources\Galleries\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\FileUpload;
-
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class GalleryForm
 {
@@ -15,46 +16,61 @@ class GalleryForm
     {
         return $schema
             ->components([
-                TextInput::make('judul')
-                    ->label('Judul Gallery')
-                    ->required(),
 
-                Textarea::make('deskripsi')
-                    ->label('Deskripsi')
-                    ->rows(2)
-                    ->columnSpanFull(),
-
-                TextInput::make('order')
-                    ->label('Urutan Tampil')
-                    ->numeric()
-                    ->default(0),
-
-                Repeater::make('images')
-                    ->label('Foto-foto')
-                    ->relationship('images')
+                Section::make('Info Album')
                     ->schema([
-                        FileUpload::make('gambar')
-                            ->label('Foto')
-                            ->image()
-                            ->directory('galleries')
-                            ->required(),
+                        TextInput::make('judul')
+                            ->label('Judul Album')
+                            ->required()
+                            ->columnSpanFull(),
 
-                        TextInput::make('caption')
-                            ->label('Keterangan Foto')
-                            ->placeholder('Opsional'),
+                        Grid::make(2)
+                            ->schema([
+                                Textarea::make('deskripsi')
+                                    ->label('Deskripsi')
+                                    ->rows(3),
 
-                        TextInput::make('alt_text')
-                            ->label('Alt Text')
-                            ->placeholder('Deskripsi singkat foto untuk aksesibilitas'),
+                                TextInput::make('order')
+                                    ->label('Urutan Tampil')
+                                    ->numeric()
+                                    ->default(0),
+                            ]),
+                    ]),
 
-                        TextInput::make('order')
-                            ->label('Urutan')
-                            ->numeric()
-                            ->default(0),
-                    ])
-                    ->columnSpanFull()
-                    ->addActionLabel('Tambah Foto')
-                    ->orderColumn('order'),
+                Section::make('Foto-foto')
+                    ->schema([
+                        Repeater::make('images')
+                            ->label('')
+                            ->relationship('images')
+                            ->schema([
+                                FileUpload::make('gambar')
+                                    ->label('Foto')
+                                    ->image()
+                                    ->directory('galleries')
+                                    ->required()
+                                    ->columnSpanFull(),
+
+                                Grid::make(3)
+                                    ->schema([
+                                        TextInput::make('caption')
+                                            ->label('Keterangan')
+                                            ->placeholder('Opsional'),
+
+                                        TextInput::make('alt_text')
+                                            ->label('Alt Text')
+                                            ->placeholder('Deskripsi singkat untuk aksesibilitas'),
+
+                                        TextInput::make('order')
+                                            ->label('Urutan')
+                                            ->numeric()
+                                            ->default(0),
+                                    ]),
+                            ])
+                            ->addActionLabel('Tambah Foto')
+                            ->orderColumn('order')
+                            ->columnSpanFull(),
+                    ]),
+
             ]);
     }
 }

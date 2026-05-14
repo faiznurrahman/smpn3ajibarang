@@ -2,10 +2,11 @@
 
 namespace App\Filament\Resources\PrincipalGreetings\Schemas;
 
-use Filament\Schemas\Components\Grid;
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\RichEditor;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class PrincipalGreetingForm
@@ -15,22 +16,33 @@ class PrincipalGreetingForm
         return $schema
             ->components([
 
-                Grid::make(2)->schema([
+                Section::make('Foto Profil')
+                    ->schema([
+                        FileUpload::make('foto')
+                            ->label('Foto Kepala Sekolah')
+                            ->image()
+                            ->imageEditor()
+                            ->directory('principal')
+                            ->circular()
+                            ->columnSpanFull(),
+                    ]),
 
-                    TextInput::make('nama_kepala_sekolah')
-                        ->label('Nama Kepala Sekolah')
-                        ->required(),
+                Section::make('Data Kepala Sekolah')
+                    ->schema([
+                        TextInput::make('nama_kepala_sekolah')
+                            ->label('Nama Kepala Sekolah')
+                            ->placeholder('contoh: Drs. Budi Santoso, M.Pd.')
+                            ->required()
+                            ->columnSpanFull(),
+                    ]),
 
-                    FileUpload::make('foto')
-                        ->label('Foto Kepala Sekolah')
-                        ->image()
-                        ->directory('principal'),
-
-                ]),
-
-                RichEditor::make('deskripsi')
-                    ->label('Deskripsi Sambutan')
-                    ->required(),
+                Section::make('Sambutan')
+                    ->schema([
+                        RichEditor::make('deskripsi')
+                            ->label('Isi Sambutan')
+                            ->required()
+                            ->columnSpanFull(),
+                    ]),
 
             ]);
     }

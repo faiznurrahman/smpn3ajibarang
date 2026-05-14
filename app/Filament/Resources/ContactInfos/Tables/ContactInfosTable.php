@@ -2,9 +2,8 @@
 
 namespace App\Filament\Resources\ContactInfos\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
+use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
 class ContactInfosTable
@@ -13,18 +12,24 @@ class ContactInfosTable
     {
         return $table
             ->columns([
-                //
-            ])
-            ->filters([
-                //
+                TextColumn::make('nomor_telepon')
+                    ->label('Telepon')
+                    ->placeholder('—'),
+
+                TextColumn::make('email')
+                    ->label('Email')
+                    ->grow()
+                    ->placeholder('—'),
+
+                TextColumn::make('alamat')
+                    ->label('Alamat')
+                    ->limit(60)
+                    ->grow()
+                    ->placeholder('—'),
             ])
             ->recordActions([
-                EditAction::make(),
+                EditAction::make()->label('Edit'),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ]);
+            ->toolbarActions([]);
     }
 }

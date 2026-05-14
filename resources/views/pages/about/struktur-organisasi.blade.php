@@ -20,7 +20,7 @@
                             <div class="w-10 h-10 bg-purple-100 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-sitemap text-purple-600"></i>
                             </div>
-                            <h2 class="font-display text-2xl font-black text-blue-900">Struktur Organisasi</h2>
+                            <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Struktur Organisasi</h2>
                         </div>
                         @forelse($structures as $structure)
                             <div class="mb-8">

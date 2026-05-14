@@ -18,9 +18,17 @@ class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel       = 'Berita & Pengumuman';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
+    protected static ?int    $navigationSort       = 1;
 
     protected static ?string $recordTitleAttribute = 'judul';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::where('status', 'published')->count() ?: null;
+    }
 
     public static function form(Schema $schema): Schema
     {

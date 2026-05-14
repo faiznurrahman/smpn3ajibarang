@@ -11,7 +11,6 @@
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700;800&family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
 
     {{-- Font Awesome --}}
@@ -31,7 +30,6 @@
         body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #1e293b; }
         .font-display { font-family: 'Playfair Display', serif; }
 
-        /* Gold underline decoration */
         .gold-underline::after {
             content: ''; display: block;
             width: 52px; height: 4px;
@@ -44,7 +42,6 @@
             margin: 8px auto 0;
         }
 
-        /* Smooth nav underline on hover */
         .nav-link { position: relative; }
         .nav-link::after {
             content: ''; position: absolute;
@@ -55,14 +52,6 @@
         .nav-link:hover::after,
         .nav-link.active::after { width: 100%; }
 
-        /* Scrolled navbar */
-        #navbar { transition: background 0.35s, box-shadow 0.35s; }
-        #navbar.scrolled {
-            background: var(--navy) !important;
-            box-shadow: 0 4px 30px rgba(0,0,0,0.28);
-        }
-
-        /* Animations */
         @keyframes fadeUp {
             from { opacity: 0; transform: translateY(28px); }
             to   { opacity: 1; transform: translateY(0); }
@@ -72,14 +61,12 @@
         .delay-2 { animation-delay: 0.25s; }
         .delay-3 { animation-delay: 0.4s; }
 
-        /* Form focus */
         input:focus, textarea:focus, select:focus {
             outline: none;
             border-color: var(--navy-light);
             box-shadow: 0 0 0 3px rgba(26,63,143,0.14);
         }
 
-        /* Toast */
         #toast { transition: opacity 0.3s; }
     </style>
 
@@ -105,18 +92,6 @@
     </div>
 
     <script>
-        // ── Navbar scroll effect ──────────────────────────
-        window.addEventListener('scroll', () => {
-            const nav = document.getElementById('navbar');
-            nav.classList.toggle('scrolled', window.scrollY > 60);
-        });
-
-        // ── Mobile menu toggle ────────────────────────────
-        document.getElementById('mob-btn')?.addEventListener('click', () => {
-            document.getElementById('mob-menu').classList.toggle('hidden');
-        });
-
-        // ── Toast helper ──────────────────────────────────
         function showToast(msg = 'Berhasil!', type = 'success') {
             const toast = document.getElementById('toast');
             const icon  = document.getElementById('toast-icon');
@@ -128,14 +103,6 @@
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 3200);
         }
-
-        // ── Active nav highlight ──────────────────────────
-        const currentPath = window.location.pathname;
-        document.querySelectorAll('.nav-link[data-path]').forEach(el => {
-            if (el.dataset.path === currentPath || (el.dataset.path !== '/' && currentPath.startsWith(el.dataset.path))) {
-                el.classList.add('active');
-            }
-        });
     </script>
 
     @stack('scripts')

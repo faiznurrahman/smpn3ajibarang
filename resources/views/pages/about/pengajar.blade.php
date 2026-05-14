@@ -23,7 +23,7 @@
                                 <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                                     <i class="fas fa-chalkboard-teacher text-blue-600"></i>
                                 </div>
-                                <h2 class="font-display text-2xl font-black text-blue-900">Tenaga Pengajar</h2>
+                                <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Tenaga Pengajar</h2>
                             </div>
                             <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
                                 @forelse($guru as $teacher)

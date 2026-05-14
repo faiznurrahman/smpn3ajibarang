@@ -2,10 +2,10 @@
 
 namespace App\Filament\Resources\Settings\Schemas;
 
-use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\FileUpload;
 use Filament\Forms\Components\Textarea;
-use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
 
 class SettingForm
@@ -13,62 +13,85 @@ class SettingForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
-                Grid::make(2)
+
+                Section::make('Identitas Sekolah')
                     ->schema([
-
-                        TextInput::make('nama_sekolah')
-                            ->label('Nama Sekolah')
-                            ->required()
-                            ->columnSpan(2),
-
-                        TextInput::make('tagline')
-                            ->label('Tagline')
-                            ->hint('Ditampilkan sebagai badge di hero, contoh: Sekolah Adiwiyata Nasional')
-                            ->columnSpan(2),
-
-                        TextInput::make('judul_hero')
-                            ->label('Judul Hero')
-                            ->hint('Baris pertama hero (putih). Contoh: SMPN 3 — baris "AJIBARANG" sudah otomatis muncul di bawahnya.')
-                            ->columnSpan(2),
-
-                        Textarea::make('deskripsi_hero')
-                            ->label('Deskripsi Hero')
-                            ->rows(3)
-                            ->columnSpan(2),
-
                         FileUpload::make('logo')
                             ->label('Logo Sekolah')
                             ->image()
+                            ->imageEditor()
                             ->directory('settings')
-                            ->hint('PNG transparan, ukuran 512×512px, maks. 500KB')
-                            ->columnSpan(1),
+                            ->hint('PNG transparan, 512×512px, maks. 500KB')
+                            ->columnSpanFull(),
+
+                        TextInput::make('nama_sekolah')
+                            ->label('Nama Sekolah')
+                            ->placeholder('contoh: SMP Negeri 3 Ajibarang')
+                            ->required()
+                            ->columnSpanFull(),
+
+                        TextInput::make('tagline')
+                            ->label('Tagline / Motto')
+                            ->placeholder('contoh: Sekolah Adiwiyata Nasional')
+                            ->hint('Ditampilkan sebagai badge di halaman hero')
+                            ->columnSpanFull(),
+                    ]),
+
+                Section::make('Hero Beranda')
+                    ->schema([
+                        TextInput::make('judul_hero')
+                            ->label('Judul Hero')
+                            ->placeholder('contoh: SMPN 3')
+                            ->hint('"AJIBARANG" otomatis tampil sebagai baris kedua')
+                            ->columnSpanFull(),
+
+                        Textarea::make('deskripsi_hero')
+                            ->label('Deskripsi Hero')
+                            ->placeholder('Tulis deskripsi singkat sekolah yang tampil di halaman beranda...')
+                            ->rows(4)
+                            ->columnSpanFull(),
 
                         FileUpload::make('background_hero')
-                            ->label('Background Hero')
+                            ->label('Foto Latar Hero')
                             ->image()
                             ->directory('settings')
                             ->hint('JPG/WebP, ukuran minimal 1920×1080px, maks. 1MB')
-                            ->columnSpan(1),
+                            ->columnSpanFull(),
+                    ]),
 
+                Section::make('Statistik Sekolah')
+                    ->schema([
                         TextInput::make('jumlah_siswa')
+                            ->label('Jumlah Siswa')
                             ->numeric()
-                            ->label('Jumlah Siswa'),
+                            ->suffix('siswa')
+                            ->placeholder('0')
+                            ->columnSpanFull(),
 
                         TextInput::make('jumlah_guru_karyawan')
+                            ->label('Guru & Karyawan')
                             ->numeric()
-                            ->label('Jumlah Guru & Karyawan'),
+                            ->suffix('orang')
+                            ->placeholder('0')
+                            ->columnSpanFull(),
 
                         TextInput::make('jumlah_prestasi')
+                            ->label('Jumlah Prestasi')
                             ->numeric()
-                            ->label('Jumlah Prestasi'),
+                            ->suffix('prestasi')
+                            ->placeholder('0')
+                            ->columnSpanFull(),
 
                         TextInput::make('tahun_berdiri')
-                            ->numeric()
                             ->label('Tahun Berdiri')
-                            ->hint('Contoh: 1999 — otomatis dihitung jadi "25+ Tahun Berdiri"'),
-
+                            ->numeric()
+                            ->placeholder('1999')
+                            ->hint('Dihitung otomatis jadi "X+ Tahun"')
+                            ->columnSpanFull(),
                     ]),
+
             ]);
     }
 }

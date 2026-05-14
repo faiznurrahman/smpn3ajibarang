@@ -19,9 +19,17 @@ class TeacherResource extends Resource
 {
     protected static ?string $model = Teacher::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Guru & Tenaga Pendidik';
+    protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedAcademicCap;
+    protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) static::getModel()::where('is_active', true)->count() ?: null;
+    }
 
     public static function form(Schema $schema): Schema
     {

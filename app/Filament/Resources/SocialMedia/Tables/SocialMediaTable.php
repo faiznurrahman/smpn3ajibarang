@@ -2,9 +2,13 @@
 
 namespace App\Filament\Resources\SocialMedia\Tables;
 
-use Filament\Tables\Table;
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
+use Filament\Tables\Table;
 
 class SocialMediaTable
 {
@@ -15,14 +19,14 @@ class SocialMediaTable
                 TextColumn::make('nama')
                     ->label('Platform')
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('url')
-                    ->label('URL')
-                    ->limit(40),
+                    ->sortable()
+                    ->weight('semibold')
+                    ->description(fn ($record) => \Illuminate\Support\Str::limit($record->url, 50)),
 
                 TextColumn::make('icon')
-                    ->label('Icon'),
+                    ->label('Jenis')
+                    ->badge()
+                    ->color('gray'),
 
                 TextColumn::make('order')
                     ->label('Urutan')
@@ -32,12 +36,12 @@ class SocialMediaTable
                     ->label('Aktif'),
             ])
             ->recordActions([
-                \Filament\Actions\EditAction::make(),
-                \Filament\Actions\DeleteAction::make(),
+                EditAction::make()->label('Edit'),
+                DeleteAction::make()->label('Hapus'),
             ])
             ->toolbarActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('order');

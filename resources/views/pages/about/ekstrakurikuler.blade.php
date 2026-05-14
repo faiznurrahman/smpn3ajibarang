@@ -20,7 +20,7 @@
                             <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-star text-orange-500"></i>
                             </div>
-                            <h2 class="font-display text-2xl font-black text-blue-900">Ekstrakurikuler</h2>
+                            <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Ekstrakurikuler</h2>
                         </div>
                         <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
                             @forelse($extracurriculars as $ekstra)

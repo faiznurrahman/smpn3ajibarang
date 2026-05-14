@@ -18,7 +18,10 @@ class GalleryResource extends Resource
 {
     protected static ?string $model = Gallery::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Galeri';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhoto;
+    protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'judul';
 

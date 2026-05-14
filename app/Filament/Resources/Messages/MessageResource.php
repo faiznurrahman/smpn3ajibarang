@@ -19,9 +19,23 @@ class MessageResource extends Resource
 {
     protected static ?string $model = Message::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Pesan Masuk';
+    protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
+    protected static ?int    $navigationSort  = 1;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function getNavigationBadge(): ?string
+    {
+        $unread = static::getModel()::where('is_read', false)->count();
+        return $unread > 0 ? (string) $unread : null;
+    }
+
+    public static function getNavigationBadgeColor(): ?string
+    {
+        return 'warning';
+    }
 
     public static function canCreate(): bool { return false; }
     public static function canEdit(Model $record): bool { return false; }

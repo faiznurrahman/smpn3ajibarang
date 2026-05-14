@@ -21,7 +21,7 @@
                             <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center">
                                 <i class="fas fa-landmark text-blue-600"></i>
                             </div>
-                            <h2 class="font-display text-2xl font-black text-blue-900">Sejarah Sekolah</h2>
+                            <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Sejarah Sekolah</h2>
                         </div>
                         <div class="prose prose-blue max-w-none text-gray-700 leading-relaxed">
                             {!! $profile->sejarah ?? '<p class="text-gray-400 italic">Sejarah sekolah belum diisi.</p>' !!}

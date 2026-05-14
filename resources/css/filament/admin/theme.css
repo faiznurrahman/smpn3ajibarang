@@ -1,0 +1,603 @@
+@import '../../../../vendor/filament/filament/resources/css/theme.css';
+
+/* Force light mode — design is light-only */
+:root { color-scheme: light !important; }
+html  { color-scheme: light !important; }
+
+@source '../../../../app/Filament/Admin/**/*';
+@source '../../../../resources/views/filament/admin/**/*';
+
+/* ============================================================
+   Design tokens
+   ============================================================ */
+:root {
+    --primary-h: 221;
+    --primary-s: 64%;
+    --primary-l: 33%;
+}
+
+/* ============================================================
+   Sidebar
+   ============================================================ */
+
+/* Hide default Filament header padding — replaced by sb-brand component */
+.fi-sidebar-header {
+    padding: 0 !important;
+    border-bottom: none !important;
+}
+
+/* Nav container */
+.fi-sidebar-nav {
+    padding: 14px 12px !important;
+    overflow-y: auto;
+    flex: 1;
+}
+.fi-sidebar-nav::-webkit-scrollbar { width: 6px; }
+.fi-sidebar-nav::-webkit-scrollbar-thumb { background: #d4dae6; border-radius: 4px; }
+.fi-sidebar-nav-groups {
+    display: flex;
+    flex-direction: column;
+    gap: 0 !important;
+    padding: 0 !important;
+    margin: 0 !important;
+}
+
+/* Group wrapper spacing */
+.fi-sidebar-group {
+    margin-bottom: 2px !important;
+}
+
+/* Group label (section heading) */
+.fi-sidebar-group-label {
+    font-size: 10.5px !important;
+    letter-spacing: 0.12em !important;
+    text-transform: uppercase !important;
+    font-weight: 700 !important;
+    color: #8b94a6 !important;
+    padding: 14px 12px 8px !important;
+}
+
+/* Group items list — no extra padding */
+.fi-sidebar-group-items {
+    padding: 0 !important;
+    margin: 0 !important;
+    list-style: none !important;
+}
+
+/* Nav item */
+.fi-sidebar-item-button {
+    border-radius: 9px !important;
+    padding: 9px 12px !important;
+    font-size: 13.5px !important;
+    font-weight: 500 !important;
+    color: #5a6478 !important;
+    position: relative;
+    margin: 1px 0 !important;
+    transition: background 120ms ease, color 120ms ease;
+    width: 100% !important;
+}
+.fi-sidebar-item-button:hover {
+    background: #f5f7fc !important;
+    color: #0f172a !important;
+}
+.fi-sidebar-item-button.fi-active,
+.fi-sidebar-item-button[aria-current="page"] {
+    background: #eef2ff !important;
+    color: #1e3a8a !important;
+    font-weight: 600 !important;
+}
+.fi-sidebar-item-button.fi-active::before,
+.fi-sidebar-item-button[aria-current="page"]::before {
+    content: '';
+    position: absolute;
+    left: -12px; top: 6px; bottom: 6px;
+    width: 3px;
+    background: #1e3a8a;
+    border-radius: 0 3px 3px 0;
+}
+.fi-sidebar-item-icon {
+    width: 18px !important;
+    height: 18px !important;
+    opacity: 0.85;
+}
+.fi-sidebar-item-button.fi-active .fi-sidebar-item-icon,
+.fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-icon {
+    opacity: 1;
+}
+.fi-sidebar-item-badge {
+    font-size: 10.5px !important;
+    font-weight: 600 !important;
+    padding: 2px 7px !important;
+    border-radius: 999px !important;
+    margin-left: auto !important;
+    background: #eef1f6 !important;
+    color: #5a6478 !important;
+}
+.fi-sidebar-item-button.fi-active .fi-sidebar-item-badge,
+.fi-sidebar-item-button[aria-current="page"] .fi-sidebar-item-badge {
+    background: #dbe3ff !important;
+    color: #1e3a8a !important;
+}
+.fi-sidebar-footer {
+    border-top: 1px solid #e6eaf2;
+}
+
+/* ============================================================
+   Topbar
+   ============================================================ */
+
+/*
+ * fi-topbar-ctn = sticky wrapper dari Filament (sticky top:0 z:30).
+ *
+ * PENTING: Filament default punya overflow-x:clip pada element ini.
+ * Floating UI (dipakai dropdown Filament) mendeteksi overflow:clip sebagai
+ * clipping boundary → dikira tidak ada ruang di bawah trigger → dropdown
+ * di-flip ke atas. Fix: override ke overflow:visible.
+ */
+.fi-topbar-ctn {
+    overflow: visible !important;
+    background: rgba(255,255,255,0.92) !important;
+    border-bottom: 1px solid #e6eaf2 !important;
+}
+
+/* fi-topbar = the <nav> inside fi-topbar-ctn */
+.fi-topbar {
+    height: 64px !important;
+    min-height: 64px !important;
+    background: transparent !important;
+    box-shadow: none !important;
+    outline: none !important;
+    padding: 0 !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 0 !important;
+    /* ring override — Filament adds ring-1 ring-gray-950/5 */
+    --tw-ring-shadow: none !important;
+    box-shadow: none !important;
+}
+
+/* Hide Filament's default topbar logo/brand section */
+.fi-topbar-start {
+    display: none !important;
+}
+
+/* === RIGHT END: bell + user =================================== */
+.fi-topbar-end {
+    margin-left: auto !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 10px !important;
+    padding-right: 20px !important;
+    height: 64px !important;
+}
+
+/* Remove the extra margin-right from nbb-wrap (let gap handle spacing) */
+.fi-topbar-end .nbb-wrap {
+    margin-right: 0 !important;
+}
+
+/* Vertical separator between bell and user trigger */
+.nbb-wrap::after {
+    content: '';
+    display: block;
+    width: 1px;
+    height: 20px;
+    background: #e6eaf2;
+    margin-left: 8px;
+    flex-shrink: 0;
+}
+
+/* === USER MENU TRIGGER ======================================== */
+/* Topbar position: just shows avatar — style as icon-btn */
+.fi-topbar .fi-user-menu-trigger {
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    width: 36px !important;
+    height: 36px !important;
+    border-radius: 10px !important;
+    background: white !important;
+    border: 1px solid #e6eaf2 !important;
+    padding: 3px !important;
+    cursor: pointer !important;
+    flex-shrink: 0 !important;
+    /* JANGAN overflow:hidden — bisa mengganggu Floating UI positioning */
+    transition: border-color 120ms, background 120ms !important;
+}
+.fi-topbar .fi-user-menu-trigger:hover {
+    border-color: #c7d2fe !important;
+    background: #eef2ff !important;
+}
+
+/* Avatar inside user trigger */
+.fi-topbar .fi-user-avatar {
+    width: 28px !important;
+    height: 28px !important;
+    border-radius: 7px !important;
+    object-fit: cover !important;
+    object-position: center !important;
+    flex-shrink: 0 !important;
+}
+
+/* === SIDEBAR TOGGLE (mobile only) ============================ */
+/* Filament already hides fi-topbar-close-sidebar-btn on desktop (lg:hidden). */
+/* fi-topbar-open-sidebar-btn is hidden when sidebar is open (Alpine x-show). */
+.fi-topbar-open-sidebar-btn,
+.fi-topbar-close-sidebar-btn {
+    margin: 0 4px !important;
+    flex-shrink: 0 !important;
+}
+
+/* === BREADCRUMBS (shown in page header, not topbar) ========== */
+.fi-breadcrumbs {
+    font-size: 13px !important;
+    display: flex !important;
+    align-items: center !important;
+    gap: 6px !important;
+}
+.fi-breadcrumbs-item-label {
+    color: #8b94a6 !important;
+    font-size: 13px !important;
+}
+.fi-breadcrumbs-item:last-child .fi-breadcrumbs-item-label {
+    color: #0f172a !important;
+    font-weight: 600 !important;
+}
+.fi-breadcrumbs-separator {
+    color: #c4cad5 !important;
+}
+
+/* ============================================================
+   Main content background
+   ============================================================ */
+.fi-main {
+    background: #f3f5fa !important;
+}
+
+/* ============================================================
+   Page header — cleaner, match design
+   ============================================================ */
+.fi-page-header {
+    padding: 24px 24px 0 !important;
+}
+.fi-page-header-heading {
+    font-size: 24px !important;
+    font-weight: 700 !important;
+    letter-spacing: -0.015em !important;
+    color: #0f172a !important;
+}
+
+/* Page content — consistent 24px gutter on all sides */
+.fi-page-content {
+    padding: 16px 24px 24px !important;
+}
+/* Create/Edit pages keep their own padding */
+.fi-page-create .fi-page-content,
+.fi-page-edit   .fi-page-content {
+    padding: 16px 24px 24px !important;
+}
+
+/* ============================================================
+   Tables — Guru.html design
+   ============================================================ */
+
+/* Table card — white, bordered, 12px radius, no shadow */
+.fi-ta-main {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    overflow: hidden !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+}
+
+/* Prevent horizontal scroll (Filament sets overflow-x:auto by default) */
+.fi-ta-content-ctn {
+    overflow-x: hidden !important;
+}
+
+/* Table fills container, no artificial min-width */
+.fi-ta-table {
+    width: 100% !important;
+    min-width: 0 !important;
+    table-layout: auto !important;
+}
+
+/* Toolbar */
+.fi-ta-header-toolbar {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
+    padding: 12px 14px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background: white !important;
+    flex-wrap: wrap !important;
+}
+
+/* Search inside toolbar — matches .toolbar .search in Guru.html */
+.fi-ta-search-field .fi-input-wrp {
+    background: #f6f7f9 !important;
+    border-color: #e5e7eb !important;
+    border-radius: 7px !important;
+}
+.fi-ta-search-field .fi-input {
+    background: #f6f7f9 !important;
+    font-size: 13px !important;
+}
+
+/* Table header — exact match to .tbl thead th */
+.fi-ta-header-cell {
+    background: #f5f7fb !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 11px 14px !important;
+    font-size: 12px !important;
+    font-weight: 600 !important;
+    color: #4b5563 !important;
+    letter-spacing: 0.005em !important;
+    white-space: nowrap !important;
+    text-align: left !important;
+}
+
+/* Table body cells — exact match to .tbl tbody td */
+.fi-ta-cell {
+    padding: 12px 14px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    font-size: 13.5px !important;
+    color: #111827 !important;
+    vertical-align: middle !important;
+}
+/* Last row: no bottom border */
+.fi-ta-row:last-child .fi-ta-cell {
+    border-bottom: none !important;
+}
+
+/* Row hover */
+.fi-ta-row:hover .fi-ta-cell,
+.fi-ta-row:hover td {
+    background: #f5f7fb !important;
+}
+
+/* Description text under main value — matches .name-cell .info span in Guru.html */
+.fi-ta-text-description {
+    font-size: 11.5px !important;
+    color: #9ca3af !important;
+    margin-top: 2px !important;
+}
+
+/* Circular avatar image in table cells */
+.fi-ta-image {
+    border-radius: 50% !important;
+    object-fit: cover !important;
+}
+
+/* Badge pills — match Guru.html .badge */
+.fi-badge {
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 5px !important;
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    padding: 3px 9px !important;
+    border-radius: 999px !important;
+    line-height: 1.4 !important;
+}
+
+/* Icon column (boolean active/inactive) — dot + text style from Guru.html */
+.fi-ta-cell .fi-color-success svg { color: #16a34a !important; }
+.fi-ta-cell .fi-color-danger svg  { color: #dc2626 !important; }
+.fi-ta-cell .fi-color-gray svg    { color: #9ca3af !important; }
+
+/* Row action buttons — .btn.sm from Guru.html */
+.fi-ta-row .fi-btn {
+    height: 30px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+    border-radius: 7px !important;
+}
+
+/* Pagination — exact match to .pag in Guru.html */
+.fi-pagination {
+    display: flex !important;
+    align-items: center !important;
+    justify-content: space-between !important;
+    padding: 12px 16px !important;
+    border-top: 1px solid #e5e7eb !important;
+    font-size: 12.5px !important;
+    color: #4b5563 !important;
+}
+.fi-pagination-btn {
+    min-width: 30px !important;
+    height: 30px !important;
+    padding: 0 8px !important;
+    border-radius: 6px !important;
+    border: 1px solid #e5e7eb !important;
+    background: white !important;
+    font-size: 12px !important;
+    color: #111827 !important;
+}
+.fi-pagination-btn:hover {
+    background: #f5f7fb !important;
+}
+.fi-pagination-btn.fi-active,
+.fi-pagination-btn[aria-current="page"] {
+    background: #1e3a8a !important;
+    color: white !important;
+    border-color: transparent !important;
+    font-weight: 600 !important;
+}
+
+/* ============================================================
+   Form sections — match Guru.html card style
+   ============================================================ */
+.fi-sc-section {
+    background: white !important;
+    border: 1px solid #e5e7eb !important;
+    border-radius: 12px !important;
+    box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
+    overflow: hidden !important;
+}
+.fi-sc-section-label-ctn {
+    padding: 10px 18px !important;
+    border-bottom: 1px solid #e5e7eb !important;
+    background: white !important;
+}
+.fi-sc-section-label {
+    font-size: 11.5px !important;
+    font-weight: 700 !important;
+    color: #9ca3af !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.06em !important;
+}
+.fi-section-content {
+    padding: 18px !important;
+}
+
+/* ============================================================
+   Form fields & inputs — match Guru.html
+   ============================================================ */
+
+/* Field labels */
+.fi-fo-field-label-content {
+    font-size: 12.5px !important;
+    font-weight: 600 !important;
+    color: #111827 !important;
+}
+.fi-fo-field-label-required-mark {
+    color: #dc2626 !important;
+}
+
+/* Input wrapper */
+.fi-input-wrp {
+    border-color: #e5e7eb !important;
+    border-radius: 7px !important;
+    background: white !important;
+    transition: border-color 120ms, box-shadow 120ms !important;
+}
+.fi-input-wrp:focus-within {
+    border-color: #1e3a8a !important;
+    box-shadow: 0 0 0 3px rgba(30,58,138,0.1) !important;
+}
+
+/* Text input */
+.fi-input {
+    background: white !important;
+    border-radius: 7px !important;
+    font-size: 13px !important;
+    color: #111827 !important;
+}
+.fi-input::placeholder {
+    color: #9ca3af !important;
+}
+
+/* Select native */
+.fi-select-input {
+    border-color: #e5e7eb !important;
+    border-radius: 7px !important;
+    font-size: 13px !important;
+    background: white !important;
+    color: #111827 !important;
+}
+.fi-select-input:focus {
+    border-color: #1e3a8a !important;
+    box-shadow: 0 0 0 3px rgba(30,58,138,0.1) !important;
+    outline: none !important;
+}
+/* Select wrapper */
+.fi-fo-select-wrp .fi-input-wrp {
+    border-color: #e5e7eb !important;
+}
+
+/* Textarea */
+.fi-fo-field-wrp textarea {
+    border-color: #e5e7eb !important;
+    border-radius: 7px !important;
+    font-size: 13px !important;
+    background: white !important;
+    color: #111827 !important;
+}
+.fi-fo-field-wrp textarea:focus {
+    border-color: #1e3a8a !important;
+    box-shadow: 0 0 0 3px rgba(30,58,138,0.1) !important;
+    outline: none !important;
+}
+
+/* Hint text */
+.fi-fo-field-hint {
+    font-size: 11.5px !important;
+    color: #9ca3af !important;
+}
+
+/* Toggle (switch) */
+.fi-toggle-input:checked ~ .fi-toggle-track {
+    background: #16a34a !important;
+}
+.fi-toggle-track {
+    background: #d1d5db !important;
+    border-radius: 999px !important;
+}
+
+/* ============================================================
+   Buttons — match Guru.html
+   ============================================================ */
+.fi-btn {
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    font-weight: 500 !important;
+    height: 36px !important;
+    padding: 0 14px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    gap: 7px !important;
+    border: 1px solid #e5e7eb !important;
+    transition: background 100ms, border-color 100ms !important;
+}
+/* Primary */
+.fi-btn-color-primary {
+    background: #1e3a8a !important;
+    border-color: transparent !important;
+    color: white !important;
+    font-weight: 600 !important;
+}
+.fi-btn-color-primary:hover {
+    background: #1a3175 !important;
+}
+/* Gray / secondary */
+.fi-btn-color-gray {
+    background: white !important;
+    color: #111827 !important;
+}
+.fi-btn-color-gray:hover {
+    background: #f5f7fb !important;
+    border-color: #d1d5db !important;
+}
+/* Danger */
+.fi-btn-color-danger {
+    color: #dc2626 !important;
+    background: white !important;
+}
+.fi-btn-color-danger:hover {
+    background: #fef2f2 !important;
+    border-color: #fca5a5 !important;
+}
+
+/* Form actions bar (Save / Cancel) */
+.fi-form-actions {
+    background: #f5f7fb !important;
+    border-top: 1px solid #e5e7eb !important;
+    padding: 14px 18px !important;
+    border-radius: 0 0 12px 12px !important;
+    display: flex !important;
+    justify-content: flex-end !important;
+    gap: 8px !important;
+}
+
+/* ============================================================
+   Badges / status pills in tables
+   ============================================================ */
+.fi-badge {
+    font-size: 11.5px !important;
+    font-weight: 600 !important;
+    padding: 3px 9px !important;
+    border-radius: 999px !important;
+}
+

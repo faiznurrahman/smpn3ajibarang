@@ -18,7 +18,10 @@ class OrganizationalStructureResource extends Resource
 {
     protected static ?string $model = OrganizationalStructure::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Struktur Organisasi';
+    protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
+    protected static ?int    $navigationSort  = 3;
 
     protected static ?string $recordTitleAttribute = 'title';
 

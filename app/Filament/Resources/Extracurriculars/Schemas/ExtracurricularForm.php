@@ -2,11 +2,13 @@
 
 namespace App\Filament\Resources\Extracurriculars\Schemas;
 
-use Filament\Schemas\Schema;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Schema;
 
 class ExtracurricularForm
 {
@@ -14,29 +16,44 @@ class ExtracurricularForm
     {
         return $schema
             ->components([
-                TextInput::make('nama')
-                    ->label('Nama Ekstrakurikuler')
-                    ->required(),
 
-                Textarea::make('deskripsi')
-                    ->label('Deskripsi')
-                    ->rows(3)
-                    ->columnSpanFull(),
+                Section::make('Gambar')
+                    ->schema([
+                        FileUpload::make('gambar')
+                            ->label('Gambar Ekstrakurikuler')
+                            ->image()
+                            ->imageEditor()
+                            ->directory('extracurriculars')
+                            ->columnSpanFull(),
+                    ]),
 
-                FileUpload::make('gambar')
-                    ->label('Gambar')
-                    ->image()
-                    ->directory('extracurriculars')
-                    ->columnSpanFull(),
+                Section::make('Informasi')
+                    ->schema([
+                        TextInput::make('nama')
+                            ->label('Nama Ekstrakurikuler')
+                            ->required()
+                            ->columnSpanFull(),
 
-                TextInput::make('order')
-                    ->label('Urutan Tampil')
-                    ->numeric()
-                    ->default(0),
+                        Grid::make(2)
+                            ->schema([
+                                Textarea::make('deskripsi')
+                                    ->label('Deskripsi')
+                                    ->rows(4),
 
-                Toggle::make('is_active')
-                    ->label('Aktif')
-                    ->default(true),
+                                TextInput::make('order')
+                                    ->label('Urutan Tampil')
+                                    ->numeric()
+                                    ->default(0),
+                            ]),
+                    ]),
+
+                Section::make('Pengaturan')
+                    ->schema([
+                        Toggle::make('is_active')
+                            ->label('Aktif — tampilkan di situs publik sekolah')
+                            ->default(true),
+                    ]),
+
             ]);
     }
 }

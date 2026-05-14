@@ -18,7 +18,10 @@ class ProfileResource extends Resource
 {
     protected static ?string $model = Profile::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Profil Sekolah';
+    protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
+    protected static ?int    $navigationSort  = 1;
 
     protected static ?string $recordTitleAttribute = 'sejarah';
 

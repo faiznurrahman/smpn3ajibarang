@@ -3,27 +3,27 @@
 namespace App\Filament\Resources\VideoProfiles\Tables;
 
 use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteAction;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Table;
 
 class VideoProfilesTable
 {
     public static function configure(Table $table): Table
     {
-         return $table
+        return $table
             ->columns([
                 TextColumn::make('judul')
-                    ->label('Judul')
+                    ->label('Judul Video')
                     ->searchable()
-                    ->sortable(),
-
-                TextColumn::make('link_video')
-                    ->label('Link Video')
-                    ->limit(40),
+                    ->sortable()
+                    ->grow()
+                    ->description(fn ($record) => $record->deskripsi
+                        ? \Illuminate\Support\Str::limit($record->deskripsi, 60)
+                        : null),
 
                 TextColumn::make('order')
                     ->label('Urutan')
@@ -33,12 +33,12 @@ class VideoProfilesTable
                     ->label('Aktif'),
             ])
             ->recordActions([
-                \Filament\Actions\EditAction::make(),
-                \Filament\Actions\DeleteAction::make(),
+                EditAction::make()->label('Edit'),
+                DeleteAction::make()->label('Hapus'),
             ])
             ->toolbarActions([
-                \Filament\Actions\BulkActionGroup::make([
-                    \Filament\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ])
             ->defaultSort('order');

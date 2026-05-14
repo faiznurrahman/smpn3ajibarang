@@ -18,7 +18,10 @@ class ExtracurricularResource extends Resource
 {
     protected static ?string $model = Extracurricular::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Ekstrakurikuler';
+    protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
+    protected static ?int    $navigationSort  = 4;
 
     protected static ?string $recordTitleAttribute = 'nama';
 

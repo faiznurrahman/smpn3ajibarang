@@ -19,7 +19,10 @@ class ContactInfoResource extends Resource
 {
     protected static ?string $model = ContactInfo::class;
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel  = 'Informasi Kontak';
+    protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';
+    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
+    protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'alamat';
     public static function canCreate(): bool { return false; }

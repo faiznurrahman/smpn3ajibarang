@@ -7,6 +7,7 @@ use App\Filament\Resources\Settings\Pages\EditSetting;
 use App\Filament\Resources\Settings\Pages\ListSettings;
 use App\Filament\Resources\Settings\Schemas\SettingForm;
 use App\Filament\Resources\Settings\Tables\SettingsTable;
+use App\Enums\UserRole;
 use App\Models\Setting;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -23,6 +24,11 @@ class SettingResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Sistem';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCog6Tooth;
     protected static ?int    $navigationSort  = 1;
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

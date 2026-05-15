@@ -7,6 +7,7 @@ use App\Filament\Resources\SocialMedia\Pages\EditSocialMedia;
 use App\Filament\Resources\SocialMedia\Pages\ListSocialMedia;
 use App\Filament\Resources\SocialMedia\Schemas\SocialMediaForm;
 use App\Filament\Resources\SocialMedia\Tables\SocialMediaTable;
+use App\Enums\UserRole;
 use App\Models\SocialMedia;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class SocialMediaResource extends Resource
     protected static ?int    $navigationSort  = 3;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

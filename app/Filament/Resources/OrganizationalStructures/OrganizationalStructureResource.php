@@ -7,6 +7,7 @@ use App\Filament\Resources\OrganizationalStructures\Pages\EditOrganizationalStru
 use App\Filament\Resources\OrganizationalStructures\Pages\ListOrganizationalStructures;
 use App\Filament\Resources\OrganizationalStructures\Schemas\OrganizationalStructureForm;
 use App\Filament\Resources\OrganizationalStructures\Tables\OrganizationalStructuresTable;
+use App\Enums\UserRole;
 use App\Models\OrganizationalStructure;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class OrganizationalStructureResource extends Resource
     protected static ?int    $navigationSort  = 3;
 
     protected static ?string $recordTitleAttribute = 'title';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

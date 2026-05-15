@@ -7,6 +7,7 @@ use App\Filament\Resources\Profiles\Pages\EditProfile;
 use App\Filament\Resources\Profiles\Pages\ListProfiles;
 use App\Filament\Resources\Profiles\Schemas\ProfileForm;
 use App\Filament\Resources\Profiles\Tables\ProfilesTable;
+use App\Enums\UserRole;
 use App\Models\Profile;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class ProfileResource extends Resource
     protected static ?int    $navigationSort  = 1;
 
     protected static ?string $recordTitleAttribute = 'sejarah';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

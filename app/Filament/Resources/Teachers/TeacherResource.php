@@ -7,6 +7,7 @@ use App\Filament\Resources\Teachers\Pages\EditTeacher;
 use App\Filament\Resources\Teachers\Pages\ListTeachers;
 use App\Filament\Resources\Teachers\Schemas\TeacherForm;
 use App\Filament\Resources\Teachers\Tables\TeachersTable;
+use App\Enums\UserRole;
 use App\Models\Teacher;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,6 +26,11 @@ class TeacherResource extends Resource
     protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function getNavigationBadge(): ?string
     {

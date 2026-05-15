@@ -7,6 +7,7 @@ use App\Filament\Resources\PrincipalGreetings\Pages\EditPrincipalGreeting;
 use App\Filament\Resources\PrincipalGreetings\Pages\ListPrincipalGreetings;
 use App\Filament\Resources\PrincipalGreetings\Schemas\PrincipalGreetingForm;
 use App\Filament\Resources\PrincipalGreetings\Tables\PrincipalGreetingsTable;
+use App\Enums\UserRole;
 use App\Models\PrincipalGreeting;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class PrincipalGreetingResource extends Resource
     protected static ?int    $navigationSort  = 5;
 
     protected static ?string $recordTitleAttribute = 'nama_kepala_sekolah';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

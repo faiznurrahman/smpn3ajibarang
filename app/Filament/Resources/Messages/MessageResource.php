@@ -7,6 +7,7 @@ use App\Filament\Resources\Messages\Pages\ViewMessage;
 use App\Filament\Resources\Messages\Schemas\MessageForm;
 use App\Filament\Resources\Messages\Schemas\MessageInfolist;
 use App\Filament\Resources\Messages\Tables\MessagesTable;
+use App\Enums\UserRole;
 use App\Models\Message;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,6 +26,11 @@ class MessageResource extends Resource
     protected static ?int    $navigationSort  = 1;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function getNavigationBadge(): ?string
     {

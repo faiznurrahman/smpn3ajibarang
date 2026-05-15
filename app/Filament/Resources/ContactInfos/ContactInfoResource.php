@@ -7,6 +7,7 @@ use App\Filament\Resources\ContactInfos\Pages\EditContactInfo;
 use App\Filament\Resources\ContactInfos\Pages\ListContactInfos;
 use App\Filament\Resources\ContactInfos\Schemas\ContactInfoForm;
 use App\Filament\Resources\ContactInfos\Tables\ContactInfosTable;
+use App\Enums\UserRole;
 use App\Models\ContactInfo;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -25,6 +26,12 @@ class ContactInfoResource extends Resource
     protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'alamat';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
+
     public static function canCreate(): bool { return false; }
 public static function canDelete(Model $model): bool { return false; }
 public static function canDeleteAny(): bool { return false; }

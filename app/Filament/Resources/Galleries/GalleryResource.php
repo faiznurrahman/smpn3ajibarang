@@ -7,6 +7,7 @@ use App\Filament\Resources\Galleries\Pages\EditGallery;
 use App\Filament\Resources\Galleries\Pages\ListGalleries;
 use App\Filament\Resources\Galleries\Schemas\GalleryForm;
 use App\Filament\Resources\Galleries\Tables\GalleriesTable;
+use App\Enums\UserRole;
 use App\Models\Gallery;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class GalleryResource extends Resource
     protected static ?int    $navigationSort  = 2;
 
     protected static ?string $recordTitleAttribute = 'judul';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

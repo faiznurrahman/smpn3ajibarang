@@ -48,7 +48,7 @@ Halaman yang tersedia:
 - Manajemen data anggota perpustakaan (siswa dan guru)
 - Transaksi peminjaman buku (catat tanggal pinjam dan batas kembali)
 - Transaksi pengembalian buku (catat tanggal pengembalian aktual)
-- Pengelolaan denda keterlambatan (hitung otomatis berdasarkan ketentuan)
+- Pengelolaan denda keterlambatan (hitung otomatis Rp 1.000/hari)
 - Laporan perpustakaan (data buku, anggota, transaksi — dapat dicetak)
 
 ### Batasan Sistem
@@ -83,6 +83,9 @@ php artisan test --filter=NamaTest
 php artisan view:clear
 php artisan config:clear
 php artisan cache:clear
+
+# Seed ulang user roles (untuk dev/testing)
+php artisan db:seed --class=UserRoleSeeder
 ```
 
 ## Architecture
@@ -103,8 +106,9 @@ Panel dikonfigurasi di `app/Providers/Filament/AdminPanelProvider.php`:
 |---|---|
 | `app/Filament/Admin/Pages/Auth/Login.php` | Custom login page, override `$layout` |
 | `resources/views/filament/admin/auth/login-layout.blade.php` | Layout login: centered card di atas background `#f6f7f9`, logo mark S3 + nama sekolah, form Filament di `{{ $slot }}` |
-| `app/Filament/Admin/Pages/Dashboard.php` | Custom dashboard, override `$view`, load stats + messages + posts + activities di `mount()` |
-| `resources/views/filament/admin/pages/dashboard.blade.php` | Dashboard view: stats 4 cards, 2-col (pesan + aktivitas), 3-col (berita + agenda + aksi cepat) |
+| `app/Filament/Admin/Pages/Dashboard.php` | Dashboard router berdasarkan role: Admin → `dashboard.blade.php`, Petugas/Kepala → `library-dashboard.blade.php` |
+| `resources/views/filament/admin/pages/dashboard.blade.php` | Dashboard Admin: stats 4 cards, 2-col (pesan + aktivitas), 3-col (berita + agenda + aksi cepat) |
+| `resources/views/filament/admin/pages/library-dashboard.blade.php` | Dashboard Perpustakaan: stats 4 cards (buku/anggota/dipinjam/denda), peminjaman aktif + denda belum lunas |
 | `resources/css/filament/admin/theme.css` | Tema Filament: sidebar, topbar, tabel, form inputs, tombol — semua mengikuti design `Guru.html` |
 | `resources/views/filament/admin/components/brand.blade.php` | Logo sidebar kustom: query `Setting::value('logo')`, fallback "S3" mark navy; dipasang via `PanelsRenderHook::SIDEBAR_LOGO_BEFORE` |
 | `resources/views/filament/admin/components/notification-bell.blade.php` | Bell icon di topbar: red dot jika ada pesan/draft/agenda; dropdown Alpine.js 3 seksi; dipasang via `PanelsRenderHook::GLOBAL_SEARCH_BEFORE` |
@@ -112,6 +116,7 @@ Panel dikonfigurasi di `app/Providers/Filament/AdminPanelProvider.php`:
 **Cara override di Filament v5:**
 - Login: override `protected static string $layout` (bukan `$view`) → layout menerima `$slot` berisi rendered form
 - Page biasa: override `protected string $view` → view menerima data dari `$this`
+- Dashboard multi-role: override `getView()` untuk return view berbeda per role
 - Livewire mensyaratkan **tepat 1 root HTML element** — selalu bungkus view dengan `<div>` terluar
 - `navigationGroup` harus bertipe `string|\UnitEnum|null` (bukan `?string`) karena PHP strict property inheritance
 
@@ -120,6 +125,29 @@ Panel dikonfigurasi di `app/Providers/Filament/AdminPanelProvider.php`:
 - Tidak ada `filament()->getHeadTags()` — gunakan `<x-filament-panels::layout.base :livewire="$livewire">` sebagai wrapper di custom layouts
 - Form sections: `Filament\Schemas\Components\Section` (bukan `Filament\Forms\Components\Section`)
 - Grid 2-col di form: `Filament\Schemas\Components\Grid::make(2)`
+
+### Role-Based Access Control
+
+Enum: `App\Enums\UserRole` — nilai: `admin`, `petugas_perpustakaan`, `kepala_sekolah`
+
+Setiap resource override `canAccess(): bool`. Pola:
+- Resource website profil sekolah (12 resource): `return auth()->user()?->role === UserRole::Admin;`
+- Resource perpustakaan (Books, Members, Loans, Returns, Fines): `return auth()->user()?->role === UserRole::PetugasPerpustakaan;`
+- LibraryReportResource: `return in_array($role, [UserRole::PetugasPerpustakaan, UserRole::KepalaSekolah]);`
+
+Dashboard routing di `Dashboard::getView()`:
+- `UserRole::Admin` → `filament.admin.pages.dashboard`
+- `UserRole::PetugasPerpustakaan` / `UserRole::KepalaSekolah` → `filament.admin.pages.library-dashboard`
+
+**User accounts (dev/testing) — semua password: `password`:**
+
+| Email | Role | Akses |
+|---|---|---|
+| `admin@smpn3ajibarang.sch.id` | Admin | Konten sekolah, pengaturan |
+| `petugas@smpn3ajibarang.sch.id` | Petugas Perpustakaan | CRUD buku, anggota, peminjaman, pengembalian, denda |
+| `kepala@smpn3ajibarang.sch.id` | Kepala Sekolah | Laporan perpustakaan (read only) |
+
+**Catatan password seeder:** Jangan pakai `Hash::make()` di seeder jika User model sudah punya cast `'password' => 'hashed'` — akan double-hash dan login gagal. Cukup tulis string plain: `'password' => 'password'`.
 
 ### Design System (Admin)
 
@@ -130,7 +158,7 @@ Referensi desain ada di folder `design/` (Login.html, Dasbor Admin.html, Guru.ht
 - Panel/card: `white`, border `#e5e7eb`, radius `12px`, shadow ringan
 - Input: radius `7px`, focus ring `rgba(30,58,138,0.1)`
 - Font: Plus Jakarta Sans (via Google Fonts di design) — Filament pakai system font secara default
-- Custom CSS di dashboard/login menggunakan CSS vars di-scope ke `.db` / `.lc` — jangan pakai Tailwind class di dalam view custom Filament
+- Custom CSS di dashboard/login menggunakan CSS vars di-scope ke `.db` / `.lc` / `.ldb` — jangan pakai Tailwind class di dalam view custom Filament
 
 **Kelas CSS Filament v5 yang penting (untuk override di theme.css):**
 - Sidebar: `.fi-sidebar-item-button`, `.fi-sidebar-group-label`, `.fi-sidebar-item-badge`
@@ -148,7 +176,7 @@ Referensi desain ada di folder `design/` (Login.html, Dasbor Admin.html, Guru.ht
 
 ### Navigation Groups & Labels
 
-**Website Profil Sekolah — sudah selesai (12 resource):**
+**Website Profil Sekolah — selesai (12 resource, hanya Admin):**
 
 | Group | Resource | Label |
 |---|---|---|
@@ -166,25 +194,33 @@ Referensi desain ada di folder `design/` (Login.html, Dasbor Admin.html, Guru.ht
 | Komunikasi | SocialMedia | Media Sosial |
 | Sistem | Settings | Pengaturan |
 
-Resource yang non-creatable/non-deletable: `ContactInfos`, `Messages`, `Settings` (lewat `canCreate()`/`canDelete()` override).
+Resource yang non-creatable/non-deletable: `ContactInfos`, `Messages`, `Settings`.
 
-**Sistem Informasi Perpustakaan — belum dibuat:**
+**Sistem Informasi Perpustakaan — selesai (6 resource):**
 
-| Group | Resource | Label |
-|---|---|---|
-| Perpustakaan | Books | Data Buku |
-| Perpustakaan | Members | Data Anggota |
-| Perpustakaan | Loans | Peminjaman Buku |
-| Perpustakaan | Returns | Pengembalian Buku |
-| Perpustakaan | Fines | Denda Keterlambatan |
-| Perpustakaan | LibraryReports | Laporan Perpustakaan |
+| Group | Resource | Label | Akses |
+|---|---|---|---|
+| Perpustakaan | Books | Data Buku | Petugas |
+| Perpustakaan | Members | Data Anggota | Petugas |
+| Perpustakaan | Loans | Peminjaman Buku | Petugas |
+| Perpustakaan | Returns | Pengembalian Buku | Petugas |
+| Perpustakaan | Fines | Denda Keterlambatan | Petugas |
+| Perpustakaan | LibraryReports | Laporan Perpustakaan | Petugas + Kepala |
+
+Catatan resource perpustakaan:
+- `Returns` — tidak punya halaman Create/Edit; hanya List dengan action **Kembalikan** (modal tanggal kembali, auto-hitung denda Rp 1.000/hari)
+- `Fines` — tidak punya Create; hanya Edit untuk update status bayar + tanggal bayar
+- `LibraryReports` — read-only untuk semua role; `canCreate/Edit/Delete` semuanya false
+- Kode buku auto-generate `BK-XXXX`, kode anggota `ANK-XXXX` (siswa) / `GRU-XXXX` (guru) via model `booted()`
 
 ### Resource Structure Pattern
+```
 app/Filament/Resources/NamaResource/
-├── NamaResource.php      # navigationLabel, navigationGroup, navigationIcon, navigationSort
+├── NamaResource.php      # navigationLabel, navigationGroup, navigationIcon, navigationSort, canAccess()
 ├── Pages/                # List, Create, Edit (+ View untuk Messages)
 ├── Schemas/              # Form schema — gunakan Section + Grid untuk layout 2-col
 └── Tables/               # Table columns + filters
+```
 
 Form schema convention (mengikuti Guru.html):
 - Gunakan `Section::make('Judul')` untuk mengelompokkan field
@@ -193,37 +229,35 @@ Form schema convention (mengikuti Guru.html):
 
 ### Dashboard Data (Dashboard.php)
 
-`mount()` memuat:
-- `$totalBerita` — Post published count
-- `$pesanBelumDibaca` — Message unread count
-- `$totalGuru` — Teacher active count
-- `$siswaAktif` — dari `settings.jumlah_siswa`
-- `$totalPesan` — Message total count
+`mount()` load data berbeda berdasarkan role:
+
+**Admin (loadSchoolData):**
+- `$totalBerita`, `$pesanBelumDibaca`, `$totalGuru`, `$siswaAktif`, `$totalPesan`
 - `$recentMessages` — 5 unread messages terbaru
 - `$recentPosts` — 4 published posts terbaru
-- `$recentActivities` — feed dari updated_at Post + Teacher + Gallery, disort descending
+- `$recentActivities` — feed dari updated_at Post + Teacher + Gallery
 
-### Dashboard Perpustakaan (tambahan)
+**Petugas / Kepala (loadLibraryData):**
+- `$totalBuku`, `$totalAnggota`, `$peminjamAktif`, `$dendaBelumLunas`, `$totalDenda`
+- `$recentLoans` — 6 peminjaman aktif/terlambat, diurutkan batas kembali terdekat
+- `$recentFines` — 5 denda belum lunas terbaru
 
-Setelah modul perpustakaan selesai, tambahkan ke `mount()`:
-- `$totalBuku` — Books count
-- `$totalAnggota` — Members active count
-- `$peminjamAktif` — Loans belum dikembalikan
-- `$dendaBelumLunas` — Fines unpaid count
+### Database Schema
+
+**Tabel perpustakaan:**
+```
+books    — id, kode_buku, judul, pengarang, penerbit, tahun, kategori, stok, cover, is_active
+members  — id, kode_anggota, nama, kelas, jenis(siswa/guru), no_hp, is_active
+loans    — id, book_id, member_id, tgl_pinjam, tgl_batas_kembali, tgl_kembali, status(dipinjam/dikembalikan/terlambat), petugas_id
+fines    — id, loan_id, jumlah_hari, nominal, status_bayar(belum_lunas/lunas), tgl_bayar
+users    — ... + role(admin/petugas_perpustakaan/kepala_sekolah) [default: admin]
+```
 
 ### Public Website
 
 `PageController` = satu controller untuk semua halaman publik. Inject `getSharedData()` (settings, contactInfo, socialMedia) + data spesifik. Halaman "Tentang" juga inject `getAboutSidebar()`.
 
 Tabel konten publik: `posts`, `teachers`, `galleries` + `gallery_images`, `extracurriculars`, `organizational_structures`, `principal_greetings`, `video_profiles`, `profiles`. Pesan dari form kontak → `messages`.
-
-### Skema Database Perpustakaan
-
-Tabel yang perlu dibuat untuk modul perpustakaan:
-books           — id, kode_buku, judul, pengarang, penerbit, tahun, kategori, stok, cover, is_active
-members         — id, kode_anggota, nama, kelas, jenis (siswa/guru), no_hp, is_active
-loans           — id, book_id, member_id, tgl_pinjam, tgl_batas_kembali, tgl_kembali, status, petugas_id
-fines           — id, loan_id, jumlah_hari, nominal, status_bayar, tgl_bayar
 
 ### Asset Pipeline
 
@@ -239,8 +273,6 @@ Setelah edit `theme.css` wajib jalankan `npm run build` / `npm run dev`.
 - [ ] Frontend publik (halaman beranda, tentang, dll.) belum disentuh — masih menggunakan template lama
 - [ ] Agenda mendatang di dashboard masih **hardcoded/static** — perlu tabel `agendas` di DB
 - [ ] Topbar Filament (breadcrumb) belum disesuaikan desain
-- [ ] Modul perpustakaan belum dibuat (Books, Members, Loans, Returns, Fines, LibraryReports)
-- [ ] Hak akses role-based (Admin, Petugas Perpustakaan, Kepala Sekolah) belum diimplementasi
 
 ## Sudah Selesai
 
@@ -249,3 +281,8 @@ Setelah edit `theme.css` wajib jalankan `npm run build` / `npm run dev`.
 - [x] Sidebar brand logo + notification bell (render hooks)
 - [x] Global search dinonaktifkan (`->globalSearch(false)`)
 - [x] 12 resource website profil sekolah selesai
+- [x] Role-based access control (Admin / Petugas / Kepala) dengan `canAccess()` per resource
+- [x] 6 resource sistem perpustakaan selesai (Books, Members, Loans, Returns, Fines, LibraryReports)
+- [x] Dashboard berbeda per role (sekolah vs perpustakaan)
+- [x] Denda otomatis Rp 1.000/hari saat pengembalian terlambat
+- [x] Auto-generate kode buku (BK-XXXX) dan kode anggota (ANK-/GRU-XXXX)

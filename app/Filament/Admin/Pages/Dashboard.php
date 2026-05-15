@@ -2,7 +2,12 @@
 
 namespace App\Filament\Admin\Pages;
 
+use App\Enums\UserRole;
+use App\Models\Book;
+use App\Models\Fine;
 use App\Models\Gallery;
+use App\Models\Loan;
+use App\Models\Member;
 use App\Models\Message;
 use App\Models\Post;
 use App\Models\Setting;
@@ -13,24 +18,53 @@ use Illuminate\Support\Str;
 
 class Dashboard extends BaseDashboard
 {
-    protected string $view = 'filament.admin.pages.dashboard';
-
     protected static ?string $navigationLabel = 'Dasbor';
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
     protected static ?int $navigationSort = -2;
 
+    // School dashboard data
     public int $totalBerita        = 0;
     public int $pesanBelumDibaca   = 0;
     public int $totalGuru          = 0;
     public int $siswaAktif         = 0;
     public int $totalPesan         = 0;
-
     public $recentMessages;
     public $recentPosts;
     public $recentActivities;
     public $settings;
 
+    // Library dashboard data
+    public int $totalBuku       = 0;
+    public int $totalAnggota    = 0;
+    public int $peminjamAktif   = 0;
+    public int $dendaBelumLunas = 0;
+    public int $totalDenda      = 0;
+    public $recentLoans;
+    public $recentFines;
+
+    public function getView(): string
+    {
+        $role = auth()->user()?->role;
+
+        if ($role === UserRole::PetugasPerpustakaan || $role === UserRole::KepalaSekolah) {
+            return 'filament.admin.pages.library-dashboard';
+        }
+
+        return 'filament.admin.pages.dashboard';
+    }
+
     public function mount(): void
+    {
+        $role = auth()->user()?->role;
+
+        if ($role === UserRole::PetugasPerpustakaan || $role === UserRole::KepalaSekolah) {
+            $this->loadLibraryData();
+        } else {
+            $this->loadSchoolData();
+        }
+    }
+
+    private function loadSchoolData(): void
     {
         $this->settings         = Setting::first();
         $this->totalBerita      = Post::where('status', 'published')->count();
@@ -39,13 +73,9 @@ class Dashboard extends BaseDashboard
         $this->totalPesan       = Message::count();
         $this->siswaAktif       = (int) ($this->settings?->jumlah_siswa ?? 0);
 
-        $this->recentMessages = Message::where('is_read', false)
-            ->latest()->take(5)->get();
+        $this->recentMessages = Message::where('is_read', false)->latest()->take(5)->get();
+        $this->recentPosts    = Post::where('status', 'published')->latest('tanggal_publish')->take(4)->get();
 
-        $this->recentPosts = Post::where('status', 'published')
-            ->latest('tanggal_publish')->take(4)->get();
-
-        // Build activity feed from recently updated models
         $activities = collect();
 
         Post::latest('updated_at')->take(3)->get()->each(function ($p) use (&$activities) {
@@ -79,5 +109,26 @@ class Dashboard extends BaseDashboard
         });
 
         $this->recentActivities = $activities->sortByDesc('time')->take(6)->values();
+    }
+
+    private function loadLibraryData(): void
+    {
+        $this->totalBuku       = Book::where('is_active', true)->count();
+        $this->totalAnggota    = Member::where('is_active', true)->count();
+        $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
+        $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
+        $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
+
+        $this->recentLoans = Loan::with(['book', 'member'])
+            ->whereIn('status', ['dipinjam', 'terlambat'])
+            ->orderBy('tgl_batas_kembali', 'asc')
+            ->take(6)
+            ->get();
+
+        $this->recentFines = Fine::with(['loan.book', 'loan.member'])
+            ->where('status_bayar', 'belum_lunas')
+            ->latest()
+            ->take(5)
+            ->get();
     }
 }

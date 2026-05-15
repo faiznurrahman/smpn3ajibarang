@@ -7,6 +7,7 @@ use App\Filament\Resources\Extracurriculars\Pages\EditExtracurricular;
 use App\Filament\Resources\Extracurriculars\Pages\ListExtracurriculars;
 use App\Filament\Resources\Extracurriculars\Schemas\ExtracurricularForm;
 use App\Filament\Resources\Extracurriculars\Tables\ExtracurricularsTable;
+use App\Enums\UserRole;
 use App\Models\Extracurricular;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class ExtracurricularResource extends Resource
     protected static ?int    $navigationSort  = 4;
 
     protected static ?string $recordTitleAttribute = 'nama';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

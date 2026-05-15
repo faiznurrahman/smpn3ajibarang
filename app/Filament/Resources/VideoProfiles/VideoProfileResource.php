@@ -7,6 +7,7 @@ use App\Filament\Resources\VideoProfiles\Pages\EditVideoProfile;
 use App\Filament\Resources\VideoProfiles\Pages\ListVideoProfiles;
 use App\Filament\Resources\VideoProfiles\Schemas\VideoProfileForm;
 use App\Filament\Resources\VideoProfiles\Tables\VideoProfilesTable;
+use App\Enums\UserRole;
 use App\Models\VideoProfile;
 use BackedEnum;
 use Filament\Resources\Resource;
@@ -24,6 +25,11 @@ class VideoProfileResource extends Resource
     protected static ?int    $navigationSort  = 3;
 
     protected static ?string $recordTitleAttribute = 'judul';
+
+    public static function canAccess(): bool
+    {
+        return auth()->user()?->role === UserRole::Admin;
+    }
 
     public static function form(Schema $schema): Schema
     {

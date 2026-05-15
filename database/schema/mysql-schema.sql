@@ -4,6 +4,26 @@
 /*!40014 SET @OLD_FOREIGN_KEY_CHECKS=@@FOREIGN_KEY_CHECKS, FOREIGN_KEY_CHECKS=0 */;
 /*!40101 SET @OLD_SQL_MODE=@@SQL_MODE, SQL_MODE='NO_AUTO_VALUE_ON_ZERO' */;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
+DROP TABLE IF EXISTS `books`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `books` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `kode_buku` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `judul` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pengarang` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `penerbit` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `tahun` smallint unsigned DEFAULT NULL,
+  `kategori` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `stok` int unsigned NOT NULL DEFAULT '1',
+  `cover` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `books_kode_buku_unique` (`kode_buku`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `cache`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -71,6 +91,23 @@ CREATE TABLE `failed_jobs` (
   UNIQUE KEY `failed_jobs_uuid_unique` (`uuid`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `fines`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `fines` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `loan_id` bigint unsigned NOT NULL,
+  `jumlah_hari` int unsigned NOT NULL,
+  `nominal` int unsigned NOT NULL,
+  `status_bayar` enum('belum_lunas','lunas') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'belum_lunas',
+  `tgl_bayar` date DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `fines_loan_id_foreign` (`loan_id`),
+  CONSTRAINT `fines_loan_id_foreign` FOREIGN KEY (`loan_id`) REFERENCES `loans` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `galleries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
@@ -131,6 +168,46 @@ CREATE TABLE `jobs` (
   `created_at` int unsigned NOT NULL,
   PRIMARY KEY (`id`),
   KEY `jobs_queue_index` (`queue`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `loans`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `loans` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `book_id` bigint unsigned NOT NULL,
+  `member_id` bigint unsigned NOT NULL,
+  `tgl_pinjam` date NOT NULL,
+  `tgl_batas_kembali` date NOT NULL,
+  `tgl_kembali` date DEFAULT NULL,
+  `status` enum('dipinjam','dikembalikan','terlambat') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'dipinjam',
+  `petugas_id` bigint unsigned DEFAULT NULL,
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `loans_book_id_foreign` (`book_id`),
+  KEY `loans_member_id_foreign` (`member_id`),
+  KEY `loans_petugas_id_foreign` (`petugas_id`),
+  CONSTRAINT `loans_book_id_foreign` FOREIGN KEY (`book_id`) REFERENCES `books` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `loans_member_id_foreign` FOREIGN KEY (`member_id`) REFERENCES `members` (`id`) ON DELETE CASCADE,
+  CONSTRAINT `loans_petugas_id_foreign` FOREIGN KEY (`petugas_id`) REFERENCES `users` (`id`) ON DELETE SET NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+/*!40101 SET character_set_client = @saved_cs_client */;
+DROP TABLE IF EXISTS `members`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!50503 SET character_set_client = utf8mb4 */;
+CREATE TABLE `members` (
+  `id` bigint unsigned NOT NULL AUTO_INCREMENT,
+  `kode_anggota` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `nama` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kelas` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `jenis` enum('siswa','guru') COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'siswa',
+  `no_hp` varchar(255) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
+  `is_active` tinyint(1) NOT NULL DEFAULT '1',
+  `created_at` timestamp NULL DEFAULT NULL,
+  `updated_at` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `members_kode_anggota_unique` (`kode_anggota`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 DROP TABLE IF EXISTS `messages`;
@@ -310,6 +387,7 @@ CREATE TABLE `users` (
   `id` bigint unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `role` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT 'admin',
   `email_verified_at` timestamp NULL DEFAULT NULL,
   `password` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `remember_token` varchar(100) COLLATE utf8mb4_unicode_ci DEFAULT NULL,
@@ -362,3 +440,8 @@ INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (18,'2026_04_27_052
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (19,'2026_04_27_052339_create_gallery_images_table',12);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (20,'2026_04_27_053423_create_messages_table',13);
 INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (21,'2026_04_27_060955_add_order_to_teachers_table',14);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (22,'2026_05_15_000001_add_role_to_users_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (23,'2026_05_15_000002_create_books_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (24,'2026_05_15_000003_create_members_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (25,'2026_05_15_000004_create_loans_table',15);
+INSERT INTO `migrations` (`id`, `migration`, `batch`) VALUES (26,'2026_05_15_000005_create_fines_table',15);

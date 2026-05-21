@@ -24,6 +24,8 @@ class MessageResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedEnvelope;
     protected static ?int    $navigationSort  = 1;
+    protected static ?string $modelLabel     = 'Pesan';
+    protected static ?string $pluralModelLabel = 'Pesan Masuk';
 
     protected static ?string $recordTitleAttribute = 'nama';
 

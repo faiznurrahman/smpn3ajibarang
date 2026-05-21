@@ -15,6 +15,7 @@ class GalleryForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
 
                 Section::make('Info Album')
@@ -24,17 +25,15 @@ class GalleryForm
                             ->required()
                             ->columnSpanFull(),
 
-                        Grid::make(2)
-                            ->schema([
-                                Textarea::make('deskripsi')
-                                    ->label('Deskripsi')
-                                    ->rows(3),
+                        Textarea::make('deskripsi')
+                            ->label('Deskripsi')
+                            ->rows(3)
+                            ->columnSpanFull(),
 
-                                TextInput::make('order')
-                                    ->label('Urutan Tampil')
-                                    ->numeric()
-                                    ->default(0),
-                            ]),
+                        TextInput::make('order')
+                            ->label('Urutan Tampil')
+                            ->numeric()
+                            ->default(0),
                     ]),
 
                 Section::make('Foto-foto')

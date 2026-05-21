@@ -186,6 +186,7 @@
                             <div class="overflow-hidden h-44">
                                 <img src="{{ Storage::url($post->thumbnail) }}"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                                     loading="lazy"
                                      alt="{{ $post->judul }}"/>
                             </div>
                         @else

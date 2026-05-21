@@ -15,6 +15,7 @@ class ExtracurricularForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
 
                 Section::make('Gambar')
@@ -34,17 +35,15 @@ class ExtracurricularForm
                             ->required()
                             ->columnSpanFull(),
 
-                        Grid::make(2)
-                            ->schema([
-                                Textarea::make('deskripsi')
-                                    ->label('Deskripsi')
-                                    ->rows(4),
+                        Textarea::make('deskripsi')
+                            ->label('Deskripsi')
+                            ->rows(4)
+                            ->columnSpanFull(),
 
-                                TextInput::make('order')
-                                    ->label('Urutan Tampil')
-                                    ->numeric()
-                                    ->default(0),
-                            ]),
+                        TextInput::make('order')
+                            ->label('Urutan Tampil')
+                            ->numeric()
+                            ->default(0),
                     ]),
 
                 Section::make('Pengaturan')

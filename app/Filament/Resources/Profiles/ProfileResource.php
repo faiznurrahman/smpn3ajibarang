@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\Profiles;
 
-use App\Filament\Resources\Profiles\Pages\CreateProfile;
 use App\Filament\Resources\Profiles\Pages\EditProfile;
-use App\Filament\Resources\Profiles\Pages\ListProfiles;
 use App\Filament\Resources\Profiles\Schemas\ProfileForm;
 use App\Filament\Resources\Profiles\Tables\ProfilesTable;
 use App\Enums\UserRole;
@@ -23,6 +21,8 @@ class ProfileResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedIdentification;
     protected static ?int    $navigationSort  = 1;
+    protected static ?string $modelLabel     = 'Profil Sekolah';
+    protected static ?string $pluralModelLabel = 'Profil Sekolah';
 
     protected static ?string $recordTitleAttribute = 'sejarah';
 
@@ -48,12 +48,12 @@ class ProfileResource extends Resource
         ];
     }
 
+    public static function canCreate(): bool { return false; }
+
     public static function getPages(): array
     {
         return [
-            'index' => ListProfiles::route('/'),
-            'create' => CreateProfile::route('/create'),
-            'edit' => EditProfile::route('/{record}/edit'),
+            'index' => EditProfile::route('/'),
         ];
     }
 }

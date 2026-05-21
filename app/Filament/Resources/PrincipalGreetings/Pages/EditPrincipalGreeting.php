@@ -22,9 +22,7 @@ class EditPrincipalGreeting extends EditRecord
 
 public function getBreadcrumbs(): array
 {
-    return [
-        'Sambutan Kepala Sekolah',
-    ];
+    return [];
 }
 
     protected function getHeaderActions(): array

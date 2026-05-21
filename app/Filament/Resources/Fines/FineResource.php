@@ -22,6 +22,8 @@ class FineResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
     protected static ?int    $navigationSort             = 5;
+    protected static ?string $modelLabel                = 'Denda';
+    protected static ?string $pluralModelLabel          = 'Denda Keterlambatan';
 
     public static function canAccess(): bool
     {

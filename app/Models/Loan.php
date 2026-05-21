@@ -10,12 +10,16 @@ class Loan extends Model
     protected $fillable = [
         'book_id', 'member_id', 'tgl_pinjam', 'tgl_batas_kembali',
         'tgl_kembali', 'status', 'petugas_id',
+        'kondisi_kembali', 'jenis_sanksi', 'nominal_sanksi',
+        'status_sanksi', 'tgl_selesai_sanksi', 'catatan_sanksi',
     ];
 
     protected $casts = [
-        'tgl_pinjam'        => 'date',
-        'tgl_batas_kembali' => 'date',
-        'tgl_kembali'       => 'date',
+        'tgl_pinjam'         => 'date',
+        'tgl_batas_kembali'  => 'date',
+        'tgl_kembali'        => 'date',
+        'tgl_selesai_sanksi' => 'date',
+        'nominal_sanksi'     => 'decimal:2',
     ];
 
     public function book()

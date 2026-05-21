@@ -3,17 +3,24 @@
 namespace App\Filament\Resources\ContactInfos\Pages;
 
 use App\Filament\Resources\ContactInfos\ContactInfoResource;
-use Filament\Actions\DeleteAction;
 use Filament\Resources\Pages\EditRecord;
 
 class EditContactInfo extends EditRecord
 {
     protected static string $resource = ContactInfoResource::class;
 
+    public function getTitle(): string
+    {
+        return 'Informasi Kontak';
+    }
+
+    public function getBreadcrumbs(): array
+    {
+        return [];
+    }
+
     protected function getHeaderActions(): array
     {
-        return [
-            DeleteAction::make(),
-        ];
+        return [];
     }
 }

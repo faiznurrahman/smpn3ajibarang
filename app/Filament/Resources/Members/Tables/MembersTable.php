@@ -2,6 +2,7 @@
 
 namespace App\Filament\Resources\Members\Tables;
 
+use App\Models\Member;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
@@ -18,7 +19,7 @@ class MembersTable
         return $table
             ->columns([
                 TextColumn::make('kode_anggota')
-                    ->label('Kode')
+                    ->label('NIS/NIP')
                     ->searchable()
                     ->sortable()
                     ->fontFamily('mono')
@@ -30,13 +31,44 @@ class MembersTable
                     ->sortable()
                     ->weight('semibold')
                     ->grow()
-                    ->description(fn ($record) => $record->kelas ? $record->kelas : ($record->jenis === 'guru' ? 'Guru' : '—')),
+                    ->description(fn ($record) => $record->jenis === 'guru'
+                        ? 'Guru'
+                        : (collect(array_filter([$record->kelas, $record->angkatan_label]))->implode(' · ') ?: '—')),
 
                 TextColumn::make('jenis')
                     ->label('Jenis')
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state === 'guru' ? 'Guru' : 'Siswa')
                     ->color(fn ($state) => $state === 'guru' ? 'warning' : 'primary'),
+
+                TextColumn::make('tingkat')
+                    ->label('Tingkat')
+                    ->badge()
+                    ->getStateUsing(fn ($record) => $record->tingkat ? 'Kelas ' . $record->tingkat : '—'),
+
+                TextColumn::make('kelas')
+                    ->label('Kelas')
+                    ->searchable()
+                    ->sortable()
+                    ->placeholder('—'),
+
+                TextColumn::make('status')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => match ($state) {
+                        'aktif'  => 'Aktif',
+                        'lulus'  => 'Lulus',
+                        'pindah' => 'Pindah',
+                        'keluar' => 'Keluar',
+                        default  => $state,
+                    })
+                    ->color(fn ($state) => match ($state) {
+                        'aktif'  => 'success',
+                        'lulus'  => 'gray',
+                        'pindah' => 'warning',
+                        'keluar' => 'danger',
+                        default  => 'gray',
+                    }),
 
                 TextColumn::make('no_hp')
                     ->label('No. HP')
@@ -52,15 +84,45 @@ class MembersTable
                     ->falseColor('gray'),
             ])
             ->filters([
+                SelectFilter::make('tahun_masuk')
+                    ->label('Angkatan')
+                    ->options(
+                        Member::distinct('tahun_masuk')
+                            ->whereNotNull('tahun_masuk')
+                            ->orderByDesc('tahun_masuk')
+                            ->pluck('tahun_masuk', 'tahun_masuk')
+                            ->map(fn ($y) => 'Angkatan ' . $y)
+                            ->toArray()
+                    ),
+
+                SelectFilter::make('kelas')
+                    ->label('Kelas')
+                    ->options(
+                        Member::distinct('kelas')
+                            ->whereNotNull('kelas')
+                            ->orderBy('kelas')
+                            ->pluck('kelas', 'kelas')
+                            ->toArray()
+                    ),
+
+                SelectFilter::make('status')
+                    ->label('Status')
+                    ->options([
+                        'aktif'  => 'Aktif',
+                        'lulus'  => 'Lulus',
+                        'pindah' => 'Pindah',
+                        'keluar' => 'Keluar',
+                    ]),
+
                 SelectFilter::make('jenis')
-                    ->label('Jenis')
+                    ->label('Jenis Anggota')
                     ->options([
                         'siswa' => 'Siswa',
                         'guru'  => 'Guru',
                     ]),
 
                 TernaryFilter::make('is_active')
-                    ->label('Status')
+                    ->label('Aktif')
                     ->trueLabel('Aktif')
                     ->falseLabel('Nonaktif'),
             ])

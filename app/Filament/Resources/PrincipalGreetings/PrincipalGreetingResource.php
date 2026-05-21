@@ -23,6 +23,8 @@ class PrincipalGreetingResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChatBubbleBottomCenterText;
     protected static ?int    $navigationSort  = 5;
+    protected static ?string $modelLabel     = 'Sambutan';
+    protected static ?string $pluralModelLabel = 'Sambutan Kepala Sekolah';
 
     protected static ?string $recordTitleAttribute = 'nama_kepala_sekolah';
 

@@ -23,7 +23,8 @@
 .ldb-head p  { margin:0; color:var(--t2); font-size:14px; }
 .ldb-badge { display:inline-flex; align-items:center; gap:6px; background:var(--inf-50); color:var(--inf); border-radius:8px; padding:5px 12px; font-size:12px; font-weight:600; }
 
-.ldb-stats { display:grid; grid-template-columns:repeat(4,1fr); gap:16px; margin-bottom:22px; }
+.ldb-stats { display:grid; grid-template-columns:repeat(5,1fr); gap:16px; margin-bottom:22px; }
+@media(max-width:1100px){ .ldb-stats { grid-template-columns:repeat(3,1fr); } }
 @media(max-width:900px){ .ldb-stats { grid-template-columns:repeat(2,1fr); } }
 @media(max-width:560px){ .ldb-stats { grid-template-columns:1fr; } }
 
@@ -127,6 +128,17 @@
         </div>
         <div class="ldb-stat-val">{{ $dendaBelumLunas }}</div>
         <div class="ldb-stat-sub">Rp {{ number_format($totalDenda, 0, ',', '.') }}</div>
+    </div>
+
+    <div class="ldb-stat">
+        <div class="ldb-stat-head">
+            <span class="ldb-stat-lbl">Distribusi Buku Paket Aktif</span>
+            <div class="ldb-stat-ico" style="background:#eef2ff;">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#1e3a8a" stroke-width="1.8"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/><line x1="12" y1="8" x2="12" y2="12"/><polyline points="8 12 12 16 16 12"/></svg>
+            </div>
+        </div>
+        <div class="ldb-stat-val">{{ $bukuPaketAktif }}</div>
+        <div class="ldb-stat-sub">distribusi aktif</div>
     </div>
 </div>
 

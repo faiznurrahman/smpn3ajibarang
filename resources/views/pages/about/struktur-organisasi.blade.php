@@ -27,6 +27,7 @@
                                 <h3 class="font-semibold text-gray-700 text-sm mb-3">{{ $structure->title }}</h3>
                                 <img src="{{ Storage::url($structure->image) }}"
                                      class="w-full rounded-xl border border-gray-100 shadow-sm"
+                                     loading="lazy"
                                      alt="{{ $structure->title }}"/>
                             </div>
                         @empty

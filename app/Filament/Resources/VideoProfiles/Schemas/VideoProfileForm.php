@@ -14,6 +14,7 @@ class VideoProfileForm
     public static function configure(Schema $schema): Schema
     {
         return $schema
+            ->columns(1)
             ->components([
 
                 Section::make('Info Video')
@@ -31,17 +32,15 @@ class VideoProfileForm
                             ->helperText('Paste URL YouTube lengkap')
                             ->columnSpanFull(),
 
-                        Grid::make(2)
-                            ->schema([
-                                Textarea::make('deskripsi')
-                                    ->label('Deskripsi Singkat')
-                                    ->rows(3),
+                        Textarea::make('deskripsi')
+                            ->label('Deskripsi Singkat')
+                            ->rows(3)
+                            ->columnSpanFull(),
 
-                                TextInput::make('order')
-                                    ->label('Urutan Tampil')
-                                    ->numeric()
-                                    ->default(0),
-                            ]),
+                        TextInput::make('order')
+                            ->label('Urutan Tampil')
+                            ->numeric()
+                            ->default(0),
                     ]),
 
                 Section::make('Pengaturan')

@@ -34,6 +34,7 @@
                 @if(!empty($post->thumbnail))
                 <img src="{{ Storage::url($post->thumbnail) }}"
                      alt="{{ $post->judul }}"
+                     loading="lazy"
                      class="w-full max-h-[420px] object-cover"/>
                 @endif
 
@@ -115,7 +116,8 @@
                                class="flex gap-3 group bg-white rounded-xl p-3 border border-gray-100 hover:border-blue-200 hover:shadow-sm transition">
                                 @if(!empty($item->thumbnail))
                                     <img src="{{ Storage::url($item->thumbnail) }}"
-                                         class="w-12 h-10 rounded-lg object-cover flex-shrink-0 group-hover:opacity-80 transition"/>
+                                         class="w-12 h-10 rounded-lg object-cover flex-shrink-0 group-hover:opacity-80 transition"
+                                         loading="lazy"/>
                                 @else
                                     <div class="w-12 h-10 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-newspaper text-blue-200 text-xs"></i>
@@ -199,7 +201,8 @@
                                class="flex gap-3 group bg-white rounded-xl p-3 border border-gray-100 hover:border-emerald-200 hover:shadow-sm transition">
                                 @if(!empty($item->thumbnail))
                                     <img src="{{ Storage::url($item->thumbnail) }}"
-                                         class="w-12 h-10 rounded-lg object-cover flex-shrink-0 group-hover:opacity-80 transition"/>
+                                         class="w-12 h-10 rounded-lg object-cover flex-shrink-0 group-hover:opacity-80 transition"
+                                         loading="lazy"/>
                                 @else
                                     <div class="w-12 h-10 rounded-lg bg-emerald-50 flex items-center justify-center flex-shrink-0">
                                         <i class="fas fa-trophy text-emerald-200 text-xs"></i>

@@ -23,6 +23,8 @@ class LoanResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowRightOnRectangle;
     protected static ?int    $navigationSort             = 3;
+    protected static ?string $modelLabel                = 'Peminjaman';
+    protected static ?string $pluralModelLabel          = 'Peminjaman Buku';
 
     public static function canAccess(): bool
     {

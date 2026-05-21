@@ -8,21 +8,17 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
+use Illuminate\Support\Collection;
 
 class MemberForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->columns(1)->components([
 
             Section::make('Data Anggota')
                 ->schema([
                     Grid::make(2)->schema([
-                        TextInput::make('kode_anggota')
-                            ->label('Kode Anggota')
-                            ->placeholder('Auto-generate jika kosong')
-                            ->unique(ignoreRecord: true),
-
                         Select::make('jenis')
                             ->label('Jenis Anggota')
                             ->options([
@@ -33,15 +29,46 @@ class MemberForm
                             ->required()
                             ->live(),
 
+                        TextInput::make('kode_anggota')
+                            ->label(fn ($get) => $get('jenis') === 'guru' ? 'NIP' : 'NIS')
+                            ->helperText(fn ($get) => $get('jenis') === 'guru' ? 'Nomor Induk Pegawai' : 'Nomor Induk Siswa')
+                            ->required()
+                            ->unique(ignoreRecord: true),
+
                         TextInput::make('nama')
                             ->label('Nama Lengkap')
                             ->required()
                             ->columnSpanFull(),
 
+                        Select::make('tahun_masuk')
+                            ->label('Tahun Masuk (Angkatan)')
+                            ->options(
+                                Collection::times(4, fn ($i) => now()->year - $i + 1)
+                                    ->mapWithKeys(fn ($y) => [$y => 'Angkatan ' . $y])
+                                    ->toArray()
+                            )
+                            ->placeholder('Pilih tahun masuk')
+                            ->hidden(fn ($get) => $get('jenis') !== 'siswa')
+                            ->required(fn ($get) => $get('jenis') === 'siswa')
+                            ->helperText('Tahun pertama siswa masuk sekolah ini'),
+
                         TextInput::make('kelas')
                             ->label('Kelas')
-                            ->placeholder('contoh: 7A, 8B, 9C')
-                            ->visible(fn ($get) => $get('jenis') === 'siswa'),
+                            ->placeholder('Contoh: 7A, 8B, 9C')
+                            ->hidden(fn ($get) => $get('jenis') !== 'siswa')
+                            ->required(fn ($get) => $get('jenis') === 'siswa')
+                            ->maxLength(10),
+
+                        Select::make('status')
+                            ->label('Status Keanggotaan')
+                            ->options([
+                                'aktif'  => 'Aktif',
+                                'lulus'  => 'Lulus',
+                                'pindah' => 'Pindah',
+                                'keluar' => 'Keluar',
+                            ])
+                            ->default('aktif')
+                            ->required(),
 
                         TextInput::make('no_hp')
                             ->label('No. HP / WhatsApp')

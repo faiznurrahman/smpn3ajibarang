@@ -1,0 +1,331 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Wireframe 06 — Dashboard Perpustakaan</title>
+  <link rel="stylesheet" href="wireframe.css">
+</head>
+<body>
+<div class="figure-label">Gambar 3.13 — Wireframe Dashboard Perpustakaan (Petugas / Kepala Sekolah)</div>
+
+<div class="page">
+  <div class="admin-layout">
+
+    <!-- ═══ SIDEBAR PERPUSTAKAAN ═══ -->
+    <div class="ann-wrap">
+      <aside class="sidebar">
+        <div class="sidebar-brand">
+          <div class="sidebar-brand-logo">S3</div>
+          <div>
+            <div class="sidebar-brand-text">SMPN 3 Ajibarang</div>
+            <div class="sidebar-brand-sub">Sistem Perpustakaan</div>
+          </div>
+        </div>
+
+        <nav class="sidebar-nav">
+          <a class="sidebar-item active" href="#">
+            <div class="sidebar-icon"></div>Dasbor
+          </a>
+
+          <div class="sidebar-group-label">Perpustakaan</div>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Data Buku
+          </a>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Data Anggota
+          </a>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Peminjaman Buku
+            <span class="sidebar-badge">5</span>
+          </a>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Pengembalian Buku
+            <span class="sidebar-badge">2</span>
+          </a>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Denda Keterlambatan
+          </a>
+          <a class="sidebar-item" href="#">
+            <div class="sidebar-icon"></div>Laporan Perpustakaan
+          </a>
+        </nav>
+
+        <div class="sidebar-user">
+          <div class="sidebar-avatar"></div>
+          <div>
+            <div class="sidebar-user-name">Petugas Perpustakaan</div>
+            <div class="sidebar-user-role">petugas@smpn3ajibarang.sch.id</div>
+          </div>
+        </div>
+      </aside>
+      <span class="ann" style="top:30%;">Sidebar perpustakaan — menu khusus role Petugas &amp; Kepala Sekolah</span>
+      <span class="ann" style="top:55%;">Badge angka = peminjaman aktif / terlambat</span>
+    </div>
+
+    <!-- ═══ MAIN AREA ═══ -->
+    <div class="admin-main">
+
+      <!-- Topbar -->
+      <div class="topbar">
+        <div class="topbar-breadcrumb">
+          <a href="#" style="color:var(--c5);text-decoration:none;">Admin</a>
+          <span style="margin:0 6px;color:var(--c4);">›</span>
+          <span>Dasbor Perpustakaan</span>
+        </div>
+        <div class="topbar-actions">
+          <div class="topbar-bell">🔔<div class="topbar-bell-dot"></div></div>
+          <div class="topbar-user">
+            <div class="topbar-avatar"></div>
+            <div>
+              <div class="topbar-user-name">Petugas Perpustakaan</div>
+              <div class="topbar-user-role">Petugas</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Content -->
+      <div class="content">
+
+        <!-- Header -->
+        <div class="ann-wrap" style="margin-bottom:20px;">
+          <div style="display:flex; align-items:center; justify-content:space-between;">
+            <div>
+              <div style="display:inline-block; background:var(--c2); border:var(--border); border-radius:20px; padding:3px 12px; font-size:11px; font-weight:700; color:var(--c6); margin-bottom:8px;">
+                📚 Perpustakaan SMP Negeri 3 Ajibarang
+              </div>
+              <div class="content-title">Dasbor Perpustakaan</div>
+              <div class="content-subtitle">Jumat, 16 Mei 2026 · Ringkasan data hari ini</div>
+            </div>
+          </div>
+          <span class="ann" style="top:50%;">Header dashboard — nama perpustakaan &amp; tanggal hari ini</span>
+        </div>
+
+        <!-- 4 STAT CARDS -->
+        <div class="ann-wrap">
+          <div class="stat-grid stat-grid-4">
+
+            <div class="stat-card">
+              <div class="stat-icon"></div>
+              <div>
+                <div class="stat-value">248</div>
+                <div class="stat-label">Total Buku</div>
+                <div class="stat-sub">220 aktif tersedia</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon"></div>
+              <div>
+                <div class="stat-value">156</div>
+                <div class="stat-label">Total Anggota</div>
+                <div class="stat-sub">140 siswa · 16 guru</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon"></div>
+              <div>
+                <div class="stat-value">23</div>
+                <div class="stat-label">Sedang Dipinjam</div>
+                <div class="stat-sub" style="color:#888;">2 buku terlambat</div>
+              </div>
+            </div>
+
+            <div class="stat-card">
+              <div class="stat-icon"></div>
+              <div>
+                <div class="stat-value">5</div>
+                <div class="stat-label">Denda Belum Lunas</div>
+                <div class="stat-sub">Total: Rp 37.000</div>
+              </div>
+            </div>
+
+          </div>
+          <span class="ann" style="top:50%;">Kartu statistik — data dari tabel books, members, loans, fines</span>
+        </div>
+
+        <!-- ROW 2: Peminjaman Aktif + Denda Belum Lunas -->
+        <div class="grid-2">
+
+          <!-- Peminjaman Aktif -->
+          <div class="ann-wrap">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Peminjaman Aktif &amp; Terlambat</div>
+                <a class="btn btn-sm btn-outline" href="#">Lihat Semua</a>
+              </div>
+              <div style="overflow:hidden;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Anggota</th>
+                      <th>Buku</th>
+                      <th>Batas Kembali</th>
+                      <th>Status</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="td-main">Andi Pratama</div>
+                        <div class="td-sub">Kelas 8A · ANK-0042</div>
+                      </td>
+                      <td>
+                        <div class="td-main">Matematika SMP Kelas 8</div>
+                        <div class="td-sub td-mono">BK-0015</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c5);">20 Mei 2026</td>
+                      <td><span class="badge badge-dark">Dipinjam</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Siti Nurhasanah</div>
+                        <div class="td-sub">Kelas 9B · ANK-0071</div>
+                      </td>
+                      <td>
+                        <div class="td-main">Bahasa Indonesia Kelas 9</div>
+                        <div class="td-sub td-mono">BK-0028</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c5);">22 Mei 2026</td>
+                      <td><span class="badge badge-dark">Dipinjam</span></td>
+                    </tr>
+                    <tr style="background:#f0f0f0;">
+                      <td>
+                        <div class="td-main">Budi Hartono</div>
+                        <div class="td-sub">Kelas 7C · ANK-0019</div>
+                      </td>
+                      <td>
+                        <div class="td-main">Ensiklopedi Sains Anak</div>
+                        <div class="td-sub td-mono">BK-0041</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6); font-weight:700;">10 Mei 2026</td>
+                      <td><span class="badge badge-solid">Terlambat</span></td>
+                    </tr>
+                    <tr style="background:#f0f0f0;">
+                      <td>
+                        <div class="td-main">Nur Faizah</div>
+                        <div class="td-sub">Kelas 8B · ANK-0055</div>
+                      </td>
+                      <td>
+                        <div class="td-main">Kisah Nabi &amp; Rasul</div>
+                        <div class="td-sub td-mono">BK-0033</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6); font-weight:700;">12 Mei 2026</td>
+                      <td><span class="badge badge-solid">Terlambat</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Rafi Hidayat</div>
+                        <div class="td-sub">Kelas 9A · ANK-0088</div>
+                      </td>
+                      <td>
+                        <div class="td-main">IPA Terpadu Kelas 9</div>
+                        <div class="td-sub td-mono">BK-0007</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c5);">25 Mei 2026</td>
+                      <td><span class="badge badge-dark">Dipinjam</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Lina Agustina</div>
+                        <div class="td-sub">Guru · GRU-0008</div>
+                      </td>
+                      <td>
+                        <div class="td-main">Manajemen Kelas Efektif</div>
+                        <div class="td-sub td-mono">BK-0062</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c5);">28 Mei 2026</td>
+                      <td><span class="badge badge-dark">Dipinjam</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer">6 dari 23 peminjaman aktif · Baris merah = terlambat</div>
+            </div>
+            <span class="ann" style="top:40%;">Tabel peminjaman aktif — dari tabel loans (status: dipinjam/terlambat), urut tgl_batas_kembali</span>
+          </div>
+
+          <!-- Denda Belum Lunas -->
+          <div class="ann-wrap">
+            <div class="card">
+              <div class="card-header">
+                <div class="card-title">Denda Belum Lunas</div>
+                <a class="btn btn-sm btn-outline" href="#">Kelola Denda</a>
+              </div>
+              <div style="overflow:hidden;">
+                <table class="table">
+                  <thead>
+                    <tr>
+                      <th>Anggota</th>
+                      <th>Buku</th>
+                      <th>Keterlambatan</th>
+                      <th>Nominal</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td>
+                        <div class="td-main">Budi Hartono</div>
+                        <div class="td-sub">ANK-0019</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6);">Ensiklopedi Sains</td>
+                      <td style="font-size:12px;">6 hari</td>
+                      <td><span style="font-weight:700; font-size:12px;">Rp 6.000</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Nur Faizah</div>
+                        <div class="td-sub">ANK-0055</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6);">Kisah Nabi &amp; Rasul</td>
+                      <td style="font-size:12px;">4 hari</td>
+                      <td><span style="font-weight:700; font-size:12px;">Rp 4.000</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Wahyu Setiawan</div>
+                        <div class="td-sub">ANK-0103</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6);">Novel Laskar Pelangi</td>
+                      <td style="font-size:12px;">12 hari</td>
+                      <td><span style="font-weight:700; font-size:12px;">Rp 12.000</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Rina Fitriani</div>
+                        <div class="td-sub">ANK-0067</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6);">Kamus Besar Bahasa Indonesia</td>
+                      <td style="font-size:12px;">5 hari</td>
+                      <td><span style="font-weight:700; font-size:12px;">Rp 5.000</span></td>
+                    </tr>
+                    <tr>
+                      <td>
+                        <div class="td-main">Dian Pratiwi</div>
+                        <div class="td-sub">ANK-0029</div>
+                      </td>
+                      <td style="font-size:12px; color:var(--c6);">Fisika Dasar SMP</td>
+                      <td style="font-size:12px;">10 hari</td>
+                      <td><span style="font-weight:700; font-size:12px;">Rp 10.000</span></td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <div class="card-footer" style="display:flex; justify-content:space-between; align-items:center;">
+                <span>5 denda belum lunas</span>
+                <span style="font-weight:700; color:var(--c7);">Total: Rp 37.000</span>
+              </div>
+            </div>
+            <span class="ann" style="top:40%;">Daftar denda belum lunas — dari tabel fines (status_bayar: belum_lunas)</span>
+          </div>
+
+        </div>
+
+      </div><!-- /content -->
+    </div><!-- /admin-main -->
+
+  </div><!-- /admin-layout -->
+</div><!-- /page -->
+</body>
+</html>

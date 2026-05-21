@@ -1,0 +1,326 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+  <meta charset="UTF-8">
+  <title>Wireframe 02 — Beranda</title>
+  <link rel="stylesheet" href="wireframe.css">
+  <style>
+    .kepsek-section { background: var(--c0); }
+    .kepsek-inner { display: grid; grid-template-columns: 1fr 300px; gap: 40px; align-items: center; padding: 52px 80px; }
+    .video-section { background: var(--c2); padding: 52px 80px; }
+    .contact-section { background: var(--c7); padding: 52px 80px; }
+    .contact-section .section-title { color: var(--c0); }
+    .contact-section .section-line { background: var(--c4); }
+    .contact-inner { display: grid; grid-template-columns: 1fr 1fr; gap: 40px; margin-top: 28px; }
+    .contact-info-box { background: var(--c8); border-radius: 8px; padding: 24px; }
+    .ci-row { display: flex; gap: 10px; padding: 8px 0; border-bottom: 1px solid #2d2d2d; font-size: 12px; color: var(--c4); }
+    .ci-row:last-child { border-bottom: none; }
+    .ci-icon { width: 16px; height: 16px; background: var(--c5); border-radius: 2px; flex-shrink: 0; margin-top: 2px; }
+    .contact-form-box { background: var(--c0); border-radius: 8px; padding: 24px; }
+  </style>
+</head>
+<body>
+<div class="figure-label">Gambar 3.9 — Wireframe Halaman Beranda</div>
+
+<div class="page public-page">
+
+  <!-- NAVBAR -->
+  <div class="ann-wrap">
+    <nav class="navbar">
+      <div class="navbar-brand">
+        <div class="navbar-logo"></div>
+        <div>
+          <div class="navbar-title">SMP Negeri 3 Ajibarang</div>
+          <div class="navbar-sub">Jl. Raya Ajibarang Timur No. 53</div>
+        </div>
+      </div>
+      <ul class="navbar-nav">
+        <li class="active"><a href="#">Beranda</a></li>
+        <li class="nav-has-dropdown">
+          <a href="#">Tentang Kami ▾</a>
+          <ul class="nav-dropdown">
+            <li><a href="#">Sejarah Sekolah</a></li>
+            <li><a href="#">Visi &amp; Misi</a></li>
+            <li><a href="#">Struktur Organisasi</a></li>
+            <li><a href="#">Guru &amp; Tenaga Pendidik</a></li>
+            <li><a href="#">Ekstrakurikuler</a></li>
+          </ul>
+        </li>
+        <li><a href="#">Informasi</a></li>
+        <li><a href="#">Galeri</a></li>
+        <li><a href="#">Kontak</a></li>
+      </ul>
+    </nav>
+    <span class="ann" style="top:50%;">Navigasi utama — sticky saat scroll</span>
+  </div>
+
+  <div class="public-main">
+
+    <!-- HERO SECTION -->
+    <div class="ann-wrap" style="position:relative;">
+      <div class="hero">
+        <div class="img-ph" style="height:100%;"></div>
+        <div class="hero-overlay">
+          <div class="hero-title">Selamat Datang di<br>SMP Negeri 3 Ajibarang</div>
+          <div class="hero-sub">Berprestasi, Berkarakter, dan Berwawasan Global</div>
+          <a class="hero-cta" href="#">Pelajari Lebih Lanjut</a>
+        </div>
+      </div>
+      <span class="ann" style="top:30%;">Hero image — gambar gedung/kegiatan sekolah</span>
+      <span class="ann" style="top:55%;">Overlay teks judul &amp; tagline sekolah</span>
+      <span class="ann" style="top:78%;">Tombol CTA ke halaman Tentang Kami</span>
+    </div>
+
+    <!-- STATS BAR -->
+    <div class="ann-wrap">
+      <div class="stats-bar">
+        <div class="stats-bar-item">
+          <div class="stats-value">612</div>
+          <div class="stats-label">Siswa Aktif</div>
+        </div>
+        <div class="stats-bar-item">
+          <div class="stats-value">42</div>
+          <div class="stats-label">Guru &amp; Tenaga Pendidik</div>
+        </div>
+        <div class="stats-bar-item">
+          <div class="stats-value">28</div>
+          <div class="stats-label">Prestasi Sekolah</div>
+        </div>
+        <div class="stats-bar-item">
+          <div class="stats-value">1985</div>
+          <div class="stats-label">Tahun Berdiri</div>
+        </div>
+      </div>
+      <span class="ann" style="top:50%;">Statistik sekolah — data dari tabel settings &amp; teachers</span>
+    </div>
+
+    <!-- SAMBUTAN KEPALA SEKOLAH -->
+    <div class="kepsek-section">
+      <div class="kepsek-inner">
+        <div>
+          <div class="section-title">Sambutan Kepala Sekolah</div>
+          <div class="section-line"></div>
+          <p class="text-sm text-muted" style="line-height:1.8; margin-bottom:12px;">
+            Selamat datang di website resmi SMP Negeri 3 Ajibarang. Kami berkomitmen
+            untuk memberikan pendidikan terbaik bagi seluruh peserta didik agar mampu
+            bersaing di era global dengan tetap menjunjung tinggi nilai-nilai luhur bangsa.
+          </p>
+          <p class="text-sm text-muted" style="line-height:1.8; margin-bottom:16px;">
+            Bersama seluruh civitas akademika, kami terus berinovasi dalam pembelajaran
+            demi mewujudkan visi sekolah yang berkarakter dan berprestasi.
+          </p>
+          <div style="font-size:12px; font-weight:700; color:var(--c7);">Suhriyanto, S.Pd., M.Pd.</div>
+          <div class="text-xs text-muted">Kepala SMP Negeri 3 Ajibarang</div>
+        </div>
+        <div class="ann-wrap">
+          <div>
+            <div class="img-ph" style="height:260px; border-radius:8px;"></div>
+            <div style="text-align:center; margin-top:8px; font-size:11px; color:var(--c5);">
+              Foto Kepala Sekolah
+            </div>
+          </div>
+          <span class="ann" style="top:40%;">Foto kepala sekolah dari tabel principal_greetings</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- VIDEO PROFIL -->
+    <div class="video-section">
+      <div style="text-align:center;">
+        <div class="section-title">Video Profil Sekolah</div>
+        <div style="width:40px;height:3px;background:var(--c5);margin:10px auto 24px;"></div>
+        <div class="ann-wrap" style="display:inline-block; width:100%;">
+          <div class="img-ph" style="height:360px; border-radius:8px; max-width:700px; margin:0 auto;">
+            <div style="position:relative; z-index:1; background:rgba(0,0,0,0.3); border-radius:50%; width:64px;height:64px;display:flex;align-items:center;justify-content:center;">
+              <span style="font-size:24px; color:white;">▶</span>
+            </div>
+          </div>
+          <span class="ann" style="top:50%; left:calc(350px + 14px);">Embed video profil sekolah dari tabel video_profiles</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- GURU KAMI -->
+    <div style="background:var(--c0); padding:52px 80px;">
+      <div class="ann-wrap">
+        <div class="section-title">Guru &amp; Tenaga Pendidik</div>
+        <div class="section-line"></div>
+        <span class="ann" style="top:0;">Data dari tabel teachers — relasi ke profil sekolah</span>
+      </div>
+      <div class="grid-5" style="margin-top:0;">
+        <div class="ann-wrap">
+          <div class="person-card">
+            <div class="img-ph person-photo"></div>
+            <div class="person-body">
+              <div class="person-name">Drs. Ahmad Fauzi</div>
+              <div class="person-role">Matematika</div>
+            </div>
+          </div>
+          <span class="ann" style="top:50%;">Kartu guru — foto, nama, mata pelajaran</span>
+        </div>
+        <div class="person-card">
+          <div class="img-ph person-photo"></div>
+          <div class="person-body">
+            <div class="person-name">Siti Rahayu, S.Pd.</div>
+            <div class="person-role">Bahasa Indonesia</div>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="img-ph person-photo"></div>
+          <div class="person-body">
+            <div class="person-name">Budi Santoso, S.T.</div>
+            <div class="person-role">IPA</div>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="img-ph person-photo"></div>
+          <div class="person-body">
+            <div class="person-name">Dewi Lestari, M.Pd.</div>
+            <div class="person-role">Bahasa Inggris</div>
+          </div>
+        </div>
+        <div class="person-card">
+          <div class="img-ph person-photo"></div>
+          <div class="person-body">
+            <div class="person-name">Hendra Wijaya</div>
+            <div class="person-role">Pendidikan Jasmani</div>
+          </div>
+        </div>
+      </div>
+      <div style="text-align:center; margin-top:24px;">
+        <a class="btn btn-outline">Lihat Semua Guru</a>
+      </div>
+    </div>
+
+    <!-- BERITA TERBARU -->
+    <div style="background:var(--c1); padding:52px 80px;">
+      <div class="flex-between mb-20">
+        <div>
+          <div class="section-title">Berita &amp; Pengumuman Terbaru</div>
+          <div class="section-line"></div>
+        </div>
+        <a class="btn btn-outline btn-sm">Lihat Semua</a>
+      </div>
+      <div class="grid-3">
+        <div class="ann-wrap">
+          <div class="post-card">
+            <div class="img-ph post-thumb"></div>
+            <div class="post-body">
+              <span class="post-tag">Berita</span>
+              <div class="post-title">Pekan Olahraga &amp; Seni Tahunan SMP N 3 Ajibarang Resmi Dibuka</div>
+              <div class="post-date">12 Mei 2026</div>
+            </div>
+          </div>
+          <span class="ann" style="top:50%;">Kartu post — dari tabel posts (type: berita)</span>
+        </div>
+        <div class="post-card">
+          <div class="img-ph post-thumb"></div>
+          <div class="post-body">
+            <span class="post-tag">Pengumuman</span>
+            <div class="post-title">Jadwal Ujian Akhir Semester Genap Tahun Pelajaran 2025/2026</div>
+            <div class="post-date">08 Mei 2026</div>
+          </div>
+        </div>
+        <div class="post-card">
+          <div class="img-ph post-thumb"></div>
+          <div class="post-body">
+            <span class="post-tag">Berita</span>
+            <div class="post-title">Siswa Berprestasi Raih Juara 1 Olimpiade Matematika Tingkat Kabupaten</div>
+            <div class="post-date">03 Mei 2026</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- GALERI PREVIEW -->
+    <div style="background:var(--c0); padding:52px 80px;">
+      <div class="flex-between mb-20">
+        <div>
+          <div class="section-title">Galeri Foto Kegiatan</div>
+          <div class="section-line"></div>
+        </div>
+        <a class="btn btn-outline btn-sm">Lihat Galeri</a>
+      </div>
+      <div class="ann-wrap">
+        <div class="grid-4">
+          <div class="img-ph" style="height:160px; border-radius:6px;"></div>
+          <div class="img-ph" style="height:160px; border-radius:6px;"></div>
+          <div class="img-ph" style="height:160px; border-radius:6px;"></div>
+          <div class="img-ph" style="height:160px; border-radius:6px;"></div>
+        </div>
+        <span class="ann" style="top:50%;">Thumbnail galeri — dari tabel galleries &amp; gallery_images</span>
+      </div>
+    </div>
+
+    <!-- KONTAK -->
+    <div class="contact-section">
+      <div class="section-title">Hubungi Kami</div>
+      <div class="section-line"></div>
+      <div class="contact-inner">
+        <div>
+          <div class="ann-wrap">
+            <div class="contact-info-box">
+              <div class="ci-row"><div class="ci-icon"></div><span>Jl. Raya Ajibarang Timur No. 53, Ajibarang, Banyumas</span></div>
+              <div class="ci-row"><div class="ci-icon"></div><span>(0281) 572xxx</span></div>
+              <div class="ci-row"><div class="ci-icon"></div><span>info@smpn3ajibarang.sch.id</span></div>
+              <div class="ci-row"><div class="ci-icon"></div><span>www.smpn3ajibarang.sch.id</span></div>
+            </div>
+            <span class="ann" style="top:50%;">Info kontak dari tabel contact_infos</span>
+          </div>
+          <div class="img-ph" style="height:200px; border-radius:6px; margin-top:16px;"></div>
+        </div>
+        <div class="ann-wrap">
+          <div class="contact-form-box">
+            <div style="font-size:14px; font-weight:700; color:var(--c8); margin-bottom:16px;">Kirim Pesan</div>
+            <div class="form-grid" style="gap:12px;">
+              <div class="form-group"><label class="form-label">Nama Lengkap</label><input class="form-input" placeholder="Nama Anda" readonly></div>
+              <div class="form-group"><label class="form-label">Email</label><input class="form-input" placeholder="email@contoh.com" readonly></div>
+              <div class="form-group"><label class="form-label">Subjek</label><input class="form-input" placeholder="Perihal pesan" readonly></div>
+              <div class="form-group"><label class="form-label">Pesan</label><textarea class="form-textarea" placeholder="Tulis pesan Anda di sini..." readonly></textarea></div>
+              <button class="btn btn-primary">Kirim Pesan</button>
+            </div>
+          </div>
+          <span class="ann" style="top:50%;">Form pesan — simpan ke tabel messages</span>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /public-main -->
+
+  <!-- FOOTER -->
+  <div class="ann-wrap">
+    <footer class="footer">
+      <div class="footer-grid">
+        <div class="footer-col">
+          <div class="footer-brand">
+            <div class="footer-logo"></div>
+            <div><div class="footer-title">SMP Negeri 3 Ajibarang</div><div style="font-size:10px;color:var(--c5);">Banyumas, Jawa Tengah</div></div>
+          </div>
+          <p>Sekolah Menengah Pertama Negeri yang berkomitmen melahirkan generasi cerdas, berkarakter, dan berdaya saing tinggi.</p>
+        </div>
+        <div class="footer-col">
+          <h4>Tautan Cepat</h4>
+          <ul><li>Beranda</li><li>Tentang Kami</li><li>Informasi</li><li>Galeri</li><li>Kontak</li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Tentang Kami</h4>
+          <ul><li>Sejarah Sekolah</li><li>Visi &amp; Misi</li><li>Struktur Organisasi</li><li>Guru &amp; Staf</li><li>Ekstrakurikuler</li></ul>
+        </div>
+        <div class="footer-col">
+          <h4>Kontak</h4>
+          <ul>
+            <li>Jl. Raya Ajibarang Timur No. 53</li>
+            <li>Ajibarang, Banyumas</li>
+            <li>(0281) 572xxx</li>
+            <li>info@smpn3ajibarang.sch.id</li>
+          </ul>
+        </div>
+      </div>
+      <div class="footer-bottom">© 2026 SMP Negeri 3 Ajibarang. Hak cipta dilindungi.</div>
+    </footer>
+    <span class="ann" style="top:50%;">Footer — logo, navigasi, kontak, copyright</span>
+  </div>
+
+</div><!-- /page -->
+</body>
+</html>

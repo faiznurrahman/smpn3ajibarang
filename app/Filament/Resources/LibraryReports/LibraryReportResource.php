@@ -20,6 +20,8 @@ class LibraryReportResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
     protected static ?int    $navigationSort             = 6;
+    protected static ?string $modelLabel                = 'Laporan';
+    protected static ?string $pluralModelLabel          = 'Laporan Perpustakaan';
 
     public static function canAccess(): bool
     {

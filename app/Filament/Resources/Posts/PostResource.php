@@ -23,6 +23,8 @@ class PostResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedNewspaper;
     protected static ?int    $navigationSort       = 1;
+    protected static ?string $modelLabel          = 'Berita';
+    protected static ?string $pluralModelLabel    = 'Berita & Pengumuman';
 
     protected static ?string $recordTitleAttribute = 'judul';
 

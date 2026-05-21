@@ -291,15 +291,23 @@ html  { color-scheme: light !important; }
     margin: 0 !important;
 }
 
-/* Prevent horizontal scroll (Filament sets overflow-x:auto by default) */
+/* Horizontal scroll — aktif, scrollbar tipis dan clean */
 .fi-ta-content-ctn {
-    overflow-x: hidden !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
 }
+.fi-ta-content-ctn::-webkit-scrollbar { height: 5px !important; }
+.fi-ta-content-ctn::-webkit-scrollbar-track { background: transparent !important; }
+.fi-ta-content-ctn::-webkit-scrollbar-thumb {
+    background: #d4dae6 !important;
+    border-radius: 999px !important;
+}
+.fi-ta-content-ctn::-webkit-scrollbar-thumb:hover { background: #b0b8ca !important; }
 
-/* Table fills container, no artificial min-width */
+/* Tabel minimal 600px — scroll kalau lebih sempit dari container */
 .fi-ta-table {
     width: 100% !important;
-    min-width: 0 !important;
+    min-width: 600px !important;
     table-layout: auto !important;
 }
 
@@ -345,6 +353,9 @@ html  { color-scheme: light !important; }
     font-size: 13.5px !important;
     color: #111827 !important;
     vertical-align: middle !important;
+    max-width: 280px !important;
+    overflow-wrap: break-word !important;
+    word-break: break-word !important;
 }
 /* Last row: no bottom border */
 .fi-ta-row:last-child .fi-ta-cell {
@@ -599,5 +610,94 @@ html  { color-scheme: light !important; }
     font-weight: 600 !important;
     padding: 3px 9px !important;
     border-radius: 999px !important;
+}
+
+/* ============================================================
+   Empty state — cleaner, branded
+   ============================================================ */
+.fi-ta-empty-state {
+    padding: 56px 24px !important;
+    text-align: center !important;
+}
+.fi-ta-empty-state-content {
+    display: flex !important;
+    flex-direction: column !important;
+    align-items: center !important;
+    gap: 12px !important;
+}
+.fi-ta-empty-state-icon-bg {
+    width: 64px !important;
+    height: 64px !important;
+    border-radius: 16px !important;
+    background: #eef2ff !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    margin-bottom: 4px !important;
+}
+.fi-ta-empty-state-icon-bg svg {
+    width: 28px !important;
+    height: 28px !important;
+    color: #1e3a8a !important;
+}
+.fi-ta-empty-state-heading {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #111827 !important;
+    margin: 0 !important;
+}
+.fi-ta-empty-state-description {
+    font-size: 13px !important;
+    color: #9ca3af !important;
+    margin: 0 !important;
+    max-width: 320px !important;
+}
+.fi-ta-empty-state > .fi-btn,
+.fi-ta-empty-state-content > .fi-btn,
+.fi-ta-empty-state .fi-btn-color-primary {
+    margin-top: 4px !important;
+}
+
+/* ============================================================
+   Notification toasts — consistent with design
+   ============================================================ */
+.fi-no-notification {
+    border-radius: 10px !important;
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12) !important;
+    border: 1px solid #e5e7eb !important;
+}
+
+/* ============================================================
+   Modal — consistent border-radius and header
+   ============================================================ */
+.fi-modal-window {
+    border-radius: 14px !important;
+    overflow: hidden !important;
+}
+.fi-modal-header {
+    border-bottom: 1px solid #e5e7eb !important;
+    padding: 16px 20px !important;
+}
+.fi-modal-heading {
+    font-size: 16px !important;
+    font-weight: 700 !important;
+    color: #0f172a !important;
+}
+.fi-modal-content {
+    padding: 20px !important;
+}
+.fi-modal-footer {
+    border-top: 1px solid #e5e7eb !important;
+    padding: 12px 20px !important;
+    background: #f9fafb !important;
+}
+
+/* ============================================================
+   Topbar breadcrumb / page title area
+   ============================================================ */
+.fi-page-header-actions {
+    display: flex !important;
+    align-items: center !important;
+    gap: 8px !important;
 }
 

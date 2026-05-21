@@ -31,6 +31,7 @@
                                         @if(!empty($teacher->foto))
                                             <img src="{{ Storage::url($teacher->foto) }}"
                                                  class="w-16 h-16 rounded-full object-cover mx-auto border-4 border-blue-100"
+                                                 loading="lazy"
                                                  alt="{{ $teacher->nama }}"/>
                                         @else
                                             <div class="w-16 h-16 rounded-full mx-auto border-4 border-blue-100 bg-blue-50 flex items-center justify-center">
@@ -61,6 +62,7 @@
                                             @if(!empty($teacher->foto))
                                                 <img src="{{ Storage::url($teacher->foto) }}"
                                                      class="w-16 h-16 rounded-full object-cover mx-auto border-4 border-green-100"
+                                                     loading="lazy"
                                                      alt="{{ $teacher->nama }}"/>
                                             @else
                                                 <div class="w-16 h-16 rounded-full mx-auto border-4 border-green-100 bg-green-50 flex items-center justify-center">

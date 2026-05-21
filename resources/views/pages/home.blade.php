@@ -93,6 +93,7 @@
                     @if(!empty($greeting->foto))
                         <img src="{{ Storage::url($greeting->foto) }}"
                              alt="Kepala Sekolah"
+                             loading="lazy"
                              class="relative w-64 h-72 md:w-72 md:h-80 object-cover rounded-3xl shadow-2xl border-4 border-white"/>
                     @else
                         <div class="relative w-64 h-72 md:w-72 md:h-80 rounded-3xl shadow-2xl border-4 border-white bg-blue-50 flex items-center justify-center">
@@ -223,6 +224,7 @@
                             <img src="{{ Storage::url($teacher->foto) }}"
                                  class="w-18 h-18 rounded-full object-cover mx-auto border-4 border-white shadow-md"
                                  style="width:72px;height:72px;"
+                                 loading="lazy"
                                  alt="{{ $teacher->nama }}"/>
                         @else
                             <div class="w-18 h-18 rounded-full mx-auto border-4 border-white shadow-md bg-blue-50 flex items-center justify-center"
@@ -295,6 +297,7 @@
                         @if(!empty($post->thumbnail))
                             <img src="{{ Storage::url($post->thumbnail) }}"
                                  class="w-20 h-16 rounded-xl object-cover flex-shrink-0 group-hover:opacity-90 transition"
+                                 loading="lazy"
                                  alt="{{ $post->judul }}"/>
                         @else
                             <div class="w-20 h-16 rounded-xl flex-shrink-0 bg-gray-50 border border-gray-100 flex items-center justify-center">
@@ -424,6 +427,7 @@
                     <div class="h-36 overflow-hidden">
                         <img src="{{ Storage::url($item->thumbnail) }}"
                              class="w-full h-full object-cover group-hover:scale-105 transition duration-500"
+                             loading="lazy"
                              alt="{{ $item->judul }}"/>
                     </div>
                 @else

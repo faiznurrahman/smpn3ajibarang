@@ -1,0 +1,89 @@
+@startuml usecase-publik
+title Use Case Diagram — Website Profil SMPN 3 Ajibarang (Frontend Publik)
+
+left to right direction
+
+skinparam packageStyle rectangle
+skinparam DefaultFontName Arial
+skinparam TitleFontSize 16
+skinparam usecase {
+  BackgroundColor #EEF2FF
+  BorderColor     #1E3A8A
+  FontColor       #1E3A8A
+  FontSize        13
+}
+skinparam actor {
+  BackgroundColor #FFF7ED
+  BorderColor     #EF7C2A
+  FontColor       #92400E
+  FontSize        13
+}
+skinparam note {
+  BackgroundColor #FFFBEB
+  BorderColor     #FCD34D
+  FontSize        11
+}
+skinparam package {
+  BackgroundColor #F9FAFB
+  BorderColor     #9CA3AF
+}
+
+actor "Masyarakat\nUmum" as Guest
+
+rectangle "Website Profil SMPN 3 Ajibarang" #FAFAFA {
+
+  package "Beranda" {
+    usecase "Lihat Beranda Sekolah" as UC_Home
+  }
+
+  package "Tentang Kami" {
+    usecase "Lihat Sejarah Sekolah"          as UC_Sejarah
+    usecase "Lihat Visi & Misi"              as UC_VisiMisi
+    usecase "Lihat Struktur Organisasi"      as UC_Struktur
+    usecase "Lihat Guru & Tenaga Pendidik"   as UC_Pengajar
+    usecase "Lihat Ekstrakurikuler"          as UC_Ekskul
+  }
+
+  package "Berita & Informasi" {
+    usecase "Lihat Daftar Berita\n& Pengumuman" as UC_InfoList
+    usecase "Lihat Detail Berita\n/ Pengumuman" as UC_InfoDetail
+  }
+
+  package "Galeri" {
+    usecase "Lihat Galeri Foto Kegiatan" as UC_Gallery
+  }
+
+  package "Kontak" {
+    usecase "Lihat Informasi Kontak Sekolah" as UC_Contact
+    usecase "Kirim Pesan / Pertanyaan"       as UC_SendMsg
+  }
+
+}
+
+Guest --> UC_Home
+Guest --> UC_Sejarah
+Guest --> UC_VisiMisi
+Guest --> UC_Struktur
+Guest --> UC_Pengajar
+Guest --> UC_Ekskul
+Guest --> UC_InfoList
+Guest --> UC_InfoDetail
+Guest --> UC_Gallery
+Guest --> UC_Contact
+Guest --> UC_SendMsg
+
+UC_InfoDetail .up.> UC_InfoList : <<extend>>
+
+note right of UC_SendMsg
+  Pesan tersimpan di tabel messages
+  dan dapat dibaca oleh Admin
+  melalui panel /admin
+end note
+
+note right of UC_InfoDetail
+  Diakses via slug unik
+  tiap berita/pengumuman
+  (GET /informasi/{slug})
+end note
+
+@enduml

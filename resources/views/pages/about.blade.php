@@ -98,6 +98,7 @@
                         @if(!empty($structure->image))
                             <img src="{{ Storage::url($structure->image) }}"
                                  alt="{{ $structure->title }}"
+                                 loading="lazy"
                                  class="w-full h-36 object-cover"/>
                         @else
                             <div class="w-full h-36 bg-blue-50 flex items-center justify-center">
@@ -141,6 +142,7 @@
                             <div class="flex justify-center mb-3">
                                 <img src="{{ Storage::url($teacher->foto) }}"
                                      class="w-16 h-16 rounded-full object-cover border-4 border-blue-100"
+                                     loading="lazy"
                                      alt="{{ $teacher->nama }}"/>
                             </div>
                         @else
@@ -176,6 +178,7 @@
                         @if(!empty($ekskul->gambar))
                             <img src="{{ Storage::url($ekskul->gambar) }}"
                                  class="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                                 loading="lazy"
                                  alt="{{ $ekskul->nama }}"/>
                         @else
                             <div class="w-16 h-16 rounded-xl bg-blue-50 flex items-center justify-center flex-shrink-0">
@@ -276,6 +279,7 @@
                         @if(!empty($post->thumbnail))
                             <img src="{{ Storage::url($post->thumbnail) }}"
                                  class="w-14 h-12 rounded-lg object-cover flex-shrink-0"
+                                 loading="lazy"
                                  alt="{{ $post->judul }}"/>
                         @else
                             <div class="w-14 h-12 rounded-lg bg-blue-50 flex items-center justify-center flex-shrink-0">

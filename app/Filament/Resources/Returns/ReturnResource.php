@@ -21,6 +21,8 @@ class ReturnResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedArrowLeftOnRectangle;
     protected static ?int    $navigationSort             = 4;
+    protected static ?string $modelLabel                = 'Pengembalian';
+    protected static ?string $pluralModelLabel          = 'Pengembalian Buku';
 
     public static function canAccess(): bool
     {
@@ -45,7 +47,9 @@ class ReturnResource extends Resource
 
     public static function getEloquentQuery(): Builder
     {
-        return parent::getEloquentQuery()->whereIn('status', ['dipinjam', 'terlambat']);
+        return parent::getEloquentQuery()
+            ->whereIn('status', ['dipinjam', 'terlambat'])
+            ->whereNull('tgl_kembali');
     }
 
     public static function table(Table $table): Table

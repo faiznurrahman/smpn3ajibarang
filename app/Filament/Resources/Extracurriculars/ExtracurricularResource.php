@@ -23,6 +23,8 @@ class ExtracurricularResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedTrophy;
     protected static ?int    $navigationSort  = 4;
+    protected static ?string $modelLabel     = 'Ekstrakurikuler';
+    protected static ?string $pluralModelLabel = 'Ekstrakurikuler';
 
     protected static ?string $recordTitleAttribute = 'nama';
 

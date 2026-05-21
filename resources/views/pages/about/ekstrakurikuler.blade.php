@@ -33,6 +33,7 @@
                                     @if(!empty($ekstra->gambar))
                                         <img src="{{ Storage::url($ekstra->gambar) }}"
                                              class="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                                             loading="lazy"
                                              alt="{{ $ekstra->nama }}"/>
                                     @else
                                         <div class="w-16 h-16 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">

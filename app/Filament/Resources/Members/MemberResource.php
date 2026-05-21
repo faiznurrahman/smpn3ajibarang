@@ -23,6 +23,8 @@ class MemberResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
     protected static ?int    $navigationSort             = 2;
+    protected static ?string $modelLabel                = 'Anggota';
+    protected static ?string $pluralModelLabel          = 'Data Anggota';
 
     protected static ?string $recordTitleAttribute = 'nama';
 

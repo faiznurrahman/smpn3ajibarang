@@ -34,6 +34,7 @@
                             <div class="relative h-52 overflow-hidden bg-gray-100">
                                 <img src="{{ Storage::url($cover->gambar) }}"
                                      alt="{{ $gallery->judul }}"
+                                     loading="lazy"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
                                 {{-- Overlay jumlah foto --}}
                                 <div class="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
@@ -61,6 +62,7 @@
                                         <div class="flex-1 h-12 rounded-lg overflow-hidden bg-gray-100">
                                             <img src="{{ Storage::url($img->gambar) }}"
                                                  class="w-full h-full object-cover"
+                                                 loading="lazy"
                                                  alt=""/>
                                         </div>
                                     @endforeach

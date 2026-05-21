@@ -14,30 +14,20 @@ class BookForm
 {
     public static function configure(Schema $schema): Schema
     {
-        return $schema->components([
+        return $schema->columns(1)->components([
 
-            Section::make('Sampul Buku')
-                ->schema([
-                    FileUpload::make('cover')
-                        ->label('Sampul')
-                        ->image()
-                        ->directory('buku')
-                        ->imageEditor()
-                        ->columnSpanFull(),
-                ]),
-
-            Section::make('Identitas Buku')
+            Section::make('Informasi Buku')
                 ->schema([
                     Grid::make(2)->schema([
                         TextInput::make('kode_buku')
                             ->label('Kode Buku')
-                            ->placeholder('Auto-generate jika kosong')
-                            ->unique(ignoreRecord: true),
+                            ->placeholder('Auto-generate')
+                            ->disabled()
+                            ->dehydrated(false),
 
                         TextInput::make('judul')
                             ->label('Judul Buku')
-                            ->required()
-                            ->columnSpanFull(),
+                            ->required(),
 
                         TextInput::make('pengarang')
                             ->label('Pengarang')
@@ -55,33 +45,53 @@ class BookForm
                         Select::make('kategori')
                             ->label('Kategori')
                             ->options([
-                                'Fiksi'           => 'Fiksi',
-                                'Non-Fiksi'       => 'Non-Fiksi',
-                                'Pelajaran'       => 'Pelajaran',
-                                'Referensi'       => 'Referensi',
-                                'Ensiklopedi'     => 'Ensiklopedi',
-                                'Biografi'        => 'Biografi',
+                                'Fiksi'             => 'Fiksi',
+                                'Non-Fiksi'         => 'Non-Fiksi',
+                                'Pelajaran'         => 'Pelajaran',
+                                'Referensi'         => 'Referensi',
+                                'Ensiklopedi'       => 'Ensiklopedi',
+                                'Biografi'          => 'Biografi',
                                 'Sains & Teknologi' => 'Sains & Teknologi',
-                                'Sosial & Budaya' => 'Sosial & Budaya',
-                                'Agama'           => 'Agama',
-                                'Lainnya'         => 'Lainnya',
+                                'Sosial & Budaya'   => 'Sosial & Budaya',
+                                'Agama'             => 'Agama',
+                                'Lainnya'           => 'Lainnya',
                             ])
                             ->searchable(),
+                    ]),
+                ]),
 
+            Section::make('Stok & Ketersediaan')
+                ->schema([
+                    Grid::make(2)->schema([
                         TextInput::make('stok')
                             ->label('Jumlah Stok')
                             ->numeric()
                             ->minValue(0)
                             ->default(1)
                             ->required(),
+
+                        TextInput::make('stok_tersedia')
+                            ->label('Stok Tersedia')
+                            ->disabled()
+                            ->dehydrated(false)
+                            ->placeholder('Dihitung otomatis')
+                            ->hint('Stok dikurangi jumlah pinjaman aktif'),
                     ]),
                 ]),
 
-            Section::make('Pengaturan')
+            Section::make('Sampul & Status')
                 ->schema([
-                    Toggle::make('is_active')
-                        ->label('Aktif — buku dapat dipinjam')
-                        ->default(true),
+                    Grid::make(2)->schema([
+                        FileUpload::make('cover')
+                            ->label('Sampul Buku')
+                            ->image()
+                            ->directory('buku')
+                            ->imageEditor(),
+
+                        Toggle::make('is_active')
+                            ->label('Aktif — buku dapat dipinjam')
+                            ->default(true),
+                    ]),
                 ]),
 
         ]);

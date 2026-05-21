@@ -12,6 +12,7 @@ use App\Models\Message;
 use App\Models\Post;
 use App\Models\Setting;
 use App\Models\Teacher;
+use App\Models\TextbookLoan;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
@@ -34,11 +35,12 @@ class Dashboard extends BaseDashboard
     public $settings;
 
     // Library dashboard data
-    public int $totalBuku       = 0;
-    public int $totalAnggota    = 0;
-    public int $peminjamAktif   = 0;
-    public int $dendaBelumLunas = 0;
-    public int $totalDenda      = 0;
+    public int $totalBuku        = 0;
+    public int $totalAnggota     = 0;
+    public int $peminjamAktif    = 0;
+    public int $dendaBelumLunas  = 0;
+    public int $totalDenda       = 0;
+    public int $bukuPaketAktif   = 0;
     public $recentLoans;
     public $recentFines;
 
@@ -118,6 +120,7 @@ class Dashboard extends BaseDashboard
         $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
         $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
         $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
+        $this->bukuPaketAktif  = TextbookLoan::where('status', 'aktif')->count();
 
         $this->recentLoans = Loan::with(['book', 'member'])
             ->whereIn('status', ['dipinjam', 'terlambat'])

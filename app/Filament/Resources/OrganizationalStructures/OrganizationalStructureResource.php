@@ -2,9 +2,7 @@
 
 namespace App\Filament\Resources\OrganizationalStructures;
 
-use App\Filament\Resources\OrganizationalStructures\Pages\CreateOrganizationalStructure;
 use App\Filament\Resources\OrganizationalStructures\Pages\EditOrganizationalStructure;
-use App\Filament\Resources\OrganizationalStructures\Pages\ListOrganizationalStructures;
 use App\Filament\Resources\OrganizationalStructures\Schemas\OrganizationalStructureForm;
 use App\Filament\Resources\OrganizationalStructures\Tables\OrganizationalStructuresTable;
 use App\Enums\UserRole;
@@ -23,6 +21,8 @@ class OrganizationalStructureResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBuildingOffice2;
     protected static ?int    $navigationSort  = 3;
+    protected static ?string $modelLabel     = 'Struktur Organisasi';
+    protected static ?string $pluralModelLabel = 'Struktur Organisasi';
 
     protected static ?string $recordTitleAttribute = 'title';
 
@@ -48,12 +48,12 @@ class OrganizationalStructureResource extends Resource
         ];
     }
 
+    public static function canCreate(): bool { return false; }
+
     public static function getPages(): array
     {
         return [
-            'index' => ListOrganizationalStructures::route('/'),
-            'create' => CreateOrganizationalStructure::route('/create'),
-            'edit' => EditOrganizationalStructure::route('/{record}/edit'),
+            'index' => EditOrganizationalStructure::route('/'),
         ];
     }
 }

@@ -23,6 +23,8 @@ class SocialMediaResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedShare;
     protected static ?int    $navigationSort  = 3;
+    protected static ?string $modelLabel     = 'Media Sosial';
+    protected static ?string $pluralModelLabel = 'Media Sosial';
 
     protected static ?string $recordTitleAttribute = 'nama';
 

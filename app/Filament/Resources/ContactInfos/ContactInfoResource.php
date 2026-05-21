@@ -24,6 +24,8 @@ class ContactInfoResource extends Resource
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedPhone;
     protected static ?int    $navigationSort  = 2;
+    protected static ?string $modelLabel     = 'Info Kontak';
+    protected static ?string $pluralModelLabel = 'Informasi Kontak';
 
     protected static ?string $recordTitleAttribute = 'alamat';
 

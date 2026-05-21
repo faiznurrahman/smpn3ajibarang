@@ -68,11 +68,28 @@
         }
 
         #toast { transition: opacity 0.3s; }
+
+        /* ── Page Loader ── */
+        @keyframes loader-spin { to { transform: rotate(360deg); } }
+
+        /* ── Scroll-reveal smooth easing ── */
+        .reveal-ready {
+            will-change: opacity, transform;
+        }
     </style>
 
     @stack('styles')
 </head>
 <body class="antialiased">
+
+    {{-- ── Page Loader ── --}}
+    <div id="page-loader" style="position:fixed;inset:0;z-index:9999;background:#0d2b6b;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+        <div style="position:relative;width:60px;height:60px;margin-bottom:20px;">
+            <div style="position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(255,255,255,0.08);border-top-color:#e8a020;animation:loader-spin 0.85s linear infinite;"></div>
+            <div style="position:absolute;inset:11px;border-radius:50%;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:800;font-size:13px;color:rgba(255,255,255,0.7);letter-spacing:1px;">S3</div>
+        </div>
+        <div style="color:rgba(255,255,255,0.28);font-size:9px;letter-spacing:4px;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:600;">Memuat Halaman</div>
+    </div>
 
     {{-- Navbar --}}
     @include('components.navbar')
@@ -103,6 +120,54 @@
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 3200);
         }
+    </script>
+
+    <script>
+        // ── Page Loader dismiss ──
+        window.addEventListener('load', function () {
+            var l = document.getElementById('page-loader');
+            if (!l) return;
+            l.style.transition = 'opacity 0.45s ease, visibility 0.45s ease';
+            l.style.opacity = '0';
+            l.style.visibility = 'hidden';
+            setTimeout(function () { if (l.parentNode) l.parentNode.removeChild(l); }, 480);
+        });
+
+        // ── Lazy image fade-in ──
+        (function () {
+            document.querySelectorAll('img[loading="lazy"]').forEach(function (img) {
+                img.style.opacity = '0';
+                img.style.transition = 'opacity 0.5s ease';
+                var show = function () { img.style.opacity = '1'; };
+                img.addEventListener('load', show);
+                img.addEventListener('error', show);
+                if (img.complete) show();
+            });
+        })();
+
+        // ── Scroll-reveal: animate below-fold opacity-0 elements ──
+        (function () {
+            if (!('IntersectionObserver' in window)) return;
+            var els = document.querySelectorAll('.anim-fade-up.opacity-0');
+            els.forEach(function (el) {
+                el.style.animation  = 'none';
+                el.style.transition = 'opacity 0.65s cubic-bezier(0.22,1,0.36,1), transform 0.65s cubic-bezier(0.22,1,0.36,1)';
+                el.style.transform  = 'translateY(22px)';
+                if (el.classList.contains('delay-1')) el.style.transitionDelay = '0.1s';
+                if (el.classList.contains('delay-2')) el.style.transitionDelay = '0.22s';
+                if (el.classList.contains('delay-3')) el.style.transitionDelay = '0.38s';
+            });
+            var obs = new IntersectionObserver(function (entries) {
+                entries.forEach(function (e) {
+                    if (e.isIntersecting) {
+                        e.target.style.opacity   = '1';
+                        e.target.style.transform = 'translateY(0)';
+                        obs.unobserve(e.target);
+                    }
+                });
+            }, { threshold: 0.12, rootMargin: '0px 0px -44px 0px' });
+            els.forEach(function (el) { obs.observe(el); });
+        })();
     </script>
 
     @stack('scripts')

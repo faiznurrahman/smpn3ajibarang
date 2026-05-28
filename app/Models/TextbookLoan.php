@@ -62,9 +62,7 @@ class TextbookLoan extends Model
                     continue;
                 }
 
-                $kondisiPinjam = in_array($item->kondisi, ['baik', 'rusak_ringan', 'rusak_berat'])
-                    ? $item->kondisi
-                    : 'baik';
+                $kondisiPinjam = in_array($item->kondisi, ['baik', 'rusak']) ? $item->kondisi : 'baik';
 
                 TextbookLoanItem::create([
                     'loan_id'          => $this->id,

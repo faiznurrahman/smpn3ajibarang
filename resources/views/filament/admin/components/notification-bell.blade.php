@@ -346,6 +346,21 @@ $postsUrl      = PostResource::getUrl('index');
     }
     .nbb-see-all:hover { color: #2746a4; }
 
+    /* ---- mobile: dropdown jadi fixed overlay ---- */
+    @media (max-width: 639px) {
+        .nbb-panel {
+            position: fixed;
+            top: 58px;
+            left: 8px;
+            right: 8px;
+            width: auto;
+            max-height: calc(100dvh - 80px);
+        }
+        .nbb-body {
+            max-height: calc(100dvh - 170px);
+        }
+    }
+
     /* ---- transitions ---- */
     .nbb-enter { transition: opacity 120ms ease, transform 120ms ease; }
     .nbb-enter-start { opacity: 0; transform: translateY(-6px) scale(0.97); }

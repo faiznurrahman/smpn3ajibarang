@@ -2,41 +2,495 @@
 
 namespace App\Filament\Resources\LibraryReports\Pages;
 
+use App\Enums\UserRole;
 use App\Filament\Resources\LibraryReports\LibraryReportResource;
 use App\Models\Book;
 use App\Models\Fine;
 use App\Models\Loan;
 use App\Models\Member;
-use Filament\Resources\Pages\ListRecords;
+use App\Models\Visit;
+use Filament\Resources\Pages\Page;
+use Illuminate\Support\Str;
 
-class ListLibraryReports extends ListRecords
+class ListLibraryReports extends Page
 {
     protected static string $resource = LibraryReportResource::class;
 
-    public int $totalBuku       = 0;
-    public int $totalAnggota    = 0;
-    public int $peminjamAktif   = 0;
-    public int $dendaBelumLunas = 0;
-    public int $totalDenda      = 0;
-
-    public function mount(): void
+    public function getView(): string
     {
-        parent::mount();
-
-        $this->totalBuku       = Book::where('is_active', true)->count();
-        $this->totalAnggota    = Member::where('is_active', true)->count();
-        $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
-        $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
-        $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
+        if (auth()->user()?->role === UserRole::KepalaSekolah) {
+            return 'filament.admin.pages.library-reports-kepsek';
+        }
+        return 'filament.admin.pages.library-reports';
     }
 
-    protected function getHeaderActions(): array
+    // ================================================================
+    //  PETUGAS — properties
+    // ================================================================
+
+    public string $activeTab = 'buku';
+    public int    $perPage   = 50;
+
+    public int $bukuPage      = 1;
+    public int $anggotaPage   = 1;
+    public int $pinjamPage    = 1;
+    public int $kembaliPage   = 1;
+    public int $dendaPage     = 1;
+    public int $kunjunganPage = 1;
+
+    public string $bukuSearch   = '';
+    public string $bukuKategori = '';
+    public string $bukuStatus   = '';
+
+    public string $anggotaSearch = '';
+    public string $anggotaJenis  = '';
+    public string $anggotaStatus = '';
+    public string $anggotaKelas  = '';
+
+    public string $pinjamSearch  = '';
+    public string $pinjamStatus  = '';
+    public string $pinjamDari    = '';
+    public string $pinjamSampai  = '';
+
+    public string $kembaliSearch  = '';
+    public string $kembaliDari    = '';
+    public string $kembaliSampai  = '';
+    public string $kembaliKondisi = '';
+
+    public string $dendaSearch = '';
+    public string $dendaStatus = '';
+
+    public string $kunjunganDari    = '';
+    public string $kunjunganSampai  = '';
+    public string $kunjunganJenis   = '';
+    public string $kunjunganPeriode = '';
+
+    // ================================================================
+    //  KEPSEK — properties
+    // ================================================================
+
+    public string $ksTab    = 'peminjaman';
+    public int    $ksPerPage = 15;
+
+    public string $ksPinjamStatus = '';
+    public string $ksPinjamDari   = '';
+    public string $ksPinjamSampai = '';
+    public int    $ksPinjamPage   = 1;
+
+    public string $ksDendaStatus = '';
+    public string $ksDendaDari   = '';
+    public string $ksDendaSampai = '';
+    public int    $ksDendaPage   = 1;
+
+    public string $ksSanksiJenis  = '';
+    public string $ksSanksiStatus = '';
+    public int    $ksSanksiPage   = 1;
+
+    public string $ksKunjunganJenis     = '';
+    public string $ksKunjunganKeperluan = '';
+    public string $ksKunjunganDari      = '';
+    public string $ksKunjunganSampai    = '';
+    public int    $ksKunjunganPage      = 1;
+
+    // ================================================================
+    //  PETUGAS — reactive updaters
+    // ================================================================
+
+    public function updatedBukuSearch():     void { $this->bukuPage     = 1; }
+    public function updatedBukuKategori():   void { $this->bukuPage     = 1; }
+    public function updatedBukuStatus():     void { $this->bukuPage     = 1; }
+    public function updatedAnggotaSearch():  void { $this->anggotaPage  = 1; }
+    public function updatedAnggotaJenis():   void { $this->anggotaPage  = 1; }
+    public function updatedAnggotaStatus():  void { $this->anggotaPage  = 1; }
+    public function updatedAnggotaKelas():   void { $this->anggotaPage  = 1; }
+    public function updatedPinjamSearch():   void { $this->pinjamPage   = 1; }
+    public function updatedPinjamStatus():   void { $this->pinjamPage   = 1; }
+    public function updatedPinjamDari():     void { $this->pinjamPage   = 1; }
+    public function updatedPinjamSampai():   void { $this->pinjamPage   = 1; }
+    public function updatedKembaliSearch():  void { $this->kembaliPage  = 1; }
+    public function updatedKembaliDari():    void { $this->kembaliPage  = 1; }
+    public function updatedKembaliSampai():  void { $this->kembaliPage  = 1; }
+    public function updatedKembaliKondisi(): void { $this->kembaliPage  = 1; }
+    public function updatedDendaSearch():    void { $this->dendaPage    = 1; }
+    public function updatedDendaStatus():    void { $this->dendaPage    = 1; }
+    public function updatedKunjunganJenis():  void { $this->kunjunganPage = 1; }
+    public function updatedKunjunganDari():   void { $this->kunjunganPage = 1; }
+    public function updatedKunjunganSampai(): void { $this->kunjunganPage = 1; }
+
+    // ================================================================
+    //  PETUGAS — actions
+    // ================================================================
+
+    public function setTab(string $tab): void
+    {
+        $this->activeTab = $tab;
+    }
+
+    public function goPage(string $tab, int $page): void
+    {
+        $prop = $tab . 'Page';
+        if (property_exists($this, $prop)) {
+            $this->$prop = max(1, $page);
+        }
+    }
+
+    public function setPeriode(string $periode): void
+    {
+        $this->kunjunganPeriode = ($this->kunjunganPeriode === $periode) ? '' : $periode;
+        $this->kunjunganDari    = '';
+        $this->kunjunganSampai  = '';
+        $this->kunjunganPage    = 1;
+    }
+
+    // ================================================================
+    //  KEPSEK — reactive updaters
+    // ================================================================
+
+    public function updatedKsPinjamStatus(): void { $this->ksPinjamPage    = 1; }
+    public function updatedKsPinjamDari():   void { $this->ksPinjamPage    = 1; }
+    public function updatedKsPinjamSampai(): void { $this->ksPinjamPage    = 1; }
+    public function updatedKsDendaStatus():  void { $this->ksDendaPage     = 1; }
+    public function updatedKsDendaDari():    void { $this->ksDendaPage     = 1; }
+    public function updatedKsDendaSampai():  void { $this->ksDendaPage     = 1; }
+    public function updatedKsSanksiJenis():  void { $this->ksSanksiPage    = 1; }
+    public function updatedKsSanksiStatus(): void { $this->ksSanksiPage    = 1; }
+    public function updatedKsKunjunganJenis():     void { $this->ksKunjunganPage = 1; }
+    public function updatedKsKunjunganKeperluan(): void { $this->ksKunjunganPage = 1; }
+    public function updatedKsKunjunganDari():      void { $this->ksKunjunganPage = 1; }
+    public function updatedKsKunjunganSampai():    void { $this->ksKunjunganPage = 1; }
+
+    // ================================================================
+    //  KEPSEK — actions
+    // ================================================================
+
+    public function setKsTab(string $tab): void
+    {
+        $this->ksTab = $tab;
+    }
+
+    // ================================================================
+    //  Common
+    // ================================================================
+
+    public function getHeaderActions(): array
     {
         return [];
     }
 
-    protected function getHeaderWidgets(): array
+    public function getTitle(): string|\Illuminate\Contracts\Support\Htmlable
     {
-        return [];
+        return 'Laporan Perpustakaan';
+    }
+
+    protected function getViewData(): array
+    {
+        if (auth()->user()?->role === UserRole::KepalaSekolah) {
+            return $this->loadKepsekData();
+        }
+
+        $tanggal = now()->locale('id')->translatedFormat('l, d F Y');
+        $base    = ['tanggal' => $tanggal, 'activeTab' => $this->activeTab, 'perPage' => $this->perPage]
+                 + $this->loadChartData();
+
+        return $base + match ($this->activeTab) {
+            'buku'         => $this->loadBuku(),
+            'anggota'      => $this->loadAnggota(),
+            'peminjaman'   => $this->loadPeminjaman(),
+            'pengembalian' => $this->loadPengembalian(),
+            'denda'        => $this->loadDenda(),
+            'kunjungan'    => $this->loadKunjungan(),
+            default        => ['records' => collect()],
+        };
+    }
+
+    // ================================================================
+    //  KEPSEK — data loaders
+    // ================================================================
+
+    private function loadKepsekData(): array
+    {
+        $tanggal = now()->locale('id')->translatedFormat('l, d F Y');
+
+        return ['tanggal' => $tanggal, 'perPage' => $this->perPage] + $this->loadChartData() + match ($this->ksTab) {
+            'denda'     => $this->loadKsDenda(),
+            'sanksi'    => $this->loadKsSanksi(),
+            'kunjungan' => $this->loadKsKunjungan(),
+            default     => $this->loadKsPeminjaman(),
+        };
+    }
+
+    private function loadKsPeminjaman(): array
+    {
+        $query = Loan::with(['book', 'member'])
+            ->when($this->ksPinjamStatus, fn ($q) => $q->where('status', $this->ksPinjamStatus))
+            ->when($this->ksPinjamDari,   fn ($q) => $q->whereDate('tgl_pinjam', '>=', $this->ksPinjamDari))
+            ->when($this->ksPinjamSampai, fn ($q) => $q->whereDate('tgl_pinjam', '<=', $this->ksPinjamSampai))
+            ->orderByDesc('tgl_pinjam');
+
+        $counts = (clone $query)->reorder()
+            ->selectRaw('status, count(*) as total')->groupBy('status')->pluck('total', 'status');
+
+        return [
+            'records'      => $query->paginate($this->ksPerPage, ['*'], 'page', $this->ksPinjamPage),
+            'jmlDipinjam'  => $counts->get('dipinjam',     0),
+            'jmlKembali'   => $counts->get('dikembalikan', 0),
+            'jmlTerlambat' => $counts->get('terlambat',    0),
+            'currentPage'  => $this->ksPinjamPage,
+        ];
+    }
+
+    private function loadKsDenda(): array
+    {
+        $query = Fine::with(['loan.book', 'loan.member'])
+            ->when($this->ksDendaStatus, fn ($q) => $q->where('status_bayar', $this->ksDendaStatus))
+            ->when($this->ksDendaDari,   fn ($q) => $q->whereDate('created_at', '>=', $this->ksDendaDari))
+            ->when($this->ksDendaSampai, fn ($q) => $q->whereDate('created_at', '<=', $this->ksDendaSampai))
+            ->orderByDesc('created_at');
+
+        $totals = (clone $query)->selectRaw(
+            'sum(nominal) as total, sum(case when status_bayar="lunas" then nominal else 0 end) as lunas, sum(case when status_bayar="belum_lunas" then nominal else 0 end) as belum'
+        )->first();
+
+        return [
+            'records'      => $query->paginate($this->ksPerPage, ['*'], 'page', $this->ksDendaPage),
+            'totalNominal' => $totals->total ?? 0,
+            'totalLunas'   => $totals->lunas  ?? 0,
+            'totalBelum'   => $totals->belum  ?? 0,
+            'currentPage'  => $this->ksDendaPage,
+        ];
+    }
+
+    private function loadKsSanksi(): array
+    {
+        $query = Loan::with(['book', 'member'])
+            ->where(fn ($q) => $q->where('status_sanksi', '!=', 'tidak_ada')->whereNotNull('status_sanksi'))
+            ->when($this->ksSanksiJenis,  fn ($q) => $q->where('jenis_sanksi',  $this->ksSanksiJenis))
+            ->when($this->ksSanksiStatus, fn ($q) => $q->where('status_sanksi', $this->ksSanksiStatus))
+            ->orderByDesc('updated_at');
+
+        return [
+            'records'     => $query->paginate($this->ksPerPage, ['*'], 'page', $this->ksSanksiPage),
+            'currentPage' => $this->ksSanksiPage,
+        ];
+    }
+
+    private function loadKsKunjungan(): array
+    {
+        $query = Visit::query()
+            ->when($this->ksKunjunganJenis,     fn ($q) => $q->where('jenis_pengunjung', $this->ksKunjunganJenis))
+            ->when($this->ksKunjunganKeperluan, fn ($q) => $q->where('keperluan', $this->ksKunjunganKeperluan))
+            ->when($this->ksKunjunganDari,      fn ($q) => $q->whereDate('tgl_kunjungan', '>=', $this->ksKunjunganDari))
+            ->when($this->ksKunjunganSampai,    fn ($q) => $q->whereDate('tgl_kunjungan', '<=', $this->ksKunjunganSampai))
+            ->orderByDesc('tgl_kunjungan')->orderByDesc('jam_kunjungan');
+
+        $counts = (clone $query)->reorder()
+            ->selectRaw('jenis_pengunjung, count(*) as total')->groupBy('jenis_pengunjung')->pluck('total', 'jenis_pengunjung');
+
+        return [
+            'records'     => $query->paginate($this->ksPerPage, ['*'], 'page', $this->ksKunjunganPage),
+            'jmlSiswa'    => $counts->get('siswa', 0),
+            'jmlGuru'     => $counts->get('guru',  0),
+            'jmlUmum'     => $counts->get('umum',  0),
+            'currentPage' => $this->ksKunjunganPage,
+        ];
+    }
+
+    // ================================================================
+    //  PETUGAS — data loaders
+    // ================================================================
+
+    private function loadChartData(): array
+    {
+        // 6 bulan terakhir (termasuk bulan ini)
+        $months = collect(range(5, 0))->map(fn ($i) => now()->subMonths($i)->startOfMonth());
+
+        $rawLoans = Loan::selectRaw('DATE_FORMAT(tgl_pinjam, "%Y-%m") as ym, COUNT(*) as total')
+            ->where('tgl_pinjam', '>=', $months->first())
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
+        $rawVisits = Visit::selectRaw('DATE_FORMAT(tgl_kunjungan, "%Y-%m") as ym, COUNT(*) as total')
+            ->where('tgl_kunjungan', '>=', $months->first())
+            ->groupBy('ym')
+            ->pluck('total', 'ym');
+
+        $chartLabels = $months->map(fn ($m) => $m->locale('id')->isoFormat('MMM YYYY'))->values()->toArray();
+        $chartLoans  = $months->map(fn ($m) => (int) ($rawLoans->get($m->format('Y-m'), 0)))->values()->toArray();
+        $chartVisits = $months->map(fn ($m) => (int) ($rawVisits->get($m->format('Y-m'), 0)))->values()->toArray();
+
+        // Top 5 buku terpopuler
+        $topBuku = Loan::selectRaw('book_id, COUNT(*) as total')
+            ->groupBy('book_id')
+            ->orderByDesc('total')
+            ->limit(5)
+            ->with('book:id,judul')
+            ->get();
+
+        $topBukuLabels = $topBuku->map(fn ($l) => Str::limit($l->book?->judul ?? '?', 30))->toArray();
+        $topBukuData   = $topBuku->pluck('total')->map(fn ($v) => (int) $v)->toArray();
+
+        // Stat cards
+        $statTotalBuku     = Book::where('is_active', true)->count();
+        $statAnggotaAktif  = Member::where('status', 'aktif')->count();
+        $statPinjamAktif   = Loan::whereIn('status', ['dipinjam', 'terlambat'])->count();
+        $statDendaBelum    = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
+        $statKunjunganBulan = Visit::whereMonth('tgl_kunjungan', now()->month)
+            ->whereYear('tgl_kunjungan', now()->year)->count();
+
+        return compact(
+            'chartLabels', 'chartLoans', 'chartVisits',
+            'topBukuLabels', 'topBukuData',
+            'statTotalBuku', 'statAnggotaAktif', 'statPinjamAktif',
+            'statDendaBelum', 'statKunjunganBulan'
+        );
+    }
+
+    private function loadBuku(): array
+    {
+        $query = Book::query()
+            ->when($this->bukuSearch, fn ($q) => $q->where(fn ($q2) =>
+                $q2->where('judul', 'like', '%' . $this->bukuSearch . '%')
+                   ->orWhere('penulis', 'like', '%' . $this->bukuSearch . '%')
+                   ->orWhere('kode_buku', 'like', '%' . $this->bukuSearch . '%')
+            ))
+            ->when($this->bukuKategori, fn ($q) => $q->where('kategori', $this->bukuKategori))
+            ->when($this->bukuStatus === 'aktif',    fn ($q) => $q->where('is_active', true))
+            ->when($this->bukuStatus === 'nonaktif', fn ($q) => $q->where('is_active', false))
+            ->orderBy('kode_buku');
+
+        $totalStok = (clone $query)->sum('stok');
+        $records   = $query->paginate($this->perPage, ['*'], 'page', $this->bukuPage);
+
+        return ['records' => $records, 'totalStok' => $totalStok, 'currentPage' => $this->bukuPage];
+    }
+
+    private function loadAnggota(): array
+    {
+        $query = Member::query()
+            ->when($this->anggotaSearch, fn ($q) => $q->where(fn ($q2) =>
+                $q2->where('nama', 'like', '%' . $this->anggotaSearch . '%')
+                   ->orWhere('kode_anggota', 'like', '%' . $this->anggotaSearch . '%')
+            ))
+            ->when($this->anggotaJenis,  fn ($q) => $q->where('jenis',  $this->anggotaJenis))
+            ->when($this->anggotaStatus, fn ($q) => $q->where('status', $this->anggotaStatus))
+            ->when($this->anggotaKelas,  fn ($q) => $q->where('kelas',  $this->anggotaKelas))
+            ->orderBy('nama');
+
+        $all      = (clone $query)->select('jenis')->get();
+        $jmlSiswa = $all->where('jenis', 'siswa')->count();
+        $jmlGuru  = $all->where('jenis', 'guru')->count();
+
+        $kelasList = Member::distinct('kelas')
+            ->whereNotNull('kelas')->where('kelas', '!=', '')
+            ->orderBy('kelas')->pluck('kelas', 'kelas')->toArray();
+
+        return [
+            'records'     => $query->paginate($this->perPage, ['*'], 'page', $this->anggotaPage),
+            'kelasList'   => $kelasList,
+            'jmlSiswa'    => $jmlSiswa,
+            'jmlGuru'     => $jmlGuru,
+            'currentPage' => $this->anggotaPage,
+        ];
+    }
+
+    private function loadPeminjaman(): array
+    {
+        $query = Loan::with(['book', 'member', 'fine'])
+            ->when($this->pinjamSearch, fn ($q) => $q->where(fn ($q2) =>
+                $q2->whereHas('member', fn ($q3) =>
+                    $q3->where('nama', 'like', '%' . $this->pinjamSearch . '%')
+                )->orWhereHas('book', fn ($q3) =>
+                    $q3->where('judul', 'like', '%' . $this->pinjamSearch . '%')
+                )
+            ))
+            ->when($this->pinjamStatus,  fn ($q) => $q->where('status', $this->pinjamStatus))
+            ->when($this->pinjamDari,    fn ($q) => $q->whereDate('tgl_pinjam', '>=', $this->pinjamDari))
+            ->when($this->pinjamSampai,  fn ($q) => $q->whereDate('tgl_pinjam', '<=', $this->pinjamSampai))
+            ->orderByDesc('tgl_pinjam');
+
+        $counts = (clone $query)->reorder()
+            ->selectRaw('status, count(*) as total')->groupBy('status')->pluck('total', 'status');
+
+        return [
+            'records'      => $query->paginate($this->perPage, ['*'], 'page', $this->pinjamPage),
+            'jmlDipinjam'  => $counts->get('dipinjam',     0),
+            'jmlKembali'   => $counts->get('dikembalikan', 0),
+            'jmlTerlambat' => $counts->get('terlambat',    0),
+            'currentPage'  => $this->pinjamPage,
+        ];
+    }
+
+    private function loadPengembalian(): array
+    {
+        $query = Loan::with(['book', 'member', 'fine'])
+            ->whereNotNull('tgl_kembali')
+            ->when($this->kembaliSearch, fn ($q) => $q->whereHas('member', fn ($q2) =>
+                $q2->where('nama', 'like', '%' . $this->kembaliSearch . '%')
+            ))
+            ->when($this->kembaliDari,    fn ($q) => $q->whereDate('tgl_kembali', '>=', $this->kembaliDari))
+            ->when($this->kembaliSampai,  fn ($q) => $q->whereDate('tgl_kembali', '<=', $this->kembaliSampai))
+            ->when($this->kembaliKondisi, fn ($q) => $q->where('kondisi_kembali', $this->kembaliKondisi))
+            ->orderByDesc('tgl_kembali');
+
+        $counts = (clone $query)->reorder()
+            ->selectRaw('kondisi_kembali, count(*) as total')->groupBy('kondisi_kembali')->pluck('total', 'kondisi_kembali');
+
+        return [
+            'records'     => $query->paginate($this->perPage, ['*'], 'page', $this->kembaliPage),
+            'jmlBaik'     => $counts->get('baik',   0),
+            'jmlRusak'    => $counts->get('rusak',  0),
+            'jmlHilang'   => $counts->get('hilang', 0),
+            'currentPage' => $this->kembaliPage,
+        ];
+    }
+
+    private function loadDenda(): array
+    {
+        $query = Fine::with(['loan.book', 'loan.member'])
+            ->when($this->dendaSearch, fn ($q) => $q->whereHas('loan.member', fn ($q2) =>
+                $q2->where('nama', 'like', '%' . $this->dendaSearch . '%')
+            ))
+            ->when($this->dendaStatus, fn ($q) => $q->where('status_bayar', $this->dendaStatus))
+            ->orderByDesc('created_at');
+
+        $totals = (clone $query)->selectRaw(
+            'sum(nominal) as total, sum(case when status_bayar="lunas" then nominal else 0 end) as lunas, sum(case when status_bayar="belum_lunas" then nominal else 0 end) as belum'
+        )->first();
+
+        return [
+            'records'      => $query->paginate($this->perPage, ['*'], 'page', $this->dendaPage),
+            'totalNominal' => $totals->total ?? 0,
+            'totalLunas'   => $totals->lunas  ?? 0,
+            'totalBelum'   => $totals->belum  ?? 0,
+            'currentPage'  => $this->dendaPage,
+        ];
+    }
+
+    private function loadKunjungan(): array
+    {
+        $query = Visit::query()
+            ->when($this->kunjunganJenis, fn ($q) => $q->where('jenis_pengunjung', $this->kunjunganJenis))
+            ->when($this->kunjunganPeriode === 'hari',
+                fn ($q) => $q->whereDate('tgl_kunjungan', today()))
+            ->when($this->kunjunganPeriode === 'minggu',
+                fn ($q) => $q->whereBetween('tgl_kunjungan', [now()->startOfWeek(), now()->endOfWeek()]))
+            ->when($this->kunjunganPeriode === 'bulan',
+                fn ($q) => $q->whereMonth('tgl_kunjungan', now()->month)->whereYear('tgl_kunjungan', now()->year))
+            ->when($this->kunjunganPeriode === '' && $this->kunjunganDari,
+                fn ($q) => $q->whereDate('tgl_kunjungan', '>=', $this->kunjunganDari))
+            ->when($this->kunjunganPeriode === '' && $this->kunjunganSampai,
+                fn ($q) => $q->whereDate('tgl_kunjungan', '<=', $this->kunjunganSampai))
+            ->orderByDesc('tgl_kunjungan')->orderByDesc('jam_kunjungan');
+
+        $counts = (clone $query)->reorder()
+            ->selectRaw('jenis_pengunjung, count(*) as total')->groupBy('jenis_pengunjung')->pluck('total', 'jenis_pengunjung');
+
+        return [
+            'records'     => $query->paginate($this->perPage, ['*'], 'page', $this->kunjunganPage),
+            'jmlSiswa'    => $counts->get('siswa', 0),
+            'jmlGuru'     => $counts->get('guru',  0),
+            'jmlUmum'     => $counts->get('umum',  0),
+            'currentPage' => $this->kunjunganPage,
+        ];
     }
 }

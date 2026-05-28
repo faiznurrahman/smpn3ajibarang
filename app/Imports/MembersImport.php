@@ -15,35 +15,33 @@ class MembersImport implements ToCollection, WithHeadingRow
     public function collection(Collection $rows): void
     {
         foreach ($rows as $row) {
-            $row = $row->toArray();
-
-            $kode = trim($row['kode_anggota'] ?? '');
+            $row  = $row->toArray();
+            $nis  = trim($row['nis'] ?? '');
             $nama = trim($row['nama'] ?? '');
 
-            if ($kode === '' || $nama === '') {
-                continue;
-            }
-
-            if (Member::where('kode_anggota', $kode)->exists()) {
+            if ($nis === '' || $nama === '') {
                 $this->skipped++;
                 continue;
             }
 
-            $jenisRaw = strtolower(trim($row['jenis'] ?? ''));
-            $jenis    = in_array($jenisRaw, ['siswa', 'guru']) ? $jenisRaw : 'siswa';
+            // Skip jika NIS sudah ada
+            if (Member::where('kode_anggota', $nis)->exists()) {
+                $this->skipped++;
+                continue;
+            }
 
-            $statusRaw = strtolower(trim($row['status'] ?? ''));
-            $status    = in_array($statusRaw, ['aktif', 'lulus', 'pindah', 'keluar']) ? $statusRaw : 'aktif';
+            $kelas   = trim($row['kelas'] ?? '');
+            $angkatan = !empty($row['angkatan']) ? (int) $row['angkatan'] : null;
 
             try {
                 Member::create([
-                    'kode_anggota' => $kode,
+                    'kode_anggota' => $nis,
                     'nama'         => $nama,
-                    'jenis'        => $jenis,
-                    'tahun_masuk'  => ($row['tahun_masuk'] ?? '') !== '' ? (int) $row['tahun_masuk'] : null,
-                    'kelas'        => ($row['kelas'] ?? '') !== '' ? $row['kelas'] : null,
-                    'no_hp'        => ($row['no_hp'] ?? '') !== '' ? $row['no_hp'] : null,
-                    'status'       => $status,
+                    'jenis'        => 'siswa',
+                    'kelas'        => $kelas ?: null,
+                    'tahun_masuk'  => $angkatan,
+                    'no_hp'        => !empty($row['no_hp']) ? trim($row['no_hp']) : null,
+                    'status'       => 'aktif',
                     'is_active'    => true,
                 ]);
                 $this->imported++;

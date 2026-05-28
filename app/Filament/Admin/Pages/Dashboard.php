@@ -13,22 +13,26 @@ use App\Models\Post;
 use App\Models\Setting;
 use App\Models\Teacher;
 use App\Models\TextbookLoan;
+use App\Models\Visit;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
 
 class Dashboard extends BaseDashboard
 {
-    protected static ?string $navigationLabel = 'Dasbor';
+    protected static ?string $navigationLabel = 'Dashboard';
     protected static string|\BackedEnum|null $navigationIcon = Heroicon::OutlinedHome;
     protected static ?int $navigationSort = -2;
 
     // School dashboard data
     public int $totalBerita        = 0;
+    public int $draftBerita        = 0;
     public int $pesanBelumDibaca   = 0;
     public int $totalGuru          = 0;
     public int $siswaAktif         = 0;
     public int $totalPesan         = 0;
+    public int $totalGaleri        = 0;
+    public int $totalEkskul        = 0;
     public $recentMessages;
     public $recentPosts;
     public $recentActivities;
@@ -41,6 +45,11 @@ class Dashboard extends BaseDashboard
     public int $dendaBelumLunas  = 0;
     public int $totalDenda       = 0;
     public int $bukuPaketAktif   = 0;
+    public int $kunjunganHariIni   = 0;
+    public int $kunjunganMingguIni = 0;
+    public int $kunjunganBulanIni  = 0;
+    public array $kunjungan7Hari    = [];
+    public int   $maxKunjungan7Hari = 1;
     public $recentLoans;
     public $recentFines;
 
@@ -70,10 +79,13 @@ class Dashboard extends BaseDashboard
     {
         $this->settings         = Setting::first();
         $this->totalBerita      = Post::where('status', 'published')->count();
+        $this->draftBerita      = Post::where('status', 'draft')->count();
         $this->pesanBelumDibaca = Message::where('is_read', false)->count();
         $this->totalGuru        = Teacher::where('is_active', true)->count();
         $this->totalPesan       = Message::count();
         $this->siswaAktif       = (int) ($this->settings?->jumlah_siswa ?? 0);
+        $this->totalGaleri      = Gallery::count();
+        $this->totalEkskul      = \App\Models\Extracurricular::where('is_active', true)->count();
 
         $this->recentMessages = Message::where('is_read', false)->latest()->take(5)->get();
         $this->recentPosts    = Post::where('status', 'published')->latest('tanggal_publish')->take(4)->get();
@@ -120,7 +132,20 @@ class Dashboard extends BaseDashboard
         $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
         $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
         $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
-        $this->bukuPaketAktif  = TextbookLoan::where('status', 'aktif')->count();
+        $this->bukuPaketAktif    = TextbookLoan::where('status', 'aktif')->count();
+        $this->kunjunganHariIni   = Visit::whereDate('tgl_kunjungan', today())->count();
+        $this->kunjunganMingguIni = Visit::whereBetween('tgl_kunjungan', [now()->startOfWeek(), now()->endOfWeek()])->count();
+        $this->kunjunganBulanIni  = Visit::whereMonth('tgl_kunjungan', now()->month)->whereYear('tgl_kunjungan', now()->year)->count();
+
+        $this->kunjungan7Hari = [];
+        for ($i = 6; $i >= 0; $i--) {
+            $date = today()->subDays($i);
+            $this->kunjungan7Hari[] = [
+                'label' => $date->locale('id')->translatedFormat('d M'),
+                'total' => Visit::whereDate('tgl_kunjungan', $date)->count(),
+            ];
+        }
+        $this->maxKunjungan7Hari = max(array_column($this->kunjungan7Hari, 'total') ?: [1]);
 
         $this->recentLoans = Loan::with(['book', 'member'])
             ->whereIn('status', ['dipinjam', 'terlambat'])

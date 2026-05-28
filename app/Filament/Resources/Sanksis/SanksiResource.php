@@ -11,8 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-
 class SanksiResource extends Resource
 {
     protected static ?string $model = Loan::class;
@@ -43,11 +41,6 @@ class SanksiResource extends Resource
     public static function getNavigationBadgeColor(): string
     {
         return 'danger';
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()->where('status_sanksi', 'belum_lunas');
     }
 
     public static function table(Table $table): Table

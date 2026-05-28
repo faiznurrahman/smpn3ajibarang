@@ -64,9 +64,18 @@
         line-height: 1;
     }
 
-    /* Mobile: sembunyikan nama, cukup logo */
-    @media (max-width: 640px) {
+    /* Tablet (<1024px): hapus fixed width sidebar, sembunyikan nama */
+    @media (max-width: 1023px) {
+        .tbl-wrap {
+            width: auto;
+            padding: 0 12px;
+            border-right: none;
+            height: 56px;
+        }
         .tbl-name { display: none; }
-        .tbl-wrap { padding: 0 14px; }
+    }
+    /* Mobile (<640px): sembunyikan seluruh komponen — brand ada di sidebar drawer */
+    @media (max-width: 639px) {
+        .tbl-wrap { display: none !important; }
     }
 </style>

@@ -6,7 +6,6 @@ use App\Models\Member;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -19,7 +18,7 @@ class MembersTable
         return $table
             ->columns([
                 TextColumn::make('kode_anggota')
-                    ->label('NIS/NIP')
+                    ->label('NIS / NIP')
                     ->searchable()
                     ->sortable()
                     ->fontFamily('mono')
@@ -33,18 +32,16 @@ class MembersTable
                     ->grow()
                     ->description(fn ($record) => $record->jenis === 'guru'
                         ? 'Guru'
-                        : (collect(array_filter([$record->kelas, $record->angkatan_label]))->implode(' · ') ?: '—')),
+                        : implode(' · ', array_filter([
+                            $record->kelas,
+                            $record->tahun_masuk ? 'Angkatan ' . $record->tahun_masuk : null,
+                        ]))),
 
                 TextColumn::make('jenis')
                     ->label('Jenis')
                     ->badge()
                     ->formatStateUsing(fn ($state) => $state === 'guru' ? 'Guru' : 'Siswa')
                     ->color(fn ($state) => $state === 'guru' ? 'warning' : 'primary'),
-
-                TextColumn::make('tingkat')
-                    ->label('Tingkat')
-                    ->badge()
-                    ->getStateUsing(fn ($record) => $record->tingkat ? 'Kelas ' . $record->tingkat : '—'),
 
                 TextColumn::make('kelas')
                     ->label('Kelas')
@@ -73,17 +70,14 @@ class MembersTable
                 TextColumn::make('no_hp')
                     ->label('No. HP')
                     ->placeholder('—')
-                    ->searchable(),
-
-                IconColumn::make('is_active')
-                    ->label('Aktif')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('gray'),
+                    ->searchable()
+                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
+                SelectFilter::make('jenis')
+                    ->label('Jenis')
+                    ->options(['siswa' => 'Siswa', 'guru' => 'Guru']),
+
                 SelectFilter::make('tahun_masuk')
                     ->label('Angkatan')
                     ->options(
@@ -100,6 +94,7 @@ class MembersTable
                     ->options(
                         Member::distinct('kelas')
                             ->whereNotNull('kelas')
+                            ->where('kelas', '!=', '')
                             ->orderBy('kelas')
                             ->pluck('kelas', 'kelas')
                             ->toArray()
@@ -112,13 +107,6 @@ class MembersTable
                         'lulus'  => 'Lulus',
                         'pindah' => 'Pindah',
                         'keluar' => 'Keluar',
-                    ]),
-
-                SelectFilter::make('jenis')
-                    ->label('Jenis Anggota')
-                    ->options([
-                        'siswa' => 'Siswa',
-                        'guru'  => 'Guru',
                     ]),
 
                 TernaryFilter::make('is_active')

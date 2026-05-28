@@ -14,45 +14,53 @@ class LoansTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->extraAttributes(['class' => 'tbl-loans'])
             ->columns([
                 TextColumn::make('member.nama')
                     ->label('Anggota')
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn ($record) => $record->member?->kelas ?? $record->member?->jenis),
+                    ->description(fn ($record) => $record->member?->kode_anggota),
 
                 TextColumn::make('book.judul')
                     ->label('Buku')
                     ->searchable()
                     ->sortable()
                     ->grow()
+                    ->wrap()
                     ->description(fn ($record) => $record->book?->kode_buku),
 
                 TextColumn::make('tgl_pinjam')
                     ->label('Tgl Pinjam')
-                    ->date('d M Y')
+                    ->date('d/m/Y')
                     ->sortable(),
 
                 TextColumn::make('tgl_batas_kembali')
                     ->label('Batas Kembali')
-                    ->date('d M Y')
+                    ->date('d/m/Y')
+                    ->sortable(),
+
+                TextColumn::make('tgl_kembali')
+                    ->label('Tgl Kembali')
+                    ->date('d/m/Y')
+                    ->placeholder('—')
                     ->sortable(),
 
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'dipinjam'    => 'Dipinjam',
+                        'dipinjam'     => 'Dipinjam',
                         'dikembalikan' => 'Dikembalikan',
-                        'terlambat'   => 'Terlambat',
-                        default       => $state,
+                        'terlambat'    => 'Terlambat',
+                        default        => $state,
                     })
                     ->color(fn ($state) => match ($state) {
-                        'dipinjam'    => 'warning',
+                        'dipinjam'     => 'warning',
                         'dikembalikan' => 'success',
-                        'terlambat'   => 'danger',
-                        default       => 'gray',
+                        'terlambat'    => 'danger',
+                        default        => 'gray',
                     }),
             ])
             ->filters([

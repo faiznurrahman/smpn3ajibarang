@@ -194,10 +194,9 @@ class ViewTextbookLoan extends Page implements HasTable
                                     ->label('Kondisi / Sanksi')
                                     ->options(fn ($get) => (bool) $get('dikembalikan')
                                         ? [
-                                            'baik'         => 'Baik',
-                                            'rusak_ringan' => 'Rusak Ringan',
-                                            'rusak_berat'  => 'Rusak Berat',
-                                            'hilang'       => 'Hilang',
+                                            'baik'   => 'Baik',
+                                            'rusak'  => 'Rusak',
+                                            'hilang' => 'Hilang',
                                         ]
                                         : [
                                             'ganti_buku'  => 'Ganti Buku',
@@ -226,19 +225,29 @@ class ViewTextbookLoan extends Page implements HasTable
                             }
 
                             if ($itemData['dikembalikan']) {
+                                $kondisi = $itemData['kondisi_atau_sanksi'];
+                                $jenisSanksi  = match ($kondisi) {
+                                    'rusak'  => 'bayar_harga',
+                                    'hilang' => 'ganti_buku',
+                                    default  => 'tidak_ada',
+                                };
+                                $statusSanksi = $jenisSanksi !== 'tidak_ada' ? 'belum_lunas' : 'tidak_ada';
+
                                 $item->update([
-                                    'kondisi_kembali'    => $itemData['kondisi_atau_sanksi'],
-                                    'status_sanksi'      => 'tidak_ada',
+                                    'kondisi_kembali'    => $kondisi,
+                                    'jenis_sanksi'       => $jenisSanksi,
+                                    'status_sanksi'      => $statusSanksi,
                                     'tgl_kembali_aktual' => today(),
                                 ]);
 
                                 $item->textbookItem->update([
-                                    'kondisi'      => $itemData['kondisi_atau_sanksi'],
-                                    'is_available' => $itemData['kondisi_atau_sanksi'] !== 'hilang',
+                                    'kondisi'      => $kondisi,
+                                    'is_available' => $kondisi !== 'hilang',
                                 ]);
                             } else {
                                 $item->update([
-                                    'status_sanksi' => $itemData['kondisi_atau_sanksi'],
+                                    'jenis_sanksi'  => $itemData['kondisi_atau_sanksi'],
+                                    'status_sanksi' => 'belum_lunas',
                                 ]);
                             }
                         }

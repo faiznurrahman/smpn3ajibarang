@@ -278,25 +278,25 @@ html  { color-scheme: light !important; }
 }
 
 /* ============================================================
-   Tables — Guru.html design
+   Tables — match library-reports (.rp-table) visual language
    ============================================================ */
 
-/* Table card — white, bordered, 12px radius, no shadow */
+/* Table card */
 .fi-ta-main {
     background: white !important;
-    border: 1px solid #e5e7eb !important;
-    border-radius: 12px !important;
+    border: 1px solid #e6eaf2 !important;
+    border-radius: 14px !important;
     overflow: hidden !important;
-    box-shadow: none !important;
+    box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
     margin: 0 !important;
 }
 
-/* Horizontal scroll — aktif, scrollbar tipis dan clean */
+/* Horizontal scroll — thin scrollbar */
 .fi-ta-content-ctn {
     overflow-x: auto !important;
     -webkit-overflow-scrolling: touch !important;
 }
-.fi-ta-content-ctn::-webkit-scrollbar { height: 5px !important; }
+.fi-ta-content-ctn::-webkit-scrollbar { height: 4px !important; }
 .fi-ta-content-ctn::-webkit-scrollbar-track { background: transparent !important; }
 .fi-ta-content-ctn::-webkit-scrollbar-thumb {
     background: #d4dae6 !important;
@@ -304,11 +304,12 @@ html  { color-scheme: light !important; }
 }
 .fi-ta-content-ctn::-webkit-scrollbar-thumb:hover { background: #b0b8ca !important; }
 
-/* Tabel minimal 600px — scroll kalau lebih sempit dari container */
+/* Table sizing — fit container, scroll only if content truly overflows */
 .fi-ta-table {
     width: 100% !important;
-    min-width: 600px !important;
+    min-width: 0 !important;
     table-layout: auto !important;
+    border-collapse: collapse !important;
 }
 
 /* Toolbar */
@@ -316,16 +317,16 @@ html  { color-scheme: light !important; }
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
-    padding: 12px 14px !important;
-    border-bottom: 1px solid #e5e7eb !important;
+    padding: 14px 20px !important;
+    border-bottom: 1px solid #e6eaf2 !important;
     background: white !important;
     flex-wrap: wrap !important;
 }
 
-/* Search inside toolbar — matches .toolbar .search in Guru.html */
+/* Search field inside toolbar */
 .fi-ta-search-field .fi-input-wrp {
     background: #f6f7f9 !important;
-    border-color: #e5e7eb !important;
+    border-color: #e6eaf2 !important;
     border-radius: 7px !important;
 }
 .fi-ta-search-field .fi-input {
@@ -333,72 +334,71 @@ html  { color-scheme: light !important; }
     font-size: 13px !important;
 }
 
-/* Table header — exact match to .tbl thead th */
+/* Table header — uppercase micro-label style (matches .rp-table thead th) */
 .fi-ta-header-cell {
-    background: #f5f7fb !important;
-    border-bottom: 1px solid #e5e7eb !important;
-    padding: 11px 14px !important;
-    font-size: 12px !important;
-    font-weight: 600 !important;
-    color: #4b5563 !important;
-    letter-spacing: 0.005em !important;
+    background: #f8f9fc !important;
+    border-bottom: 1px solid #e6eaf2 !important;
+    padding: 9px 14px !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: 0.07em !important;
+    color: #8b94a6 !important;
     white-space: nowrap !important;
     text-align: left !important;
 }
 
-/* Table body cells — exact match to .tbl tbody td */
+/* Table body cells (matches .rp-table tbody td) */
 .fi-ta-cell {
-    padding: 12px 14px !important;
-    border-bottom: 1px solid #e5e7eb !important;
-    font-size: 13.5px !important;
-    color: #111827 !important;
+    padding: 9px 14px !important;
+    border-bottom: 1px solid #f1f3f8 !important;
+    font-size: 13px !important;
+    color: #0f172a !important;
     vertical-align: middle !important;
-    max-width: 280px !important;
-    overflow-wrap: break-word !important;
-    word-break: break-word !important;
 }
 /* Last row: no bottom border */
 .fi-ta-row:last-child .fi-ta-cell {
     border-bottom: none !important;
 }
 
-/* Row hover */
+/* Row hover (matches .rp-table tbody tr:hover td) */
 .fi-ta-row:hover .fi-ta-cell,
 .fi-ta-row:hover td {
-    background: #f5f7fb !important;
+    background: #fafbfd !important;
 }
 
-/* Description text under main value — matches .name-cell .info span in Guru.html */
+/* Description text under main value */
 .fi-ta-text-description {
     font-size: 11.5px !important;
-    color: #9ca3af !important;
+    color: #8b94a6 !important;
     margin-top: 2px !important;
 }
 
-/* Circular avatar image in table cells */
+/* Circular avatar image */
 .fi-ta-image {
     border-radius: 50% !important;
     object-fit: cover !important;
 }
 
-/* Badge pills — match Guru.html .badge */
+/* Badge pills (matches .rp-badge) */
 .fi-badge {
     display: inline-flex !important;
     align-items: center !important;
-    gap: 5px !important;
-    font-size: 11.5px !important;
+    gap: 4px !important;
+    height: 20px !important;
+    font-size: 11px !important;
     font-weight: 600 !important;
-    padding: 3px 9px !important;
+    padding: 0 8px !important;
     border-radius: 999px !important;
-    line-height: 1.4 !important;
+    line-height: 1 !important;
 }
 
-/* Icon column (boolean active/inactive) — dot + text style from Guru.html */
+/* Icon column svg colours */
 .fi-ta-cell .fi-color-success svg { color: #16a34a !important; }
 .fi-ta-cell .fi-color-danger svg  { color: #dc2626 !important; }
 .fi-ta-cell .fi-color-gray svg    { color: #9ca3af !important; }
 
-/* Row action buttons — .btn.sm from Guru.html */
+/* Row action buttons */
 .fi-ta-row .fi-btn {
     height: 30px !important;
     padding: 0 10px !important;
@@ -406,35 +406,119 @@ html  { color-scheme: light !important; }
     border-radius: 7px !important;
 }
 
-/* Pagination — exact match to .pag in Guru.html */
+/* Pagination (matches .rp-pagination / .rp-pg-btn) */
 .fi-pagination {
     display: flex !important;
     align-items: center !important;
     justify-content: space-between !important;
     padding: 12px 16px !important;
-    border-top: 1px solid #e5e7eb !important;
+    border-top: 1px solid #e6eaf2 !important;
     font-size: 12.5px !important;
-    color: #4b5563 !important;
+    color: #8b94a6 !important;
 }
 .fi-pagination-btn {
     min-width: 30px !important;
     height: 30px !important;
     padding: 0 8px !important;
-    border-radius: 6px !important;
-    border: 1px solid #e5e7eb !important;
+    border-radius: 7px !important;
+    border: 1px solid #e6eaf2 !important;
     background: white !important;
     font-size: 12px !important;
-    color: #111827 !important;
+    font-weight: 500 !important;
+    color: #0f172a !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    transition: background 100ms !important;
 }
 .fi-pagination-btn:hover {
-    background: #f5f7fb !important;
+    background: #f5f7fc !important;
+    border-color: #d4dae6 !important;
 }
 .fi-pagination-btn.fi-active,
 .fi-pagination-btn[aria-current="page"] {
     background: #1e3a8a !important;
     color: white !important;
-    border-color: transparent !important;
+    border-color: #1e3a8a !important;
     font-weight: 600 !important;
+}
+.fi-pagination-btn:disabled {
+    opacity: 0.4 !important;
+    cursor: not-allowed !important;
+}
+
+/* ============================================================
+   Page tabs (getTabs() in ListRecords) — match .rp-tabs/.rp-tab
+   ============================================================ */
+
+/* Tab bar container */
+.fi-tabs {
+    display: flex !important;
+    gap: 4px !important;
+    background: #fff !important;
+    border: 1px solid #e6eaf2 !important;
+    border-radius: 12px !important;
+    padding: 4px !important;
+    margin-bottom: 16px !important;
+    box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
+    flex-wrap: wrap !important;
+}
+
+/* Individual tab button */
+.fi-tabs-item {
+    flex: 1 !important;
+    min-width: 110px !important;
+    padding: 8px 12px !important;
+    border-radius: 9px !important;
+    border: none !important;
+    background: none !important;
+    font-size: 12.5px !important;
+    font-weight: 500 !important;
+    color: #5a6478 !important;
+    cursor: pointer !important;
+    transition: background 100ms, color 100ms !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    gap: 6px !important;
+    white-space: nowrap !important;
+}
+
+.fi-tabs-item-label {
+    font-size: 12.5px !important;
+}
+
+.fi-tabs-item:hover {
+    background: #f5f7fc !important;
+    color: #0f172a !important;
+}
+
+/* Active tab — semi-blue fill, white text */
+.fi-tabs-item.fi-active,
+.fi-tabs-item[aria-selected="true"],
+.fi-tabs-item[aria-selected="1"] {
+    background: rgba(30, 58, 138, 0.82) !important;
+    color: #fff !important;
+    font-weight: 600 !important;
+    box-shadow: 0 1px 3px rgba(30,58,138,.25) !important;
+}
+
+/* Label & icon inside active tab — force white */
+.fi-tabs-item.fi-active .fi-tabs-item-label,
+.fi-tabs-item[aria-selected="true"] .fi-tabs-item-label,
+.fi-tabs-item[aria-selected="1"] .fi-tabs-item-label,
+.fi-tabs-item.fi-active > .fi-icon,
+.fi-tabs-item[aria-selected="true"] > .fi-icon,
+.fi-tabs-item[aria-selected="1"] > .fi-icon {
+    color: #fff !important;
+}
+
+/* Badge inside active tab — keep visible against blue bg */
+.fi-tabs-item.fi-active .fi-badge,
+.fi-tabs-item[aria-selected="true"] .fi-badge,
+.fi-tabs-item[aria-selected="1"] .fi-badge {
+    background: rgba(255,255,255,0.25) !important;
+    color: #fff !important;
 }
 
 /* ============================================================
@@ -603,14 +687,55 @@ html  { color-scheme: light !important; }
 }
 
 /* ============================================================
-   Badges / status pills in tables
+   Badges / status pills in tables — matches .rp-badge
    ============================================================ */
 .fi-badge {
-    font-size: 11.5px !important;
+    height: 20px !important;
+    font-size: 11px !important;
     font-weight: 600 !important;
-    padding: 3px 9px !important;
+    padding: 0 8px !important;
     border-radius: 999px !important;
+    display: inline-flex !important;
+    align-items: center !important;
+    line-height: 1 !important;
 }
+
+/* ============================================================
+   Messages table — highlight unread, compact rows
+   ============================================================ */
+
+/* Padding lebih rapat untuk semua baris pesan */
+.msg-unread .fi-ta-cell,
+.msg-read   .fi-ta-cell {
+    padding: 7px 12px !important;
+}
+
+/* Deskripsi (email/no HP di bawah nama) — kecil & rapat */
+.msg-unread .fi-ta-text-description,
+.msg-read   .fi-ta-text-description {
+    font-size:   11px   !important;
+    margin-top:  1px    !important;
+    line-height: 1.35   !important;
+    color:       #9ca3af !important;
+}
+
+/* ── Baris BELUM DIBACA: latar warm-cream + garis oranye kiri ── */
+.msg-unread .fi-ta-cell {
+    background:    #fffcf7 !important;
+    border-bottom: 1px solid #fde8c8 !important;
+}
+.msg-unread .fi-ta-cell:first-child {
+    border-left: 3px solid #ef7c2a !important;
+}
+.msg-unread:hover .fi-ta-cell        { background: #fff7ed !important; }
+.msg-unread .fi-color-warning svg    { color: #ef7c2a !important; }
+
+/* ── Baris SUDAH DIBACA: rata padding dengan unread ── */
+.msg-read .fi-ta-cell:first-child {
+    border-left: 3px solid transparent !important;
+}
+.msg-read:hover .fi-ta-cell { background: #fafbfd !important; }
+.msg-read .fi-color-gray svg { opacity: 0.4 !important; }
 
 /* ============================================================
    Empty state — cleaner, branded
@@ -699,5 +824,281 @@ html  { color-scheme: light !important; }
     display: flex !important;
     align-items: center !important;
     gap: 8px !important;
+}
+
+/* ============================================================
+   Loans table — setiap kolom punya ruang cukup, scroll
+   horizontal otomatis muncul saat container lebih sempit
+   dari min-width tabel.
+   ============================================================ */
+
+.tbl-loans .fi-ta-header-cell,
+.fi-ta-main.tbl-loans .fi-ta-header-cell {
+    padding: 7px 10px !important;
+    font-size: 9.5px !important;
+    letter-spacing: 0.06em !important;
+    white-space: nowrap !important;
+    vertical-align: middle !important;
+}
+
+.tbl-loans .fi-ta-cell,
+.fi-ta-main.tbl-loans .fi-ta-cell {
+    padding: 8px 10px !important;
+    font-size: 12.5px !important;
+    vertical-align: top !important;
+}
+
+/* Description (kode anggota / kode buku) — biarkan wrap, jangan terpotong */
+.tbl-loans .fi-ta-text-description,
+.fi-ta-main.tbl-loans .fi-ta-text-description {
+    font-size: 10.5px !important;
+    margin-top: 2px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+/* Badge */
+.tbl-loans .fi-badge,
+.fi-ta-main.tbl-loans .fi-badge {
+    height: 18px !important;
+    font-size: 10px !important;
+    padding: 0 7px !important;
+}
+
+/* Tombol aksi per baris */
+.tbl-loans .fi-ta-row .fi-btn,
+.fi-ta-main.tbl-loans .fi-ta-row .fi-btn {
+    height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 11px !important;
+    white-space: nowrap !important;
+}
+
+/* Tabel selalu auto-layout dengan lebar minimum cukup.
+   Jika container < 900px → .fi-ta-content-ctn scroll horizontal. */
+.tbl-loans .fi-ta-table,
+.fi-ta-main.tbl-loans .fi-ta-table {
+    table-layout: auto !important;
+    width: 100% !important;
+    min-width: 900px !important;
+}
+
+/* Anggota: wrap isi, lebar tetap 160px */
+.tbl-loans .fi-ta-table th:nth-child(2),
+.tbl-loans .fi-ta-table td:nth-child(2) {
+    width: 160px !important;
+    min-width: 160px !important;
+    max-width: 160px !important;
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+/* Buku: wrap, ambil sisa ruang */
+.tbl-loans .fi-ta-table th:nth-child(3),
+.tbl-loans .fi-ta-table td:nth-child(3) {
+    white-space: normal !important;
+    word-break: break-word !important;
+}
+
+/* Tgl Pinjam, Batas Kembali, Tgl Kembali: nowrap, ukuran ikut konten */
+.tbl-loans .fi-ta-table th:nth-child(4),
+.tbl-loans .fi-ta-table td:nth-child(4),
+.tbl-loans .fi-ta-table th:nth-child(5),
+.tbl-loans .fi-ta-table td:nth-child(5),
+.tbl-loans .fi-ta-table th:nth-child(6),
+.tbl-loans .fi-ta-table td:nth-child(6) {
+    white-space: nowrap !important;
+}
+
+/* Status: center */
+.tbl-loans .fi-ta-table th:nth-child(7),
+.tbl-loans .fi-ta-table td:nth-child(7) {
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+/* Aksi: center */
+.tbl-loans .fi-ta-table th:last-child,
+.tbl-loans .fi-ta-table td:last-child {
+    white-space: nowrap !important;
+    text-align: center !important;
+}
+
+/* ============================================================
+   GLOBAL — cegah horizontal scroll di semua ukuran layar
+   ============================================================ */
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
+/* ============================================================
+   MOBILE — Filament breakpoint lg = 1024px
+   ============================================================ */
+@media (max-width: 1023px) {
+
+  /* ── Layout wrapper: no horizontal bleed ─────────────── */
+  .fi-layout,
+  .fi-main-ctn,
+  .fi-main,
+  .fi-body {
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
+
+  /* ── Sidebar: full-screen, nav scrollable ────────────── */
+  /*
+   * JANGAN set display:flex !important di sini.
+   * Alpine.js (x-show) set inline style="display:none" tanpa !important
+   * sehingga kalah jika kita pakai !important → sidebar tidak bisa ditutup.
+   * Filament v5 sudah membuat sidebar flex-column secara default.
+   * Kita cukup paksa tinggi & overflow.
+   */
+  .fi-sidebar {
+    height: 100dvh !important;
+    min-height: 100dvh !important;
+    max-height: 100dvh !important;
+    overflow: hidden !important;
+    /* Pastikan posisi fixed saat overlay mobile */
+    position: fixed !important;
+    top: 0 !important;
+    left: 0 !important;
+    z-index: 40 !important;
+  }
+
+  .fi-sidebar-header {
+    flex-shrink: 0 !important;
+  }
+
+  /* Nav: ambil sisa tinggi dan scroll jika menu panjang */
+  .fi-sidebar-nav {
+    flex: 1 1 0% !important;
+    min-height: 0 !important;
+    overflow-y: auto !important;
+    overflow-x: hidden !important;
+    -webkit-overflow-scrolling: touch !important;
+    padding: 10px 10px !important;
+  }
+
+  .fi-sidebar-footer {
+    flex-shrink: 0 !important;
+  }
+
+  /* ── Topbar: sesuai lebar layar HP ───────────────────── */
+  .fi-topbar-ctn {
+    /* overflow:visible dijaga (Floating UI); width dikunci */
+    width: 100% !important;
+    max-width: 100vw !important;
+    box-sizing: border-box !important;
+  }
+
+  .fi-topbar {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    height: 56px !important;
+    min-height: 56px !important;
+  }
+
+  /* End section — kompak di mobile */
+  .fi-topbar-end {
+    padding-right: 10px !important;
+    gap: 6px !important;
+    height: 56px !important;
+    flex-shrink: 0 !important;
+    min-width: 0 !important;
+  }
+
+  .nbb-wrap::after {
+    margin-left: 5px !important;
+  }
+
+  .fi-topbar .fi-user-menu-trigger {
+    width: 32px !important;
+    height: 32px !important;
+  }
+
+  .fi-topbar .fi-user-avatar {
+    width: 24px !important;
+    height: 24px !important;
+  }
+
+  /* ── Page header & content ────────────────────────────── */
+  .fi-page-header {
+    padding: 14px 14px 0 !important;
+  }
+
+  .fi-page-header-heading {
+    font-size: 18px !important;
+    letter-spacing: -0.01em !important;
+  }
+
+  .fi-page-content {
+    padding: 12px 14px 24px !important;
+    overflow-x: hidden !important;
+  }
+
+  /* ── Filament tabs: tidak overflow ───────────────────── */
+  .fi-tabs {
+    gap: 3px !important;
+    overflow-x: hidden !important;
+  }
+
+  .fi-tabs-item {
+    min-width: 0 !important;
+    flex: 1 1 0% !important;
+    padding: 7px 8px !important;
+    font-size: 11.5px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+    text-align: center !important;
+  }
+
+  .fi-tabs-item-label {
+    font-size: 11.5px !important;
+    white-space: normal !important;
+    line-height: 1.3 !important;
+  }
+
+  /* ── Table toolbar ────────────────────────────────────── */
+  .fi-ta-header-toolbar {
+    padding: 10px 14px !important;
+    gap: 6px !important;
+  }
+
+  /* ── Pagination ───────────────────────────────────────── */
+  .fi-pagination {
+    padding: 8px 12px !important;
+    flex-wrap: wrap !important;
+    gap: 6px !important;
+    font-size: 11.5px !important;
+  }
+
+  .fi-pagination-btn {
+    min-width: 28px !important;
+    height: 28px !important;
+    font-size: 11px !important;
+    padding: 0 6px !important;
+  }
+
+  /* ── Modal ────────────────────────────────────────────── */
+  .fi-modal-window {
+    margin: 10px !important;
+    max-width: calc(100vw - 20px) !important;
+    width: calc(100vw - 20px) !important;
+  }
+
+  .fi-modal-content {
+    padding: 14px !important;
+  }
+
+  .fi-modal-header {
+    padding: 12px 16px !important;
+  }
+
+  .fi-modal-footer {
+    padding: 10px 16px !important;
+  }
 }
 

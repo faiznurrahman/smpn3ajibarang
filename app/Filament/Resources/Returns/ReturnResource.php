@@ -11,7 +11,6 @@ use Filament\Resources\Resource;
 use Filament\Schemas\Schema;
 use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
 
 class ReturnResource extends Resource
 {
@@ -36,20 +35,15 @@ class ReturnResource extends Resource
 
     public static function getNavigationBadge(): ?string
     {
-        $late = static::getModel()::where('status', 'terlambat')->count();
+        $late = static::getModel()::where('status', 'terlambat')
+            ->whereNull('tgl_kembali')
+            ->count();
         return $late ? (string) $late : null;
     }
 
     public static function getNavigationBadgeColor(): string
     {
         return 'danger';
-    }
-
-    public static function getEloquentQuery(): Builder
-    {
-        return parent::getEloquentQuery()
-            ->whereIn('status', ['dipinjam', 'terlambat'])
-            ->whereNull('tgl_kembali');
     }
 
     public static function table(Table $table): Table

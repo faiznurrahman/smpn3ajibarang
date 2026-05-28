@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Member extends Model
 {
     protected $fillable = [
-        'kode_anggota', 'nama', 'kelas', 'jenis', 'no_hp', 'is_active',
-        'tahun_masuk', 'status',
+        'teacher_id', 'kode_anggota', 'nama', 'kelas', 'jenis', 'no_hp',
+        'is_active', 'tahun_masuk', 'status',
     ];
 
     protected $casts = [
         'is_active'   => 'boolean',
         'tahun_masuk' => 'integer',
     ];
+
+    public function teacher()
+    {
+        return $this->belongsTo(Teacher::class);
+    }
 
     public function loans()
     {

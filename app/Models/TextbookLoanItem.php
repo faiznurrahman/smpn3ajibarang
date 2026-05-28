@@ -8,7 +8,9 @@ class TextbookLoanItem extends Model
 {
     protected $fillable = [
         'loan_id', 'member_id', 'textbook_item_id',
-        'kondisi_pinjam', 'kondisi_kembali', 'status_sanksi', 'tgl_kembali_aktual',
+        'kondisi_pinjam', 'kondisi_kembali',
+        'jenis_sanksi', 'status_sanksi', 'nominal_sanksi', 'tgl_selesai_sanksi', 'catatan_sanksi',
+        'tgl_kembali_aktual',
     ];
 
     protected $casts = [

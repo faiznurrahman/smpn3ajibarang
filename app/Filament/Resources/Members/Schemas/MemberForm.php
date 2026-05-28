@@ -8,7 +8,6 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Schema;
-use Illuminate\Support\Collection;
 
 class MemberForm
 {
@@ -19,12 +18,10 @@ class MemberForm
             Section::make('Data Anggota')
                 ->schema([
                     Grid::make(2)->schema([
+
                         Select::make('jenis')
                             ->label('Jenis Anggota')
-                            ->options([
-                                'siswa' => 'Siswa',
-                                'guru'  => 'Guru',
-                            ])
+                            ->options(['siswa' => 'Siswa', 'guru' => 'Guru'])
                             ->default('siswa')
                             ->required()
                             ->live(),
@@ -40,24 +37,22 @@ class MemberForm
                             ->required()
                             ->columnSpanFull(),
 
-                        Select::make('tahun_masuk')
-                            ->label('Tahun Masuk (Angkatan)')
-                            ->options(
-                                Collection::times(4, fn ($i) => now()->year - $i + 1)
-                                    ->mapWithKeys(fn ($y) => [$y => 'Angkatan ' . $y])
-                                    ->toArray()
-                            )
-                            ->placeholder('Pilih tahun masuk')
+                        TextInput::make('tahun_masuk')
+                            ->label('Angkatan (Tahun Masuk)')
+                            ->numeric()
+                            ->minValue(2010)
+                            ->maxValue(now()->year + 2)
+                            ->placeholder('Contoh: ' . now()->year)
+                            ->helperText('Tahun pertama siswa masuk sekolah')
                             ->hidden(fn ($get) => $get('jenis') !== 'siswa')
-                            ->required(fn ($get) => $get('jenis') === 'siswa')
-                            ->helperText('Tahun pertama siswa masuk sekolah ini'),
+                            ->required(fn ($get) => $get('jenis') === 'siswa'),
 
                         TextInput::make('kelas')
                             ->label('Kelas')
                             ->placeholder('Contoh: 7A, 8B, 9C')
+                            ->maxLength(10)
                             ->hidden(fn ($get) => $get('jenis') !== 'siswa')
-                            ->required(fn ($get) => $get('jenis') === 'siswa')
-                            ->maxLength(10),
+                            ->required(fn ($get) => $get('jenis') === 'siswa'),
 
                         Select::make('status')
                             ->label('Status Keanggotaan')
@@ -73,7 +68,8 @@ class MemberForm
                         TextInput::make('no_hp')
                             ->label('No. HP / WhatsApp')
                             ->tel()
-                            ->placeholder('contoh: 081234567890'),
+                            ->placeholder('08xxxxxxxxxx'),
+
                     ]),
                 ]),
 

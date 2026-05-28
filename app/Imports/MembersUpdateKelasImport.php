@@ -3,31 +3,38 @@
 namespace App\Imports;
 
 use App\Models\Member;
-use Maatwebsite\Excel\Concerns\ToModel;
+use Illuminate\Support\Collection;
+use Maatwebsite\Excel\Concerns\ToCollection;
 use Maatwebsite\Excel\Concerns\WithHeadingRow;
 
-class MembersUpdateKelasImport implements ToModel, WithHeadingRow
+class MembersUpdateKelasImport implements ToCollection, WithHeadingRow
 {
     public int   $updated      = 0;
     public int   $notFound     = 0;
     public array $notFoundList = [];
 
-    public function model(array $row): ?Member
+    public function collection(Collection $rows): void
     {
-        $member = Member::where('kode_anggota', $row['kode_anggota'])->first();
+        foreach ($rows as $row) {
+            $row       = $row->toArray();
+            $nis       = trim($row['nis'] ?? '');
+            $kelasBaru = trim($row['kelas_baru'] ?? '');
 
-        if (! $member) {
-            $this->notFound++;
-            $this->notFoundList[] = $row['kode_anggota'];
-            return null;
+            // Kolom nama & kelas_sekarang hanya referensi, diabaikan
+            if ($nis === '' || $kelasBaru === '') {
+                continue;
+            }
+
+            $member = Member::where('kode_anggota', $nis)->first();
+
+            if (! $member) {
+                $this->notFound++;
+                $this->notFoundList[] = $nis;
+                continue;
+            }
+
+            $member->update(['kelas' => $kelasBaru]);
+            $this->updated++;
         }
-
-        $member->update([
-            'kelas' => $row['kelas_baru'],
-        ]);
-
-        $this->updated++;
-
-        return null;
     }
 }

@@ -7,8 +7,9 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 Website Profil dan Sistem Informasi Perpustakaan SMP Negeri 3 Ajibarang — Laravel 13 + Filament v5 + Livewire v3 + Tailwind CSS v4.
 
 - **Frontend publik**: blade views di `resources/views/pages/` untuk halaman sekolah (beranda, tentang, informasi, galeri, kontak)
+- **Kiosk perpustakaan**: halaman publik di `/perpustakaan` untuk absensi pengunjung + katalog buku
 - **Panel admin**: Filament v5 di `/admin`, dikustomisasi penuh (login, dashboard, tema, semua resource dengan label Indonesia)
-- **Sistem perpustakaan**: modul di dalam panel admin untuk pengelolaan buku, anggota, peminjaman, pengembalian, denda, dan laporan
+- **Sistem perpustakaan**: modul di dalam panel admin untuk pengelolaan buku, anggota, peminjaman, pengembalian, denda, buku paket, sanksi, kunjungan, dan laporan
 
 ## Informasi Proyek
 
@@ -26,38 +27,57 @@ Website Profil dan Sistem Informasi Perpustakaan SMP Negeri 3 Ajibarang — Lara
 
 | Role | Akses |
 |---|---|
-| Admin | Kelola seluruh konten website profil sekolah |
-| Petugas Perpustakaan | Kelola data buku, anggota, peminjaman, pengembalian, denda, cetak laporan |
-| Kepala Sekolah | Lihat laporan perpustakaan saja (read only) |
-| Masyarakat Umum | Akses frontend publik tanpa login |
+| Admin | Kelola seluruh konten website profil sekolah + manajemen pengguna |
+| Petugas Perpustakaan | Kelola data buku, anggota, peminjaman, pengembalian, denda, sanksi, buku paket, kunjungan, cetak laporan |
+| Kepala Sekolah | Lihat dashboard perpustakaan + laporan + statistik website (semua read only) |
+| Masyarakat Umum | Akses frontend publik + kiosk perpustakaan tanpa login |
 
 ### Fitur Website Profil Sekolah (Frontend Publik)
 
 Halaman yang tersedia:
 - Beranda — informasi umum sekolah
-- Tentang Kami — sejarah, visi misi, fasilitas sekolah
-- Guru & Staf — data guru dan tenaga pendidik
-- Prestasi — prestasi sekolah
+- Tentang Kami — sejarah, visi misi, struktur organisasi, guru, ekstrakurikuler
+- Informasi — berita & pengumuman (list + detail)
 - Galeri — dokumentasi foto kegiatan
-- Berita & Pengumuman — informasi terbaru sekolah
 - Kontak — form pesan dan informasi kontak
 
-### Fitur Sistem Informasi Perpustakaan
+### Fitur Kiosk Perpustakaan (Publik, tanpa login)
 
-- Manajemen data buku (tambah, edit, hapus, cari berdasarkan kategori)
-- Manajemen data anggota perpustakaan (siswa dan guru)
+Route prefix `/perpustakaan`, controller `LibraryKioskController`:
+- `/perpustakaan` — landing page kiosk
+- `/perpustakaan/hadir` — form absensi pengunjung (simpan ke tabel `visits`)
+- `/perpustakaan/katalog` — katalog buku (search judul/penulis/penerbit/kode, filter kategori)
+- `/perpustakaan/anggota/cari` — JSON API pencarian anggota (untuk form absensi)
+
+### Fitur Sistem Informasi Perpustakaan (Admin Panel)
+
+**Buku & Peminjaman Reguler:**
+- Manajemen data buku (tambah, edit, hapus; field: kode_buku, isbn, judul, penulis, penerbit, tahun, kategori, rak, stok, cover, deskripsi)
+- Import buku massal via Excel (template download `/admin/books/template`)
+- Manajemen data anggota (siswa + guru; field: kode_anggota, nama, jenis, kelas, tahun_masuk, status, teacher_id)
+- Import anggota massal + update kelas massal via Excel
 - Transaksi peminjaman buku (catat tanggal pinjam dan batas kembali)
-- Transaksi pengembalian buku (catat tanggal pengembalian aktual)
-- Pengelolaan denda keterlambatan (hitung otomatis Rp 1.000/hari)
-- Laporan perpustakaan (data buku, anggota, transaksi — dapat dicetak)
+- Transaksi pengembalian buku (modal tanggal kembali, kondisi, auto-hitung denda Rp 1.000/hari)
+- Pengelolaan denda keterlambatan (update status bayar + tanggal bayar)
+- Sanksi buku (kerusakan/hilang saat pengembalian: ganti_buku / bayar_harga)
+- Laporan perpustakaan (data buku, anggota, transaksi — cetak PDF)
+
+**Buku Paket:**
+- Manajemen data buku paket (judul, mata_pelajaran, untuk_tingkat, total_eksemplar; auto-generate item dengan kode unik)
+- Distribusi buku paket ke siswa per tahun ajaran & tingkat (auto-assign eksemplar ke anggota aktif)
+- Sanksi buku paket (kondisi kembali: rusak/hilang; status: belum_lunas/lunas)
+
+**Kunjungan & Laporan:**
+- Data kunjungan perpustakaan (dari kiosk `/perpustakaan/hadir`; filter tanggal)
+- Laporan perpustakaan dengan rekap statistik (peminjaman, denda, kunjungan, sanksi)
 
 ### Batasan Sistem
 
-- Siswa tidak bisa mencari buku atau mendaftar anggota secara mandiri
-- Semua transaksi dilakukan melalui petugas perpustakaan
+- Siswa tidak bisa mencari buku atau mendaftar anggota secara mandiri (kecuali melalui kiosk absensi)
+- Semua transaksi peminjaman dilakukan melalui petugas perpustakaan
 - Sistem tidak mencakup pengadaan atau pembelian buku baru
 - Sistem hanya bisa diakses saat perangkat terhubung internet
-- Pembagian hak akses dibatasi sesuai peran — setiap pengguna hanya akses fitur sesuai kewenangannya
+- Pembagian hak akses dibatasi sesuai peran
 
 ## Commands
 
@@ -108,10 +128,13 @@ Panel dikonfigurasi di `app/Providers/Filament/AdminPanelProvider.php`:
 | `resources/views/filament/admin/auth/login-layout.blade.php` | Layout login: centered card di atas background `#f6f7f9`, logo mark S3 + nama sekolah, form Filament di `{{ $slot }}` |
 | `app/Filament/Admin/Pages/Dashboard.php` | Dashboard router berdasarkan role: Admin → `dashboard.blade.php`, Petugas/Kepala → `library-dashboard.blade.php` |
 | `resources/views/filament/admin/pages/dashboard.blade.php` | Dashboard Admin: stats 4 cards, 2-col (pesan + aktivitas), 3-col (berita + agenda + aksi cepat) |
-| `resources/views/filament/admin/pages/library-dashboard.blade.php` | Dashboard Perpustakaan: stats 4 cards (buku/anggota/dipinjam/denda), peminjaman aktif + denda belum lunas |
+| `resources/views/filament/admin/pages/library-dashboard.blade.php` | Dashboard Perpustakaan: stats cards (buku/anggota/dipinjam/denda/buku paket/kunjungan), peminjaman aktif + denda belum lunas |
+| `app/Filament/Admin/Pages/StatistikWebsite.php` | Halaman statistik website untuk KepalaSekolah (read-only: berita, guru, galeri, ekskul, video, pesan) |
 | `resources/css/filament/admin/theme.css` | Tema Filament: sidebar, topbar, tabel, form inputs, tombol — semua mengikuti design `Guru.html` |
 | `resources/views/filament/admin/components/brand.blade.php` | Logo sidebar kustom: query `Setting::value('logo')`, fallback "S3" mark navy; dipasang via `PanelsRenderHook::SIDEBAR_LOGO_BEFORE` |
 | `resources/views/filament/admin/components/notification-bell.blade.php` | Bell icon di topbar: red dot jika ada pesan/draft/agenda; dropdown Alpine.js 3 seksi; dipasang via `PanelsRenderHook::GLOBAL_SEARCH_BEFORE` |
+| `resources/views/filament/admin/pages/library-reports.blade.php` | Halaman laporan perpustakaan untuk Petugas (rekap + PDF) |
+| `resources/views/filament/admin/pages/library-reports-kepsek.blade.php` | Halaman laporan perpustakaan untuk KepalaSekolah (read-only view) |
 
 **Cara override di Filament v5:**
 - Login: override `protected static string $layout` (bukan `$view`) → layout menerima `$slot` berisi rendered form
@@ -131,9 +154,10 @@ Panel dikonfigurasi di `app/Providers/Filament/AdminPanelProvider.php`:
 Enum: `App\Enums\UserRole` — nilai: `admin`, `petugas_perpustakaan`, `kepala_sekolah`
 
 Setiap resource override `canAccess(): bool`. Pola:
-- Resource website profil sekolah (12 resource): `return auth()->user()?->role === UserRole::Admin;`
-- Resource perpustakaan (Books, Members, Loans, Returns, Fines): `return auth()->user()?->role === UserRole::PetugasPerpustakaan;`
+- Resource website profil sekolah (12 resource) + Users: `return auth()->user()?->role === UserRole::Admin;`
+- Resource perpustakaan (Books, Members, Loans, Returns, Fines, Sanksis, Textbooks, TextbookLoans, TextbookSanksis, Visits): `return auth()->user()?->role === UserRole::PetugasPerpustakaan;`
 - LibraryReportResource: `return in_array($role, [UserRole::PetugasPerpustakaan, UserRole::KepalaSekolah]);`
+- StatistikWebsite page: `return auth()->user()?->role === UserRole::KepalaSekolah;`
 
 Dashboard routing di `Dashboard::getView()`:
 - `UserRole::Admin` → `filament.admin.pages.dashboard`
@@ -143,9 +167,9 @@ Dashboard routing di `Dashboard::getView()`:
 
 | Email | Role | Akses |
 |---|---|---|
-| `admin@smpn3ajibarang.sch.id` | Admin | Konten sekolah, pengaturan |
-| `petugas@smpn3ajibarang.sch.id` | Petugas Perpustakaan | CRUD buku, anggota, peminjaman, pengembalian, denda |
-| `kepala@smpn3ajibarang.sch.id` | Kepala Sekolah | Laporan perpustakaan (read only) |
+| `admin@smpn3ajibarang.sch.id` | Admin | Konten sekolah, pengaturan, manajemen pengguna |
+| `petugas@smpn3ajibarang.sch.id` | Petugas Perpustakaan | CRUD buku, anggota, peminjaman, pengembalian, denda, sanksi, buku paket, kunjungan |
+| `kepala@smpn3ajibarang.sch.id` | Kepala Sekolah | Dashboard perpustakaan + laporan + statistik website (read only) |
 
 **Catatan password seeder:** Jangan pakai `Hash::make()` di seeder jika User model sudah punya cast `'password' => 'hashed'` — akan double-hash dan login gagal. Cukup tulis string plain: `'password' => 'password'`.
 
@@ -176,7 +200,7 @@ Referensi desain ada di folder `design/` (Login.html, Dasbor Admin.html, Guru.ht
 
 ### Navigation Groups & Labels
 
-**Website Profil Sekolah — selesai (12 resource, hanya Admin):**
+**Website Profil Sekolah — selesai (13 resource, hanya Admin):**
 
 | Group | Resource | Label |
 |---|---|---|
@@ -193,31 +217,48 @@ Referensi desain ada di folder `design/` (Login.html, Dasbor Admin.html, Guru.ht
 | Komunikasi | ContactInfos | Informasi Kontak |
 | Komunikasi | SocialMedia | Media Sosial |
 | Sistem | Settings | Pengaturan |
+| Sistem | Users | Manajemen Pengguna |
 
 Resource yang non-creatable/non-deletable: `ContactInfos`, `Messages`, `Settings`.
 
-**Sistem Informasi Perpustakaan — selesai (6 resource):**
+**Sistem Informasi Perpustakaan — selesai (11 resource):**
 
-| Group | Resource | Label | Akses |
+| Group | Resource | Label | Akses | Catatan |
+|---|---|---|---|---|
+| Perpustakaan | Books | Data Buku | Petugas | Import Excel + template download |
+| Perpustakaan | Members | Data Anggota | Petugas | Import + update kelas massal via Excel |
+| Perpustakaan | Loans | Peminjaman Buku | Petugas | |
+| Perpustakaan | Returns | Pengembalian Buku | Petugas | Hanya List + action Kembalikan |
+| Perpustakaan | Fines | Denda Keterlambatan | Petugas | Hanya Edit (status bayar) |
+| Perpustakaan | Sanksis | Sanksi Buku | Petugas | Read-only; badge merah jumlah belum_lunas |
+| Perpustakaan | Visits | Kunjungan | Petugas | Read-only; data dari kiosk; badge hari ini |
+| Perpustakaan | LibraryReports | Laporan Perpustakaan | Petugas + Kepala | Read-only, cetak PDF |
+| Buku Paket | Textbooks | Data Buku Paket | Petugas | Auto-generate item eksemplar |
+| Buku Paket | TextbookLoans | Distribusi Buku Paket | Petugas | Auto-assign ke siswa per tingkat |
+| Buku Paket | TextbookSanksis | Sanksi Buku Paket | Petugas | Read-only; badge merah jumlah belum_lunas |
+
+**Halaman tambahan KepalaSekolah:**
+
+| Group | Page | Label | Akses |
 |---|---|---|---|
-| Perpustakaan | Books | Data Buku | Petugas |
-| Perpustakaan | Members | Data Anggota | Petugas |
-| Perpustakaan | Loans | Peminjaman Buku | Petugas |
-| Perpustakaan | Returns | Pengembalian Buku | Petugas |
-| Perpustakaan | Fines | Denda Keterlambatan | Petugas |
-| Perpustakaan | LibraryReports | Laporan Perpustakaan | Petugas + Kepala |
+| *(tanpa group)* | StatistikWebsite | Statistik Website | Kepala Sekolah |
 
-Catatan resource perpustakaan:
-- `Returns` — tidak punya halaman Create/Edit; hanya List dengan action **Kembalikan** (modal tanggal kembali, auto-hitung denda Rp 1.000/hari)
+**Catatan resource perpustakaan:**
+- `Returns` — tidak punya halaman Create/Edit; hanya List dengan action **Kembalikan** (modal tanggal kembali + kondisi, auto-hitung denda Rp 1.000/hari + catat sanksi jika kondisi rusak/hilang)
 - `Fines` — tidak punya Create; hanya Edit untuk update status bayar + tanggal bayar
+- `Sanksis` — model `Loan`, filter `status_sanksi != tidak_ada`; action untuk tandai lunas
 - `LibraryReports` — read-only untuk semua role; `canCreate/Edit/Delete` semuanya false
-- Kode buku auto-generate `BK-XXXX`, kode anggota `ANK-XXXX` (siswa) / `GRU-XXXX` (guru) via model `booted()`
+- `Textbooks` — saat create/edit, `generateItems()` auto-buat eksemplar dengan kode `{kode_prefix}-001` dst.
+- `TextbookLoans` — action **Distribusikan** memanggil `distributeToMembers()` yang auto-assign eksemplar available ke siswa aktif berdasarkan `tahun_masuk` + `untuk_tingkat`
+- `TextbookSanksis` — model `TextbookLoanItem`, filter `status_sanksi = belum_lunas`
+- Kode buku auto-generate `BK-XXXX` via model `booted()`
+- Kode anggota siswa: `ANK-XXXX` (lama) atau NIS langsung dari import Excel
 
 ### Resource Structure Pattern
 ```
 app/Filament/Resources/NamaResource/
 ├── NamaResource.php      # navigationLabel, navigationGroup, navigationIcon, navigationSort, canAccess()
-├── Pages/                # List, Create, Edit (+ View untuk Messages)
+├── Pages/                # List, Create, Edit (+ View untuk Messages/TextbookLoans)
 ├── Schemas/              # Form schema — gunakan Section + Grid untuk layout 2-col
 └── Tables/               # Table columns + filters
 ```
@@ -232,13 +273,16 @@ Form schema convention (mengikuti Guru.html):
 `mount()` load data berbeda berdasarkan role:
 
 **Admin (loadSchoolData):**
-- `$totalBerita`, `$pesanBelumDibaca`, `$totalGuru`, `$siswaAktif`, `$totalPesan`
+- `$totalBerita`, `$draftBerita`, `$pesanBelumDibaca`, `$totalGuru`, `$siswaAktif` (dari `settings.jumlah_siswa`)
+- `$totalPesan`, `$totalGaleri`, `$totalEkskul`
 - `$recentMessages` — 5 unread messages terbaru
 - `$recentPosts` — 4 published posts terbaru
 - `$recentActivities` — feed dari updated_at Post + Teacher + Gallery
 
 **Petugas / Kepala (loadLibraryData):**
 - `$totalBuku`, `$totalAnggota`, `$peminjamAktif`, `$dendaBelumLunas`, `$totalDenda`
+- `$bukuPaketAktif` — jumlah `TextbookLoan` dengan status aktif
+- `$kunjunganHariIni`, `$kunjunganMingguIni`, `$kunjunganBulanIni`
 - `$recentLoans` — 6 peminjaman aktif/terlambat, diurutkan batas kembali terdekat
 - `$recentFines` — 5 denda belum lunas terbaru
 
@@ -246,18 +290,56 @@ Form schema convention (mengikuti Guru.html):
 
 **Tabel perpustakaan:**
 ```
-books    — id, kode_buku, judul, pengarang, penerbit, tahun, kategori, stok, cover, is_active
-members  — id, kode_anggota, nama, kelas, jenis(siswa/guru), no_hp, is_active
-loans    — id, book_id, member_id, tgl_pinjam, tgl_batas_kembali, tgl_kembali, status(dipinjam/dikembalikan/terlambat), petugas_id
-fines    — id, loan_id, jumlah_hari, nominal, status_bayar(belum_lunas/lunas), tgl_bayar
-users    — ... + role(admin/petugas_perpustakaan/kepala_sekolah) [default: admin]
+books          — id, kode_buku, isbn, judul, penulis, penerbit, tahun, kategori, rak, stok, cover, deskripsi, is_active
+members        — id, teacher_id(FK), kode_anggota, nama, jenis(siswa/guru), kelas, tahun_masuk, status(aktif/alumni/keluar), no_hp, is_active
+loans          — id, book_id, member_id, tgl_pinjam, tgl_batas_kembali, tgl_kembali, status(dipinjam/dikembalikan/terlambat),
+                 kondisi_kembali(baik/rusak/hilang), jenis_sanksi(tidak_ada/ganti_buku/bayar_harga),
+                 nominal_sanksi, status_sanksi(tidak_ada/belum_lunas/lunas), tgl_selesai_sanksi, catatan_sanksi, petugas_id
+fines          — id, loan_id, jumlah_hari, nominal, status_bayar(belum_lunas/lunas), tgl_bayar
+textbooks      — id, judul, mata_pelajaran, untuk_tingkat(7/8/9), kode_prefix, penerbit, tahun_terbit, total_eksemplar, is_active
+textbook_items — id, textbook_id, kode_item, kondisi(baik/rusak/hilang), is_available
+textbook_loans — id, tahun_ajaran, untuk_tingkat, tgl_distribusi, tgl_kembali, status(aktif/selesai), petugas_id
+textbook_loan_items — id, loan_id, member_id, textbook_item_id, kondisi_pinjam, kondisi_kembali,
+                      jenis_sanksi, status_sanksi(belum_lunas/lunas), nominal_sanksi, tgl_selesai_sanksi, catatan_sanksi, tgl_kembali_aktual
+visits         — id, nama, jenis_pengunjung(siswa/guru/umum), kelas, keperluan, tgl_kunjungan, jam_kunjungan
+users          — ... + role(admin/petugas_perpustakaan/kepala_sekolah), is_active [default role: admin]
 ```
+
+**Member — computed attributes:**
+- `tingkat` — dihitung otomatis dari `tahun_masuk` + tahun berjalan (kembali 7/8/9 atau null)
+- `angkatan_label` — "Angkatan {tahun_masuk}"
+- scope `aktif()` — filter `status = aktif`
+- scope `siswa()` — filter `jenis = siswa`
+- scope `tingkat($tahunAjaran, $tingkat)` — filter by `tahun_masuk` yang sesuai tingkat di tahun ajaran tertentu
+
+**Book — computed attributes:**
+- `stok_tersedia` — `stok - activeLoans().count()`
+- `stok_dipinjam` — `activeLoans().count()`
 
 ### Public Website
 
 `PageController` = satu controller untuk semua halaman publik. Inject `getSharedData()` (settings, contactInfo, socialMedia) + data spesifik. Halaman "Tentang" juga inject `getAboutSidebar()`.
 
 Tabel konten publik: `posts`, `teachers`, `galleries` + `gallery_images`, `extracurriculars`, `organizational_structures`, `principal_greetings`, `video_profiles`, `profiles`. Pesan dari form kontak → `messages`.
+
+### Import / Export
+
+| File | Keterangan |
+|---|---|
+| `app/Imports/MembersImport.php` | Import anggota siswa dari Excel (kolom: nis, nama, kelas, angkatan, no_hp) |
+| `app/Imports/MembersUpdateKelasImport.php` | Update kelas massal anggota dari Excel |
+| `app/Exports/BooksTemplateExport.php` | Template Excel kosong untuk import buku |
+| `app/Exports/MembersTemplateExport.php` | Template Excel kosong untuk import anggota |
+| `app/Exports/MembersUpdateKelasTemplateExport.php` | Template Excel kosong untuk update kelas |
+
+Route download template (auth required, role Petugas):
+- `GET /admin/books/template` — template import buku
+- `GET /admin/members/template/import` — template import anggota
+- `GET /admin/members/template/update-kelas` — template update kelas
+
+### PDF Laporan
+
+`LibraryPdfController::download()` — route `GET /admin/laporan-perpustakaan/pdf` (auth, Petugas + Kepala). Render view `pdf/laporan-perpustakaan.blade.php` dengan data filter (tanggal, jenis laporan).
 
 ### Asset Pipeline
 
@@ -270,8 +352,8 @@ Setelah edit `theme.css` wajib jalankan `npm run build` / `npm run dev`.
 
 ## Remaining Work
 
-- [ ] Frontend publik (halaman beranda, tentang, dll.) belum disentuh — masih menggunakan template lama
-- [ ] Agenda mendatang di dashboard masih **hardcoded/static** — perlu tabel `agendas` di DB
+- [ ] Frontend publik (halaman beranda, tentang, dll.) perlu penyempurnaan — blade views sudah ada tapi mungkin belum optimal
+- [ ] Agenda mendatang di dashboard Admin masih **hardcoded/static** — perlu tabel `agendas` di DB
 - [ ] Topbar Filament (breadcrumb) belum disesuaikan desain
 
 ## Sudah Selesai
@@ -280,9 +362,18 @@ Setelah edit `theme.css` wajib jalankan `npm run build` / `npm run dev`.
 - [x] Semua tabel list disesuaikan desain Guru.html (padding, font, warna, badge, avatar circular, deskripsi sekunder)
 - [x] Sidebar brand logo + notification bell (render hooks)
 - [x] Global search dinonaktifkan (`->globalSearch(false)`)
-- [x] 12 resource website profil sekolah selesai
+- [x] 13 resource website profil sekolah selesai (termasuk Users/Manajemen Pengguna)
 - [x] Role-based access control (Admin / Petugas / Kepala) dengan `canAccess()` per resource
-- [x] 6 resource sistem perpustakaan selesai (Books, Members, Loans, Returns, Fines, LibraryReports)
+- [x] 11 resource sistem perpustakaan selesai (Books, Members, Loans, Returns, Fines, Sanksis, Visits, LibraryReports, Textbooks, TextbookLoans, TextbookSanksis)
 - [x] Dashboard berbeda per role (sekolah vs perpustakaan)
 - [x] Denda otomatis Rp 1.000/hari saat pengembalian terlambat
-- [x] Auto-generate kode buku (BK-XXXX) dan kode anggota (ANK-/GRU-XXXX)
+- [x] Sistem sanksi buku (kondisi rusak/hilang → ganti_buku / bayar_harga)
+- [x] Modul buku paket lengkap (Data, Distribusi per tingkat, Sanksi)
+- [x] Kiosk perpustakaan publik (absensi pengunjung + katalog buku)
+- [x] Data kunjungan dari kiosk masuk ke resource Visits di admin
+- [x] Import anggota massal + update kelas via Excel
+- [x] Import/export template Excel (buku, anggota, update kelas)
+- [x] Laporan perpustakaan cetak PDF (`/admin/laporan-perpustakaan/pdf`)
+- [x] Halaman StatistikWebsite untuk KepalaSekolah
+- [x] Auto-generate kode buku (BK-XXXX) dan item buku paket ({prefix}-001 dst.)
+- [x] Member: field tahun_masuk + computed `tingkat` (7/8/9) untuk distribusi buku paket

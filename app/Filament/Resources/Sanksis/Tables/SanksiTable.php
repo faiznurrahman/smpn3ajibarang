@@ -10,6 +10,7 @@ use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 
 class SanksiTable
@@ -62,15 +63,12 @@ class SanksiTable
                         default       => 'gray',
                     }),
 
-                TextColumn::make('catatan_sanksi')
-                    ->label('Catatan')
-                    ->limit(60)
-                    ->placeholder('—'),
-
-                TextColumn::make('tgl_kembali')
-                    ->label('Tgl Dikembalikan')
-                    ->date('d M Y')
-                    ->sortable(),
+                TextColumn::make('nominal_sanksi')
+                    ->label('Nominal')
+                    ->formatStateUsing(fn ($state) => $state ? 'Rp ' . number_format($state, 0, ',', '.') : '—')
+                    ->color('danger')
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
 
                 TextColumn::make('status_sanksi')
                     ->label('Status Sanksi')
@@ -87,12 +85,50 @@ class SanksiTable
                         'lunas'       => 'success',
                         default       => 'gray',
                     }),
+
+                TextColumn::make('tgl_kembali')
+                    ->label('Tgl Dikembalikan')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->placeholder('—'),
+
+                TextColumn::make('tgl_selesai_sanksi')
+                    ->label('Tgl Selesai')
+                    ->date('d M Y')
+                    ->sortable()
+                    ->placeholder('—')
+                    ->description(fn ($record) => $record->catatan_sanksi ?: null),
+            ])
+            ->filters([
+                SelectFilter::make('status_sanksi')
+                    ->label('Status Sanksi')
+                    ->options([
+                        'belum_lunas' => 'Belum Lunas',
+                        'lunas'       => 'Lunas',
+                        'tidak_ada'   => 'Tidak Ada Sanksi',
+                    ]),
+
+                SelectFilter::make('kondisi_kembali')
+                    ->label('Kondisi Buku')
+                    ->options([
+                        'rusak'  => 'Rusak',
+                        'hilang' => 'Hilang',
+                        'baik'   => 'Baik',
+                    ]),
+
+                SelectFilter::make('jenis_sanksi')
+                    ->label('Jenis Sanksi')
+                    ->options([
+                        'ganti_buku'  => 'Ganti Buku',
+                        'bayar_harga' => 'Bayar Harga Buku',
+                    ]),
             ])
             ->recordActions([
                 Action::make('selesaikan')
                     ->label('Selesaikan Sanksi')
                     ->icon('heroicon-o-check-circle')
                     ->color('success')
+                    ->hidden(fn ($record) => $record->status_sanksi !== 'belum_lunas')
                     ->form([
                         Select::make('penyelesaian')
                             ->label('Diselesaikan dengan')
@@ -106,7 +142,7 @@ class SanksiTable
                         TextInput::make('nominal_sanksi')
                             ->label('Nominal yang Dibayar (Rp)')
                             ->numeric()
-                            ->hidden(fn ($get) => $get('penyelesaian') === 'ganti_buku')
+                            ->hidden(fn ($get) => $get('penyelesaian') !== 'bayar_harga')
                             ->placeholder('Contoh: 75000'),
 
                         Textarea::make('catatan')
@@ -116,15 +152,15 @@ class SanksiTable
                     ->action(function (Loan $record, array $data) {
                         $record->update([
                             'status_sanksi'      => 'lunas',
-                            'jenis_sanksi'        => $data['penyelesaian'],
-                            'nominal_sanksi'      => $data['penyelesaian'] === 'bayar_harga' ? ($data['nominal_sanksi'] ?? null) : null,
-                            'tgl_selesai_sanksi'  => Carbon::today()->toDateString(),
-                            'catatan_sanksi'      => $data['catatan'] ?? null,
+                            'jenis_sanksi'       => $data['penyelesaian'],
+                            'nominal_sanksi'     => $data['penyelesaian'] === 'bayar_harga' ? ($data['nominal_sanksi'] ?? null) : null,
+                            'tgl_selesai_sanksi' => Carbon::today()->toDateString(),
+                            'catatan_sanksi'     => $data['catatan'] ?? null,
                         ]);
 
                         Notification::make()
                             ->title('Sanksi berhasil diselesaikan')
-                            ->color('success')
+                            ->success()
                             ->send();
                     }),
             ])

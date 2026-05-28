@@ -15,34 +15,44 @@ class MessagesTable
     {
         return $table
             ->columns([
+                // Kolom status: icon kecil, hanya penanda
                 IconColumn::make('is_read')
                     ->label('')
                     ->boolean()
                     ->trueIcon('heroicon-o-envelope-open')
-                    ->falseIcon('heroicon-o-envelope')
+                    ->falseIcon('heroicon-s-envelope')
                     ->trueColor('gray')
                     ->falseColor('warning')
                     ->width('40px'),
 
+                // Pengirim + email/no HP sebagai deskripsi (satu baris pendek)
                 TextColumn::make('nama')
                     ->label('Pengirim')
                     ->searchable()
                     ->sortable()
-                    ->weight(fn ($record) => $record->is_read ? null : 'semibold')
-                    ->description(fn ($record) => $record->email ?: $record->nomor_telepon ?: '—'),
+                    ->weight(fn ($record) => $record->is_read ? null : 'bold')
+                    ->description(fn ($record) => $record->email ?: ($record->nomor_telepon ?: '—')),
 
+                // Subjek saja — tanpa cuplikan pesan supaya baris tidak bertumpuk
                 TextColumn::make('subjek')
                     ->label('Subjek')
                     ->searchable()
-                    ->limit(50)
                     ->grow()
-                    ->placeholder('(tanpa subjek)'),
+                    ->weight(fn ($record) => $record->is_read ? null : 'semibold')
+                    ->placeholder('(tanpa subjek)')
+                    ->limit(60),
 
+                // Tanggal ringkas
                 TextColumn::make('created_at')
                     ->label('Dikirim')
                     ->dateTime('d M Y, H:i')
-                    ->sortable(),
+                    ->sortable()
+                    ->color('gray'),
             ])
+
+            // Tandai baris unread/read untuk highlight CSS
+            ->recordClasses(fn ($record) => ! $record->is_read ? 'msg-unread' : 'msg-read')
+
             ->filters([
                 Filter::make('belum_dibaca')
                     ->label('Belum Dibaca')

@@ -7,8 +7,10 @@ use Illuminate\Database\Eloquent\Model;
 class Profile extends Model
 {
     protected $fillable = [
-    'sejarah',
-    'visi',
-    'misi',
-];
+        'sejarah',
+        'foto_sejarah',
+        'foto_sejarah_alt',
+        'visi',
+        'misi',
+    ];
 }

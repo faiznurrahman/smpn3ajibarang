@@ -17,9 +17,16 @@ class LibraryReportResource extends Resource
     protected static ?string $model = Loan::class;
 
     protected static ?string $navigationLabel            = 'Laporan Perpustakaan';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
     protected static ?int    $navigationSort             = 6;
+
+    public static function getNavigationGroup(): ?string
+    {
+        if (auth()->user()?->role === UserRole::KepalaSekolah) {
+            return null;
+        }
+        return 'Perpustakaan';
+    }
     protected static ?string $modelLabel                = 'Laporan';
     protected static ?string $pluralModelLabel          = 'Laporan Perpustakaan';
 

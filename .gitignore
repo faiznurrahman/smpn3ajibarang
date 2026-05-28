@@ -1,28 +1,36 @@
 *.log
 .DS_Store
 Thumbs.db
+*.swp
+*.swo
 
+# Environment
 .env
 .env.*
 .env.backup
 .env.production
 !.env.example
 
+# Dependencies
 /vendor
 /node_modules
 
+# Build output
 /public/build
 /public/hot
 /public/storage
 
+# Storage runtime
 /storage/*.key
 /storage/app/*
 /storage/framework/*
 /storage/logs/*
 /storage/pail
 
+# Bootstrap cache
 /bootstrap/cache/*
 
+# IDE & editors
 /.idea
 /.vscode
 /.cursor
@@ -31,14 +39,32 @@ Thumbs.db
 /.codex
 /.claude
 
+# Design & docs references (tidak perlu masuk repo)
 /design
+/docs
 
+# Database dumps & backup
+*.sql
+*.sql.gz
+
+# Report & profiling files
+*.report.html
+/coverage
+
+# PHP tools
 .phpunit.result.cache
 .phpunit.cache
-
 auth.json
 _ide_helper.php
+_ide_helper_models.php
 .phpactor.json
+phpstan.neon
 
+# Legacy Homestead
 Homestead.json
 Homestead.yaml
+
+# Archives
+*.zip
+*.rar
+*.tar.gz

@@ -7,84 +7,89 @@
 <style>
   *, *::before, *::after { box-sizing: border-box; }
 
-  /* ── Wrapper — navy gradient background with subtle dot texture ── */
   .lc {
-    min-height: 100vh;
-    display: grid;
-    place-items: center;
-    padding: 32px 20px;
+    height: 100vh;
+    overflow-y: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
     font-family: 'Plus Jakarta Sans', ui-sans-serif, system-ui, -apple-system, sans-serif;
     color-scheme: light;
-    background-color: #162a6b;
-    background-image:
-        url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='8'%3E%3Ccircle cx='2' cy='2' r='0.7' fill='rgba(255,255,255,0.055)'/%3E%3C/svg%3E"),
-        radial-gradient(ellipse at 22% 28%, rgba(52,86,168,0.55) 0%, transparent 58%),
-        radial-gradient(ellipse at 82% 78%, rgba(14,22,64,0.65) 0%, transparent 52%),
-        linear-gradient(150deg, #1e3a8a 0%, #162a6b 55%, #111f54 100%);
-    background-size: 8px 8px, 100% 100%, 100% 100%, 100% 100%;
+    background-color: #f0f2f8;
   }
 
-  .lc-frame { width: 100%; max-width: 400px; }
-
-  /* ── Brand mark above card ── */
-  .lc-brand {
-    display: flex; align-items: center; gap: 13px;
-    margin-bottom: 28px; justify-content: center;
-  }
-  .lc-brand-mark {
-    width: 46px; height: 46px; border-radius: 12px;
-    background: rgba(255,255,255,0.1);
-    border: 1px solid rgba(255,255,255,0.18);
-    color: white;
-    display: grid; place-items: center;
-    font-weight: 800; font-size: 13px; letter-spacing: 0.5px;
-    flex: 0 0 46px;
-  }
-  .lc-brand-text { line-height: 1.25; }
-  .lc-brand-text b {
-    font-size: 14.5px; font-weight: 700;
-    color: rgba(255,255,255,0.90); display: block;
-  }
-  .lc-brand-text span {
-    display: block;
-    color: rgba(255,255,255,0.40);
-    font-size: 10.5px; font-weight: 600; margin-top: 3px;
-    text-transform: uppercase; letter-spacing: 0.08em;
-  }
+  .lc-frame { width: 100%; max-width: 360px; }
 
   /* ── Login card ── */
   .lc-card {
     background: #ffffff;
     border-radius: 16px;
-    padding: 40px;
+    padding: 30px 28px 26px;
     box-shadow:
-        0 0 0 1px rgba(0,0,0,0.05),
-        0 8px 24px rgba(0,0,0,0.10),
-        0 28px 64px rgba(0,0,0,0.20);
+        0 0 0 1px rgba(30,58,138,0.07),
+        0 4px 16px rgba(30,58,138,0.08),
+        0 16px 40px rgba(30,58,138,0.07);
   }
 
-  .lc-card-head { margin-bottom: 28px; }
-  .lc-card-head h1 {
-    margin: 0 0 7px;
-    font-size: 21px; font-weight: 700; letter-spacing: -0.02em; color: #0f172a;
+  /* ── Brand inside card ── */
+  .lc-brand {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    text-align: center;
   }
-  .lc-card-head p {
-    margin: 0; color: #64748b; font-size: 13.5px; line-height: 1.55;
+  .lc-brand-mark {
+    width: 48px; height: 48px; border-radius: 12px;
+    background: #1e3a8a;
+    color: white;
+    display: grid; place-items: center;
+    font-weight: 800; font-size: 15px; letter-spacing: 0.5px;
+    flex-shrink: 0;
+  }
+  .lc-brand-mark img {
+    width: 48px; height: 48px;
+    border-radius: 12px;
+    object-fit: contain;
+  }
+  .lc-brand-name {
+    font-size: 16px; font-weight: 700;
+    color: #0f172a; letter-spacing: -0.01em; line-height: 1.3;
+  }
+  .lc-brand-sub {
+    font-size: 11.5px; font-weight: 500;
+    color: #94a3b8; margin-top: 2px;
+    text-transform: uppercase; letter-spacing: 0.07em;
   }
 
-  /* ── Footer below card ── */
+  /* ── Divider ── */
+  .lc-divider {
+    border: none; border-top: 1px solid #e9ecf4;
+    margin: 0 0 16px;
+  }
+
+  /* ── Heading ── */
+  .lc-head { margin-bottom: 14px; }
+  .lc-head h1 {
+    margin: 0 0 3px;
+    font-size: 17px; font-weight: 700; letter-spacing: -0.02em; color: #0f172a;
+  }
+  .lc-head p {
+    margin: 0; color: #64748b; font-size: 12.5px; line-height: 1.5;
+  }
+
+  /* ── Footer ── */
   .lc-foot {
-    margin-top: 24px; text-align: center;
-    font-size: 11.5px; color: rgba(255,255,255,0.28);
+    margin-top: 16px; text-align: center;
+    font-size: 11.5px; color: #a0aec0;
     letter-spacing: 0.01em; line-height: 1.6;
   }
 
   /* ── Filament overrides ── */
-
-  /* Hide the fi-simple-header (Filament renders "Sign in" + school name there — we have our own above) */
   .lc .fi-simple-header { display: none !important; }
 
-  /* Strip Filament form wrapper styles so they match our card */
   .lc .fi-fo-component-ctn {
     background: transparent !important;
     padding: 0 !important;
@@ -92,57 +97,62 @@
     box-shadow: none !important;
   }
 
-  /* Submit button — navy */
   .lc .fi-btn-color-primary {
     background: #1e3a8a !important;
-    box-shadow: 0 1px 4px rgba(30,58,138,0.25) !important;
+    box-shadow: 0 1px 4px rgba(30,58,138,0.20) !important;
     transition: background 150ms ease, box-shadow 150ms ease !important;
   }
   .lc .fi-btn-color-primary:hover {
     background: #1a3278 !important;
-    box-shadow: 0 4px 14px rgba(30,58,138,0.32) !important;
+    box-shadow: 0 4px 14px rgba(30,58,138,0.28) !important;
   }
 
-  /* Input focus ring — navy instead of Filament blue */
   .lc input:focus, .lc select:focus {
     outline: none !important;
     border-color: #1e3a8a !important;
-    box-shadow: 0 0 0 3px rgba(30,58,138,0.11) !important;
+    box-shadow: 0 0 0 3px rgba(30,58,138,0.10) !important;
   }
 
-  /* ── Responsive ── */
   @media (max-width: 480px) {
-    .lc-card { padding: 28px 22px; }
-    .lc-brand-text b { font-size: 13.5px; }
+    .lc { align-items: center; padding: 20px 16px; }
+    .lc-frame { max-width: 320px; }
+    .lc-card { padding: 26px 20px 22px; }
+    .lc-brand-mark { width: 44px; height: 44px; }
+    .lc-brand-mark img { width: 44px; height: 44px; }
   }
 </style>
 
 <div class="lc">
   <div class="lc-frame">
-
-    {{-- Brand above card --}}
-    <div class="lc-brand">
-      @if($schoolSettings?->logo)
-        <img src="{{ Storage::url($schoolSettings->logo) }}"
-             alt="Logo {{ $schoolSettings?->nama_sekolah }}"
-             style="width:46px;height:46px;border-radius:11px;object-fit:contain;flex:0 0 46px;
-                    background:rgba(255,255,255,0.08);border:1px solid rgba(255,255,255,0.15);">
-      @else
-        <div class="lc-brand-mark">S3</div>
-      @endif
-      <div class="lc-brand-text">
-        <b>{{ $schoolSettings?->nama_sekolah ?? 'SMP Negeri 3 Ajibarang' }}</b>
-        <span>Panel Administrasi</span>
-      </div>
-    </div>
-
-    {{-- Login card --}}
     <div class="lc-card">
-      <div class="lc-card-head">
-        <h1>Masuk</h1>
-        <p>Masukkan kredensial Anda untuk mengakses dasbor.</p>
+
+      {{-- Brand --}}
+      <div class="lc-brand">
+        @if($schoolSettings?->logo)
+          <div class="lc-brand-mark">
+            <img src="{{ Storage::url($schoolSettings->logo) }}"
+                 alt="Logo {{ $schoolSettings?->nama_sekolah }}">
+          </div>
+        @else
+          <div class="lc-brand-mark">S3</div>
+        @endif
+        <div>
+          <div class="lc-brand-name">{{ $schoolSettings?->nama_sekolah ?? 'SMP Negeri 3 Ajibarang' }}</div>
+          <div class="lc-brand-sub">Panel Administrasi</div>
+        </div>
       </div>
+
+      <hr class="lc-divider">
+
+      {{-- Heading --}}
+      <div class="lc-head">
+        <h1>Masuk</h1>
+        <p>Masukkan kredensial Anda untuk melanjutkan.</p>
+      </div>
+
+      {{-- Form --}}
       {{ $slot }}
+
     </div>
 
     {{-- Footer --}}
@@ -150,7 +160,6 @@
       &copy; {{ date('Y') }} {{ $schoolSettings?->nama_sekolah ?? 'SMP Negeri 3 Ajibarang' }}
       &middot; Panel Administrasi
     </div>
-
   </div>
 </div>
 </x-filament-panels::layout.base>

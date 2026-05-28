@@ -47,13 +47,13 @@
     <div class="mt-16 w-full max-w-4xl grid grid-cols-2 md:grid-cols-4 gap-4 anim-fade-up delay-2">
         <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl py-5 px-4 text-white hover:bg-white/15 transition">
             <div class="text-3xl font-black text-yellow-300" style="font-family: 'Oswald', sans-serif;">
-                {{ $settings->jumlah_siswa ? $settings->jumlah_siswa.'+' : '800+' }}
+                {{ $jumlahSiswa > 0 ? $jumlahSiswa.'+' : '—' }}
             </div>
             <div class="text-xs text-white/70 mt-1 uppercase tracking-wider">Siswa Aktif</div>
         </div>
         <div class="bg-white/10 backdrop-blur-sm border border-white/20 rounded-2xl py-5 px-4 text-white hover:bg-white/15 transition">
             <div class="text-3xl font-black text-yellow-300" style="font-family: 'Oswald', sans-serif;">
-                {{ $settings->jumlah_guru_karyawan ? $settings->jumlah_guru_karyawan.'+' : '45+' }}
+                {{ $jumlahGuruKaryawan > 0 ? $jumlahGuruKaryawan.'+' : '—' }}
             </div>
             <div class="text-xs text-white/70 mt-1 uppercase tracking-wider">Tenaga Pengajar</div>
         </div>
@@ -117,7 +117,7 @@
 
                 {{-- Isi sambutan --}}
                 <div class="text-gray-600 leading-relaxed text-base space-y-3 prose prose-blue max-w-none">
-                    {!! $greeting->deskripsi_sambutan ?? '<p>Selamat datang di website resmi SMPN 3 Ajibarang. Kami berkomitmen untuk terus meningkatkan kualitas pendidikan yang berlandaskan nilai-nilai karakter, keunggulan akademik, dan kepedulian terhadap lingkungan.</p>' !!}
+                    {!! $greeting->deskripsi ?? '<p>Selamat datang di website resmi SMPN 3 Ajibarang. Kami berkomitmen untuk terus meningkatkan kualitas pendidikan yang berlandaskan nilai-nilai karakter, keunggulan akademik, dan kepedulian terhadap lingkungan.</p>' !!}
                 </div>
 
                 {{-- Nama & Jabatan --}}

@@ -2,6 +2,8 @@
 
 namespace App\Filament\Resources\Fines\Tables;
 
+use Filament\Actions\BulkActionGroup;
+use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
@@ -30,11 +32,13 @@ class FinesTable
                 TextColumn::make('jumlah_hari')
                     ->label('Keterlambatan')
                     ->formatStateUsing(fn ($state) => $state . ' hari')
+                    ->color('danger')
                     ->sortable(),
 
                 TextColumn::make('nominal')
                     ->label('Nominal')
                     ->formatStateUsing(fn ($state) => 'Rp ' . number_format($state, 0, ',', '.'))
+                    ->color('danger')
                     ->sortable(),
 
                 TextColumn::make('status_bayar')
@@ -46,6 +50,7 @@ class FinesTable
                 TextColumn::make('tgl_bayar')
                     ->label('Tgl Bayar')
                     ->date('d M Y')
+                    ->sortable()
                     ->placeholder('—'),
             ])
             ->filters([
@@ -58,6 +63,11 @@ class FinesTable
             ])
             ->recordActions([
                 EditAction::make()->label('Bayar / Edit'),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
+                ]),
             ])
             ->defaultSort('created_at', 'desc');
     }

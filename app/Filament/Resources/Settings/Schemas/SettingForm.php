@@ -62,21 +62,8 @@ class SettingForm
                     ]),
 
                 Section::make('Statistik Sekolah')
+                    ->description('Jumlah siswa dan guru/karyawan diambil otomatis dari data anggota perpustakaan.')
                     ->schema([
-                        TextInput::make('jumlah_siswa')
-                            ->label('Jumlah Siswa')
-                            ->numeric()
-                            ->suffix('siswa')
-                            ->placeholder('0')
-                            ->columnSpanFull(),
-
-                        TextInput::make('jumlah_guru_karyawan')
-                            ->label('Guru & Karyawan')
-                            ->numeric()
-                            ->suffix('orang')
-                            ->placeholder('0')
-                            ->columnSpanFull(),
-
                         TextInput::make('jumlah_prestasi')
                             ->label('Jumlah Prestasi')
                             ->numeric()

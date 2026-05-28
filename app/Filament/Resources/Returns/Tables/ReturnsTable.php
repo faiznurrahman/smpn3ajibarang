@@ -48,6 +48,12 @@ class ReturnsTable
                         : null)
                     ->color(fn ($record) => $record->isLate() ? 'danger' : null),
 
+                TextColumn::make('tgl_kembali')
+                    ->label('Tgl Dikembalikan')
+                    ->date('d M Y')
+                    ->placeholder('—')
+                    ->sortable(),
+
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()

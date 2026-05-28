@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Member;
 use App\Models\Setting;
 use App\Models\Post;
 use App\Models\Teacher;
@@ -30,6 +31,8 @@ class PageController extends Controller
     public function home()
 {
     $data = array_merge($this->getSharedData(), [
+        'jumlahSiswa'       => Member::where('jenis', 'siswa')->where('status', 'aktif')->count(),
+        'jumlahGuruKaryawan' => Member::where('jenis', 'guru')->where('status', 'aktif')->count(),
         'greeting'   => PrincipalGreeting::first(),
         'video'      => VideoProfile::where('is_active', true)->orderBy('order')->first(),
         'teachers'   => Teacher::where('is_active', true)

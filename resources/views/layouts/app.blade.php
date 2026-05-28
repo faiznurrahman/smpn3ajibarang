@@ -70,7 +70,10 @@
         #toast { transition: opacity 0.3s; }
 
         /* ── Page Loader ── */
-        @keyframes loader-spin { to { transform: rotate(360deg); } }
+        @keyframes loader-spin   { to { transform: rotate(360deg); } }
+        @keyframes loader-pulse  { 0%,100% { transform:scale(1); filter:drop-shadow(0 0 0px rgba(13,43,107,0)); } 50% { transform:scale(1.05); filter:drop-shadow(0 6px 18px rgba(13,43,107,0.18)); } }
+        @keyframes loader-dots   { 0%,80%,100% { opacity:0.2; transform:scale(0.7); } 40% { opacity:1; transform:scale(1); } }
+        @keyframes loader-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
         /* ── Scroll-reveal smooth easing ── */
         .reveal-ready {
@@ -83,12 +86,28 @@
 <body class="antialiased">
 
     {{-- ── Page Loader ── --}}
-    <div id="page-loader" style="position:fixed;inset:0;z-index:9999;background:#0d2b6b;display:flex;flex-direction:column;align-items:center;justify-content:center;">
-        <div style="position:relative;width:60px;height:60px;margin-bottom:20px;">
-            <div style="position:absolute;inset:0;border-radius:50%;border:2.5px solid rgba(255,255,255,0.08);border-top-color:#e8a020;animation:loader-spin 0.85s linear infinite;"></div>
-            <div style="position:absolute;inset:11px;border-radius:50%;background:rgba(255,255,255,0.04);display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:800;font-size:13px;color:rgba(255,255,255,0.7);letter-spacing:1px;">S3</div>
+    <div id="page-loader" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;">
+
+        {{-- Logo + 2 ring spinner mengelilingi --}}
+        <div style="position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;">
+
+            {{-- Ring luar — biru, searah jarum jam --}}
+            <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(30,58,138,0.1);border-top-color:#1e3a8a;animation:loader-spin 1s linear infinite;"></div>
+
+            {{-- Ring dalam — emas, berlawanan --}}
+            <div style="position:absolute;inset:9px;border-radius:50%;border:2.5px solid rgba(232,160,32,0.12);border-bottom-color:#e8a020;animation:loader-spin 1.4s linear infinite reverse;"></div>
+
+            {{-- Logo di tengah --}}
+            @if(!empty($settings->logo))
+                <img src="{{ Storage::url($settings->logo) }}"
+                     alt="Logo {{ $settings->nama_sekolah ?? 'SMPN 3 Ajibarang' }}"
+                     style="width:72px;height:72px;object-fit:contain;position:relative;z-index:1;">
+            @else
+                <div style="width:68px;height:68px;border-radius:50%;background:#1e3a8a;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:800;font-size:20px;color:#fff;position:relative;z-index:1;">S3</div>
+            @endif
+
         </div>
-        <div style="color:rgba(255,255,255,0.28);font-size:9px;letter-spacing:4px;text-transform:uppercase;font-family:'Poppins',sans-serif;font-weight:600;">Memuat Halaman</div>
+
     </div>
 
     {{-- Navbar --}}

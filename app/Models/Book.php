@@ -7,8 +7,8 @@ use Illuminate\Database\Eloquent\Model;
 class Book extends Model
 {
     protected $fillable = [
-        'kode_buku', 'judul', 'pengarang', 'penerbit', 'tahun',
-        'kategori', 'stok', 'cover', 'is_active',
+        'kode_buku', 'isbn', 'judul', 'penulis', 'penerbit', 'tahun',
+        'kategori', 'rak', 'stok', 'cover', 'deskripsi', 'is_active',
     ];
 
     protected $casts = [
@@ -40,5 +40,10 @@ class Book extends Model
     public function getStokTersediaAttribute(): int
     {
         return max(0, $this->stok - $this->activeLoans()->count());
+    }
+
+    public function getStokDipinjamAttribute(): int
+    {
+        return $this->activeLoans()->count();
     }
 }

@@ -9,6 +9,7 @@ use Filament\Actions\EditAction;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Table;
+use Illuminate\Support\Str;
 
 class SocialMediaTable
 {
@@ -16,24 +17,33 @@ class SocialMediaTable
     {
         return $table
             ->columns([
+                // Kolom fleksibel: ambil sisa ruang setelah kolom lain terpenuhi
                 TextColumn::make('nama')
                     ->label('Platform')
                     ->searchable()
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn ($record) => \Illuminate\Support\Str::limit($record->url, 50)),
+                    ->grow()
+                    ->description(fn ($record) => Str::limit($record->url, 40)),
 
+                // Jenis icon — badge, lebar tetap
                 TextColumn::make('icon')
                     ->label('Jenis')
                     ->badge()
-                    ->color('gray'),
+                    ->color('gray')
+                    ->width('120px'),
 
+                // Urutan — angka kecil, lebar tetap
                 TextColumn::make('order')
                     ->label('Urutan')
-                    ->sortable(),
+                    ->sortable()
+                    ->alignCenter()
+                    ->width('80px'),
 
+                // Toggle aktif — lebar tetap
                 ToggleColumn::make('is_active')
-                    ->label('Aktif'),
+                    ->label('Aktif')
+                    ->width('70px'),
             ])
             ->recordActions([
                 EditAction::make()->label('Edit'),

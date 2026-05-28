@@ -37,7 +37,7 @@ class BooksTable
                     ->sortable()
                     ->weight('semibold')
                     ->grow()
-                    ->description(fn ($record) => $record->pengarang . ($record->tahun ? ' · ' . $record->tahun : '')),
+                    ->description(fn ($record) => $record->penulis . ($record->tahun ? ' · ' . $record->tahun : '')),
 
                 TextColumn::make('kategori')
                     ->label('Kategori')
@@ -45,10 +45,15 @@ class BooksTable
                     ->color('primary')
                     ->placeholder('—'),
 
+                TextColumn::make('rak')
+                    ->label('Rak')
+                    ->placeholder('—')
+                    ->size('sm'),
+
                 TextColumn::make('stok')
                     ->label('Stok')
                     ->sortable()
-                    ->description(fn ($record) => 'Tersedia: ' . $record->stok_tersedia),
+                    ->description(fn ($record) => 'Tersedia: ' . $record->stok_tersedia . ' · Dipinjam: ' . $record->stok_dipinjam),
 
                 IconColumn::make('is_active')
                     ->label('Aktif')

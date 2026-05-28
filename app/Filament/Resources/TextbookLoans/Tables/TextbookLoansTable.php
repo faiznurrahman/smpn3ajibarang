@@ -27,24 +27,20 @@ class TextbookLoansTable
                     ->sortable()
                     ->weight('semibold')
                     ->badge()
-                    ->color('primary'),
-
-                TextColumn::make('untuk_tingkat')
-                    ->label('Tingkat')
-                    ->formatStateUsing(fn ($state) => 'Kelas ' . $state)
-                    ->badge()
-                    ->color('info')
-                    ->sortable(),
+                    ->color('primary')
+                    ->description(fn ($record) => 'Kelas ' . $record->untuk_tingkat),
 
                 TextColumn::make('tgl_distribusi')
                     ->label('Tgl Distribusi')
                     ->date('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('—'),
 
                 TextColumn::make('tgl_kembali')
                     ->label('Tgl Kembali')
                     ->date('d M Y')
-                    ->sortable(),
+                    ->sortable()
+                    ->placeholder('—'),
 
                 TextColumn::make('total_siswa')
                     ->label('Siswa')

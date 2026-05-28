@@ -17,6 +17,7 @@ class PostsTable
     {
         return $table
             ->columns([
+                // Kolom fleksibel — ambil sisa ruang
                 TextColumn::make('judul')
                     ->label('Judul')
                     ->searchable()
@@ -30,9 +31,11 @@ class PostsTable
                         default      => $record->type,
                     }),
 
+                // Status badge — lebar tetap
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
+                    ->width('100px')
                     ->color(fn (string $state): string => match ($state) {
                         'draft'     => 'gray',
                         'published' => 'success',
@@ -44,19 +47,24 @@ class PostsTable
                         default     => $state,
                     }),
 
+                // Pin icon — lebar tetap, center
                 IconColumn::make('is_pinned')
                     ->label('Pin')
                     ->boolean()
                     ->trueIcon('heroicon-o-star')
                     ->falseIcon('heroicon-o-minus')
                     ->trueColor('warning')
-                    ->falseColor('gray'),
+                    ->falseColor('gray')
+                    ->alignCenter()
+                    ->width('60px'),
 
+                // Tanggal — lebar tetap
                 TextColumn::make('tanggal_publish')
                     ->label('Tanggal')
                     ->date('d M Y')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder('—')
+                    ->width('110px'),
             ])
             ->filters([
                 SelectFilter::make('type')

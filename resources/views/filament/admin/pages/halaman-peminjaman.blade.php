@@ -178,6 +178,19 @@
     .pmj-modal-foot .pmj-btn { width:100%; justify-content:center; height:44px; }
     .pmj-pagination { flex-direction:column; align-items:flex-start; gap:8px; }
 }
+
+@media (max-width:767px) {
+    /* Judul halaman bawaan Filament disembunyikan agar tidak duplikat dengan judul di dalam konten */
+    header.fi-header { display:none; }
+
+    /* Judul + tombol aksi ditumpuk, tombol dibuat full-width di bawah judul */
+    .pmj-header {
+        flex-direction:column; align-items:stretch; gap:10px;
+    }
+    .pmj-btn-add {
+        width:100%; justify-content:center; height:44px; font-size:14px;
+    }
+}
 </style>
 
 <div class="pmj">

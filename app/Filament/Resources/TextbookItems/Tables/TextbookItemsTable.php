@@ -5,14 +5,18 @@ namespace App\Filament\Resources\TextbookItems\Tables;
 use App\Models\Textbook;
 use App\Models\TextbookItem;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Database\Eloquent\Collection;
 
 class TextbookItemsTable
 {
@@ -157,6 +161,18 @@ class TextbookItemsTable
                             ->success()
                             ->send();
                     }),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('cetakLabelTerpilih')
+                        ->label('Cetak Label Terpilih')
+                        ->icon(Heroicon::OutlinedPrinter)
+                        ->color('gray')
+                        ->action(fn (Collection $records) => redirect()->route('eksemplar-paket.label.terpilih', [
+                            'ids' => $records->pluck('id')->implode(','),
+                        ]))
+                        ->deselectRecordsAfterCompletion(),
+                ]),
             ])
             ->defaultSort('kode_item');
     }

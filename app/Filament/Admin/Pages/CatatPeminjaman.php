@@ -29,6 +29,9 @@ class CatatPeminjaman extends Page
     public ?Member $member     = null;
     public string $memberError = '';
 
+    /** @var array<int, Member> */
+    public array $memberResults = [];
+
     // Step 2 — Eksemplar
     public string $bookInput  = '';
     public ?BookItem $bookItem = null;
@@ -45,13 +48,35 @@ class CatatPeminjaman extends Page
 
     // ── Step 1: cari anggota ───────────────────────────────────────
 
-    public function cariAnggota(): void
+    public function updatedMemberInput(): void
     {
         $this->member      = null;
         $this->memberError = '';
 
+        $keyword = trim($this->memberInput);
+
+        if (mb_strlen($keyword) < 3) {
+            $this->memberResults = [];
+            return;
+        }
+
+        $this->memberResults = Member::query()
+            ->where(function ($q) use ($keyword) {
+                $q->where('kode_anggota', 'like', '%' . $keyword . '%')
+                    ->orWhere('nama', 'like', '%' . $keyword . '%');
+            })
+            ->orderBy('nama')
+            ->limit(8)
+            ->get()
+            ->all();
+    }
+
+    public function cariAnggota(): void
+    {
+        $this->memberError = '';
+
         if (blank($this->memberInput)) {
-            $this->memberError = 'Masukkan NIS atau nama anggota.';
+            $this->memberError = 'Masukkan NIS/NIP atau nama anggota.';
             return;
         }
 
@@ -63,6 +88,24 @@ class CatatPeminjaman extends Page
             $this->memberError = 'Anggota tidak ditemukan.';
             return;
         }
+
+        $this->pilihAnggota($member->id);
+    }
+
+    public function pilihAnggota(int $memberId): void
+    {
+        $this->member        = null;
+        $this->memberError   = '';
+        $this->memberResults = [];
+
+        $member = Member::find($memberId);
+
+        if (! $member) {
+            $this->memberError = 'Anggota tidak ditemukan.';
+            return;
+        }
+
+        $this->memberInput = $member->nama;
 
         if ($member->status !== 'aktif') {
             $this->memberError = 'Anggota tidak aktif.';
@@ -188,10 +231,11 @@ class CatatPeminjaman extends Page
 
     protected function resetStepper(): void
     {
-        $this->step        = 1;
-        $this->memberInput = '';
-        $this->member      = null;
-        $this->memberError = '';
+        $this->step         = 1;
+        $this->memberInput  = '';
+        $this->member       = null;
+        $this->memberError  = '';
+        $this->memberResults = [];
         $this->bookInput   = '';
         $this->bookItem    = null;
         $this->bookError   = '';

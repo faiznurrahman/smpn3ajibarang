@@ -1,4 +1,5 @@
 <x-filament-panels::page>
+@vite(['resources/js/app.js'])
 <style>
 .cp {
     --pri:#1e3a8a; --pri-2:#2746a4; --pri-50:#eef2ff; --pri-100:#dbe3ff;
@@ -15,8 +16,12 @@
 .cp-card-head .sub { font-size:12px; color:var(--t3); margin:0; }
 .cp-card-body { padding:24px; }
 
-.cp-stepper { display:flex; align-items:center; margin-bottom:28px; }
-.cp-step { display:flex; align-items:center; }
+.cp-stepper {
+    display:flex; align-items:center; margin-bottom:28px;
+    overflow-x:auto; -webkit-overflow-scrolling:touch; scrollbar-width:none;
+}
+.cp-stepper::-webkit-scrollbar { display:none; }
+.cp-step { display:flex; align-items:center; flex-shrink:0; }
 .cp-step-circle {
     width:32px; height:32px; border-radius:50%;
     display:flex; align-items:center; justify-content:center;
@@ -36,9 +41,10 @@
 .cp-label { display:block; font-size:12.5px; font-weight:600; color:var(--t2); margin-bottom:6px; }
 .cp-input-row { display:flex; gap:8px; align-items:stretch; }
 .cp-input {
-    flex:1; height:40px; border:1px solid var(--line); border-radius:8px;
+    flex:1; width:100%; min-width:0; box-sizing:border-box; height:40px; border:1px solid var(--line); border-radius:8px;
     padding:0 14px; font-size:13.5px; color:var(--t1); background:#f8f9fc;
     outline:none; transition:border-color 150ms, background 150ms; font-family:inherit;
+    text-overflow:ellipsis;
 }
 .cp-input:focus { border-color:var(--pri); background:white; box-shadow:0 0 0 3px rgba(30,58,138,.08); }
 .cp-input.mono { font-family:'SF Mono','Fira Code',ui-monospace,monospace; letter-spacing:.02em; }
@@ -64,6 +70,38 @@
     border-radius:8px; font-size:12.5px; color:var(--err); font-weight:500;
 }
 .cp-hint { font-size:11.5px; color:var(--t3); margin-top:6px; }
+
+.cp-input-wrap { position:relative; flex:1; min-width:0; }
+
+.cp-suggest {
+    position:absolute; top:calc(100% + 6px); left:0; right:0; z-index:20;
+    background:white; border:1px solid var(--line); border-radius:10px;
+    box-shadow:0 8px 24px rgba(15,23,42,.12);
+    max-height:280px; overflow-y:auto; -webkit-overflow-scrolling:touch; overscroll-behavior:contain;
+}
+.cp-suggest-item {
+    width:100%; display:flex; align-items:center; gap:12px; padding:12px 14px;
+    border:none; border-bottom:1px solid var(--line); background:none;
+    cursor:pointer; text-align:left; font:inherit; transition:background 100ms;
+}
+.cp-suggest-item:last-child { border-bottom:none; }
+.cp-suggest-item:hover,
+.cp-suggest-item:active { background:var(--pri-50); }
+.cp-suggest-av {
+    width:34px; height:34px; border-radius:9px; flex-shrink:0;
+    display:flex; align-items:center; justify-content:center;
+    background:var(--pri-50); color:var(--pri); font-weight:700; font-size:12.5px;
+}
+.cp-suggest-av.guru { background:#fff4ea; color:#d96815; }
+.cp-suggest-body { min-width:0; }
+.cp-suggest-name {
+    display:block; font-size:13.5px; font-weight:700; color:var(--t1);
+    overflow:hidden; text-overflow:ellipsis; white-space:nowrap;
+}
+.cp-suggest-meta {
+    display:block; font-size:12px; color:var(--t2); margin-top:2px;
+    overflow-wrap:break-word;
+}
 
 .cp-result {
     margin-top:14px; border:1px solid var(--line); border-radius:10px;
@@ -135,8 +173,11 @@
     .cp-card-head { padding:16px 18px 14px; }
     .cp-card-body { padding:20px 18px; }
 
-    /* iOS auto-zoom fix: input harus min 16px saat focus */
-    .cp-input { font-size:16px !important; height:46px; }
+    /* iOS auto-zoom fix + area sentuh nyaman: padding vertikal jadi acuan tinggi, bukan height tetap */
+    .cp-input {
+        font-size:16px !important; height:auto; min-height:50px;
+        padding:13px 16px;
+    }
 
     /* Stepper: circle lebih besar, label tetap terbaca */
     .cp-step-circle { width:36px; height:36px; font-size:14px; }
@@ -147,14 +188,14 @@
     .cp-input-row { flex-direction:column; }
     .cp-input-row .cp-btn {
         width:100%; justify-content:center;
-        height:48px; font-size:14px;
+        height:50px; font-size:14.5px;
     }
 
     /* Tombol aksi: full width */
     .cp-actions { flex-direction:column-reverse; gap:10px; }
     .cp-actions .cp-btn {
         width:100%; justify-content:center;
-        height:48px; font-size:14px;
+        height:50px; font-size:14.5px;
     }
 
     /* Summary rows: label di atas nilai */
@@ -169,6 +210,18 @@
     .cp-modal-head { padding:20px 18px 16px; }
     .cp-modal-body { padding:16px 18px 8px; }
     .cp-modal-foot { padding:10px 18px 18px; }
+}
+
+@media (max-width:479px) {
+    /* Card lebih rapat di layar sempit */
+    .cp-card-head { padding:14px 14px 12px; }
+    .cp-card-body { padding:16px 14px; }
+
+    /* Stepper: perkecil supaya 3 langkah muat tanpa overflow */
+    .cp-stepper     { margin-bottom:20px; }
+    .cp-step-circle { width:26px; height:26px; font-size:11px; border-width:1.5px; }
+    .cp-step-label  { font-size:10.5px; margin-left:5px; }
+    .cp-step-line   { min-width:8px; margin:0 4px; }
 }
 </style>
 
@@ -217,21 +270,46 @@
             <div>
                 <label class="cp-label" for="cp-member-input">Cari Anggota</label>
                 <div class="cp-input-row">
-                    <input
-                        id="cp-member-input"
-                        type="text"
-                        class="cp-input"
-                        wire:model="memberInput"
-                        wire:keydown.enter="cariAnggota"
-                        placeholder="Ketik NIS atau nama anggota"
-                        autocomplete="off"
-                    >
+                    <div class="cp-input-wrap">
+                        <input
+                            id="cp-member-input"
+                            type="text"
+                            class="cp-input"
+                            wire:model.live.debounce.300ms="memberInput"
+                            wire:keydown.enter="cariAnggota"
+                            placeholder="Ketik min. 3 huruf: NIS/NIP atau nama anggota"
+                            autocomplete="off"
+                        >
+
+                        @if(!empty($memberResults))
+                        <div class="cp-suggest" wire:loading.remove wire:target="memberInput">
+                            @foreach($memberResults as $result)
+                            <button type="button" class="cp-suggest-item" wire:click="pilihAnggota({{ $result->id }})">
+                                <span class="cp-suggest-av {{ $result->jenis === 'guru' ? 'guru' : '' }}">{{ mb_strtoupper(mb_substr($result->nama, 0, 2)) }}</span>
+                                <span class="cp-suggest-body">
+                                    <span class="cp-suggest-name">{{ $result->nama }}</span>
+                                    <span class="cp-suggest-meta">
+                                        {{ $result->kode_anggota }}
+                                        @if($result->kelas) &middot; Kelas {{ $result->kelas }} @endif
+                                        @if($result->jenis === 'guru') &middot; Guru @endif
+                                    </span>
+                                </span>
+                            </button>
+                            @endforeach
+                        </div>
+                        @endif
+                    </div>
+
                     <button type="button" class="cp-btn primary" wire:click="cariAnggota" wire:loading.attr="disabled" wire:target="cariAnggota">
                         <svg wire:loading.remove wire:target="cariAnggota" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
                         <svg wire:loading wire:target="cariAnggota" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg>
                         Cari Anggota
                     </button>
                 </div>
+
+                @if(mb_strlen(trim($memberInput)) >= 3 && empty($memberResults) && ! $member && ! $memberError)
+                <p class="cp-hint">Tidak ada anggota yang cocok dengan "{{ $memberInput }}".</p>
+                @endif
 
                 @if($memberError)
                 <div class="cp-error">
@@ -294,6 +372,7 @@
                         <svg wire:loading wire:target="cariEksemplar" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg>
                         Cari
                     </button>
+                    <x-qr-scanner id="cp-book" field="bookInput" action="cariEksemplar" label="Scan Barcode" />
                 </div>
                 @if($bookError)
                 <div class="cp-error">

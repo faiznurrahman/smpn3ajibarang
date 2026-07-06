@@ -1,1 +1,1 @@
-//
+import './qr-scanner';

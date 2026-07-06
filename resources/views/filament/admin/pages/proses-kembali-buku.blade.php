@@ -1,4 +1,5 @@
 <x-filament-panels::page>
+@vite(['resources/js/app.js'])
 <style>
 .pkb {
     --pri:#1e3a8a; --pri-2:#2746a4; --pri-50:#eef2ff; --pri-100:#dbe3ff;
@@ -84,7 +85,8 @@
 .pkb-kondisi-btn.active-baik   { border-color:var(--ok);   background:var(--ok-50);   color:var(--ok); }
 .pkb-kondisi-btn.active-rusak  { border-color:var(--warn);  background:var(--warn-50);  color:var(--warn); }
 .pkb-kondisi-btn.active-hilang { border-color:var(--err);  background:var(--err-50);  color:var(--err); }
-.pkb-kondisi-icon { font-size:18px; margin-bottom:3px; display:block; }
+.pkb-kondisi-btn { transition:background 120ms, border-color 120ms, color 120ms; }
+.pkb-kondisi-icon { display:flex; justify-content:center; margin-bottom:4px; }
 
 .pkb-sanksi { margin-top:16px; padding:16px; background:#f8f9fc; border:1px solid var(--line); border-radius:10px; }
 .pkb-sanksi > * + * { margin-top:12px; }
@@ -157,13 +159,13 @@
 @media (max-width:1023px) {
     .pkb-card-head { padding:16px 18px 14px; }
     .pkb-card-body { padding:20px 18px; }
-    .pkb-input { font-size:16px !important; height:46px; }
-    .pkb-select { font-size:16px !important; height:46px; }
+    .pkb-input { font-size:16px !important; height:auto; min-height:50px; padding:13px 16px; }
+    .pkb-select { font-size:16px !important; height:auto; min-height:50px; padding:13px 16px; }
     .pkb-textarea { font-size:16px !important; }
     .pkb-input-row { flex-direction:column; }
-    .pkb-input-row .pkb-btn { width:100%; justify-content:center; height:48px; font-size:14px; }
+    .pkb-input-row .pkb-btn { width:100%; justify-content:center; height:50px; font-size:14.5px; }
     .pkb-actions { flex-direction:column-reverse; gap:10px; }
-    .pkb-actions .pkb-btn { width:100%; justify-content:center; height:48px; font-size:14px; }
+    .pkb-actions .pkb-btn { width:100%; justify-content:center; height:50px; font-size:14.5px; }
     .pkb-modal-head { padding:20px 18px 16px; }
     .pkb-modal-body { padding:16px 18px 8px; }
     .pkb-modal-foot { padding:10px 18px 18px; }
@@ -201,6 +203,7 @@
                         <svg wire:loading wire:target="cekEksemplar" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg>
                         Cek
                     </button>
+                    <x-qr-scanner id="pkb-kode" field="kodeInput" action="cekEksemplar" label="Scan Barcode" />
                 </div>
 
                 @if($error)
@@ -271,31 +274,34 @@
             </div>
 
             {{-- ── KONDISI BUKU ── --}}
-            <div class="pkb-section">
+            <div class="pkb-section" x-data="{ k: $wire.entangle('kondisi').live }">
                 <div class="pkb-section-title">Kondisi Buku Saat Dikembalikan</div>
                 <div class="pkb-kondisi-row">
                     <button
                         type="button"
-                        class="pkb-kondisi-btn {{ $kondisi === 'baik' ? 'active-baik' : '' }}"
-                        wire:click="$set('kondisi', 'baik')"
+                        class="pkb-kondisi-btn"
+                        :class="k === 'baik' ? 'active-baik' : ''"
+                        @click="k = 'baik'"
                     >
-                        <span class="pkb-kondisi-icon">✓</span>
+                        <span class="pkb-kondisi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5 5-5"/></svg></span>
                         Baik
                     </button>
                     <button
                         type="button"
-                        class="pkb-kondisi-btn {{ $kondisi === 'rusak' ? 'active-rusak' : '' }}"
-                        wire:click="$set('kondisi', 'rusak')"
+                        class="pkb-kondisi-btn"
+                        :class="k === 'rusak' ? 'active-rusak' : ''"
+                        @click="k = 'rusak'"
                     >
-                        <span class="pkb-kondisi-icon">⚠</span>
+                        <span class="pkb-kondisi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.3 4.2L2.6 17.5a1.8 1.8 0 0 0 1.56 2.7h15.68a1.8 1.8 0 0 0 1.56-2.7L13.7 4.2a1.8 1.8 0 0 0-3.4 0z"/><path d="M12 10v3.5"/><path d="M12 16.8h.01"/></svg></span>
                         Rusak
                     </button>
                     <button
                         type="button"
-                        class="pkb-kondisi-btn {{ $kondisi === 'hilang' ? 'active-hilang' : '' }}"
-                        wire:click="$set('kondisi', 'hilang')"
+                        class="pkb-kondisi-btn"
+                        :class="k === 'hilang' ? 'active-hilang' : ''"
+                        @click="k = 'hilang'"
                     >
-                        <span class="pkb-kondisi-icon">✕</span>
+                        <span class="pkb-kondisi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="9"/><path d="M14.5 9.5l-5 5M9.5 9.5l5 5"/></svg></span>
                         Hilang
                     </button>
                 </div>
@@ -306,7 +312,7 @@
             <div class="pkb-sanksi">
                 <div>
                     <label class="pkb-label">Jenis Sanksi</label>
-                    <select class="pkb-select" wire:model="jenisSanksi">
+                    <select class="pkb-select" wire:model.live="jenisSanksi">
                         <option value="bayar_harga">Bayar Harga Buku</option>
                         <option value="ganti_buku">Ganti Buku yang Sama</option>
                     </select>
@@ -316,12 +322,12 @@
                 <div>
                     <label class="pkb-label">Nominal Sanksi (Rp)</label>
                     <input
-                        type="number"
+                        type="text"
+                        inputmode="numeric"
+                        pattern="[0-9]*"
                         class="pkb-input"
                         wire:model="nominalSanksi"
                         placeholder="Masukkan nominal sanksi"
-                        min="0"
-                        step="1000"
                     >
                 </div>
                 @endif

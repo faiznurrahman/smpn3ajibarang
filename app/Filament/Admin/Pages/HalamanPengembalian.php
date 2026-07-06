@@ -53,7 +53,7 @@ class HalamanPengembalian extends Page
 
     public function getData(): LengthAwarePaginator
     {
-        $q = Loan::with(['member', 'book'])->latest('created_at');
+        $q = Loan::with(['member', 'book', 'bookItem'])->latest('created_at');
 
         if ($this->activeTab === 'riwayat') {
             $q->where('status', 'dikembalikan');

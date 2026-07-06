@@ -990,8 +990,21 @@ html, body {
 @media (max-width: 1023px) {
 
   /* ── Layout wrapper: no horizontal bleed ─────────────── */
+  /*
+   * PENTING: overflow-x:hidden pada .fi-layout / .fi-main-ctn akan memaksa
+   * overflow-y ikut jadi "auto" (aturan pairing overflow-x/y di spec CSS).
+   * Karena kedua elemen ini TIDAK punya tinggi tetap di mobile (height:auto),
+   * itu membuat mereka jadi "scroll container" palsu yang tidak pernah benar-benar
+   * scroll — dan itu mengambil alih containing block dari .fi-topbar-ctn
+   * (position:sticky), sehingga topbar ikut ter-scroll bersama halaman alih-alih
+   * nempel di atas. Maka overflow-x:hidden HANYA diberi ke .fi-main dan .fi-body
+   * (bukan leluhur langsung topbar), agar sticky bawaan Filament tetap berfungsi.
+   */
   .fi-layout,
-  .fi-main-ctn,
+  .fi-main-ctn {
+    max-width: 100% !important;
+    min-width: 0 !important;
+  }
   .fi-main,
   .fi-body {
     overflow-x: hidden !important;
@@ -1147,6 +1160,44 @@ html, body {
 
   .fi-modal-footer {
     padding: 10px 16px !important;
+  }
+}
+
+/* ============================================================
+   HEADER RESOURCE LIST (Filament bawaan) — mobile only (<768px)
+   Berlaku untuk SEMUA resource list (BookResource, MemberResource,
+   BookItemResource, TextbookResource, dll) karena semuanya memakai
+   komponen <x-filament-panels::header> yang sama.
+   ============================================================ */
+@media (max-width: 767px) {
+  /* Breadcrumb ("Daftar Katalog > Data Katalog") redundan dengan judul
+     h1 persis di bawahnya — sembunyikan supaya hanya ada 1 judul.
+     (Filament aslinya sudah "hidden sm:block", tapi rule .fi-breadcrumbs
+     di atas memaksa display:flex !important tanpa media query, jadi di sini
+     kita paksa sembunyikan lagi khusus <768px.) */
+  .fi-breadcrumbs {
+    display: none !important;
+  }
+
+  /* Header jadi tidak perlu jarak ekstra untuk breadcrumb yang disembunyikan */
+  .fi-header.fi-header-has-breadcrumbs .fi-header-actions-ctn {
+    margin-top: 0 !important;
+  }
+
+  /* Tombol aksi (mis. "+ Tambah Katalog") pindah ke baris sendiri di bawah
+     judul, full-width — bukan menyempil di samping judul.
+     flex-direction:column berjaga-jaga jika suatu resource punya lebih
+     dari 1 header action, supaya tetap ditumpuk rapi, bukan berdempetan. */
+  .fi-header-actions-ctn {
+    width: 100% !important;
+    flex-direction: column !important;
+    gap: 8px !important;
+  }
+  .fi-header-actions-ctn .fi-btn {
+    width: 100% !important;
+    justify-content: center !important;
+    height: 44px !important;
+    font-size: 14px !important;
   }
 }
 

@@ -19,11 +19,13 @@
   --t1:#0f172a; --t2:#5a6478; --t3:#8b94a6;
   --panel:#fff; --bg:#f3f5fa;
   --r:14px; --sh-sm:0 1px 2px rgba(15,23,42,.04);
+  padding:28px 28px 60px;
 }
 /* Page head */
 .db-head { display:flex; align-items:flex-end; justify-content:space-between; gap:20px; margin-bottom:22px; }
 .db-head h1 { font-size:28px; font-weight:700; margin:0 0 4px; letter-spacing:-.015em; color:var(--t1); }
 .db-head p  { margin:0; color:var(--t2); font-size:14px; }
+.db-head-actions { display:flex; gap:10px; flex-shrink:0; }
 .db-btn {
   height:38px; padding:0 16px; border-radius:10px; border:1px solid var(--line);
   background:white; color:var(--t1); font:inherit; font-size:13px; font-weight:500;
@@ -121,6 +123,70 @@
   .db-stats { grid-template-columns:repeat(2,1fr); }
   .db-g2, .db-g3 { grid-template-columns:1fr; }
 }
+@media (max-width:640px) {
+  .db { padding:16px 14px 40px; }
+
+  /* Page head: stack judul & tombol, tombol full width supaya gampang ditap */
+  .db-head { flex-direction:column; align-items:stretch; gap:14px; margin-bottom:18px; }
+  .db-head h1 { font-size:20px; }
+  .db-head p  { font-size:12.5px; }
+  .db-head-actions .db-btn { flex:1; justify-content:center; height:42px; }
+
+  /* Stats: 2 kolom tetap, tapi lebih ringkas */
+  .db-stats { grid-template-columns:repeat(2,1fr); gap:10px; margin-bottom:16px; }
+  .db-stat { padding:14px 14px 12px; }
+  .db-stat-lbl { font-size:10.5px; }
+  .db-stat-ico { width:30px; height:30px; }
+  .db-stat-val { font-size:22px; margin:10px 0 3px; }
+  .db-stat-sub { font-size:11px; }
+  .db-stat-spark { display:none; }
+
+  .db-g2, .db-g3 { gap:12px; margin-bottom:12px; }
+
+  /* Card */
+  .db-card-head { padding:14px 16px 12px; }
+  .db-card-head h3 { font-size:13.5px; }
+  .db-card-head .sub { font-size:11px; }
+  .db-card-head .lnk { font-size:11.5px; }
+  .db-card-body { padding:6px 4px 10px; }
+
+  /* Peminjaman aktif */
+  .db-msg { grid-template-columns:32px 1fr; gap:10px; padding:10px 8px; }
+  .db-msg-av { width:32px; height:32px; font-size:12px; }
+  .db-msg-time { grid-column:2; font-size:11px; margin-top:2px; }
+  .db-msg-top b { font-size:13px; }
+
+  /* Denda */
+  .db-act { grid-template-columns:28px 1fr; gap:10px; padding:9px 8px; }
+  .db-act-dot { width:28px; height:28px; flex:0 0 28px; }
+  .db-act-time { grid-column:2; padding-top:0; }
+
+  /* Peminjaman terlambat */
+  .db-post { grid-template-columns:40px 1fr; gap:10px; padding:10px 8px; }
+  .db-post-thumb { width:40px; height:40px; font-size:11px; }
+  .db-post-body b { font-size:13px; }
+
+  /* Statistik kunjungan */
+  .db-agenda { grid-template-columns:46px 1fr; gap:10px; padding:10px 8px; }
+  .db-agenda-date { width:46px; height:46px; flex:0 0 46px; }
+  .db-agenda-date b { font-size:16px; }
+  .db-agenda-body b { font-size:13px; }
+  .db-agenda-body span { font-size:11px; }
+
+  /* Aksi cepat */
+  .db-qa-grid { gap:8px; padding:10px; }
+  .db-qa { padding:12px; gap:8px; }
+  .db-qa-ico { width:30px; height:30px; }
+  .db-qa b { font-size:12.5px; }
+  .db-qa span { font-size:11px; }
+
+  /* Grafik kunjungan */
+  .db-chart-wrap { padding:12px 10px 10px; }
+  .db-chart { height:70px; gap:4px; }
+  .db-chart-val, .db-chart-lbl { font-size:8px; }
+
+  .db-fine-foot { padding:10px 14px; font-size:11.5px; }
+}
 </style>
 
 <svg width="0" height="0" style="position:absolute" aria-hidden="true">
@@ -139,7 +205,7 @@
   </defs>
 </svg>
 
-<div class="db fi-page-content" style="padding:28px 28px 60px;">
+<div class="db fi-page-content">
 
   {{-- Page head --}}
   <div class="db-head">
@@ -152,7 +218,7 @@
       </p>
     </div>
     @if($isPetugas)
-    <div style="display:flex;gap:10px;">
+    <div class="db-head-actions">
       <a href="{{ \App\Filament\Admin\Pages\CatatPeminjaman::getUrl() }}" class="db-btn pri">
         <svg width="16" height="16"><use href="#dbi-plus"/></svg>Catat Peminjaman
       </a>

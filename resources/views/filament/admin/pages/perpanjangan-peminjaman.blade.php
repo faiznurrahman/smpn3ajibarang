@@ -1,4 +1,5 @@
 <x-filament-panels::page>
+@vite(['resources/js/app.js'])
 <style>
 .pp {
     --pri:#1e3a8a; --pri-2:#2746a4; --pri-50:#eef2ff;
@@ -96,15 +97,20 @@
 @media (max-width:1023px) {
     .pp-card-head { padding:16px 18px 14px; }
     .pp-card-body { padding:20px 18px; }
-    .pp-input { font-size:16px !important; height:46px; }
+    .pp-input { font-size:16px !important; height:auto; min-height:50px; padding:13px 16px; }
     .pp-input-row { flex-direction:column; }
-    .pp-input-row .pp-btn { width:100%; justify-content:center; height:48px; font-size:14px; }
+    .pp-input-row .pp-btn { width:100%; justify-content:center; height:50px; font-size:14.5px; }
     .pp-actions { flex-direction:column; gap:10px; }
-    .pp-actions .pp-btn { width:100%; justify-content:center; height:48px; font-size:14px; }
+    .pp-actions .pp-btn { width:100%; justify-content:center; height:50px; font-size:14.5px; }
     .pp-info-row { flex-direction:column; gap:3px; padding:10px 14px; }
     .pp-info-label { min-width:auto; font-size:10.5px; }
     .pp-info-val { font-size:13.5px; }
     .pp-dur-btn { flex:1; justify-content:center; }
+}
+
+@media (max-width:767px) {
+    /* Judul halaman bawaan Filament disembunyikan agar tidak duplikat dengan judul di dalam card */
+    header.fi-header { display:none; }
 }
 </style>
 
@@ -135,6 +141,7 @@
                     <svg wire:loading wire:target="cekEksemplar" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" style="animation:spin 1s linear infinite"><path d="M21 12a9 9 0 1 1-18 0"/></svg>
                     Cek
                 </button>
+                <x-qr-scanner id="pp-kode" field="kodeInput" action="cekEksemplar" label="Scan Barcode" />
             </div>
             {{-- Error --}}
             @if($error)

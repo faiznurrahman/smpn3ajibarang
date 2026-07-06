@@ -187,6 +187,19 @@
     .kbl-modal-foot .kbl-btn { width:100%; justify-content:center; height:44px; }
     .kbl-pagination { flex-direction:column; align-items:flex-start; gap:8px; }
 }
+
+@media (max-width:767px) {
+    /* Judul halaman bawaan Filament disembunyikan agar tidak duplikat dengan judul di dalam konten */
+    header.fi-header { display:none; }
+
+    /* Judul + tombol aksi ditumpuk, tombol dibuat full-width di bawah judul */
+    .kbl-header {
+        flex-direction:column; align-items:stretch; gap:10px;
+    }
+    .kbl-btn-add {
+        width:100%; justify-content:center; height:44px; font-size:14px;
+    }
+}
 </style>
 
 <div class="kbl">
@@ -310,7 +323,12 @@
                         <td><span class="kbl-badge {{ $statusClass }}">{{ $statusLabel }}</span></td>
 
                         <td>
-                            <a href="/admin/proses-pengembalian" class="kbl-btn-kembalikan">Kembalikan</a>
+                            @php
+                                $kembaliUrl = $loan->bookItem?->kode_item
+                                    ? '/admin/proses-pengembalian?kode=' . urlencode($loan->bookItem->kode_item)
+                                    : '/admin/proses-pengembalian';
+                            @endphp
+                            <a href="{{ $kembaliUrl }}" class="kbl-btn-kembalikan">Kembalikan</a>
                         </td>
                     </tr>
                     @endforeach

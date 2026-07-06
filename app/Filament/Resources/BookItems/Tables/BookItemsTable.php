@@ -5,14 +5,18 @@ namespace App\Filament\Resources\BookItems\Tables;
 use App\Models\Book;
 use App\Models\BookItem;
 use Filament\Actions\Action;
+use Filament\Actions\BulkAction;
+use Filament\Actions\BulkActionGroup;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\Toggle;
 use Filament\Notifications\Notification;
+use Filament\Support\Icons\Heroicon;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Collection;
 
 class BookItemsTable
 {
@@ -125,6 +129,18 @@ class BookItemsTable
                             ->success()
                             ->send();
                     }),
+            ])
+            ->toolbarActions([
+                BulkActionGroup::make([
+                    BulkAction::make('cetakLabelTerpilih')
+                        ->label('Cetak Label Terpilih')
+                        ->icon(Heroicon::OutlinedPrinter)
+                        ->color('gray')
+                        ->action(fn (Collection $records) => redirect()->route('eksemplar.label.terpilih', [
+                            'ids' => $records->pluck('id')->implode(','),
+                        ]))
+                        ->deselectRecordsAfterCompletion(),
+                ]),
             ])
             ->defaultSort('kode_item');
     }

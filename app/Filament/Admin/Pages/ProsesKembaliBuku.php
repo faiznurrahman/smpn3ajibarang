@@ -32,6 +32,16 @@ class ProsesKembaliBuku extends Page
         return auth()->user()?->role === UserRole::PetugasPerpustakaan;
     }
 
+    public function mount(): void
+    {
+        $kode = request()->query('kode');
+
+        if (filled($kode)) {
+            $this->kodeInput = $kode;
+            $this->cekEksemplar();
+        }
+    }
+
     // ── Cek eksemplar ──────────────────────────────────────────────────────
     public function cekEksemplar(): void
     {

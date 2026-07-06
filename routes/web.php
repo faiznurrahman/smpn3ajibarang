@@ -5,6 +5,7 @@ use App\Exports\BooksTemplateExport;
 use App\Exports\MembersTemplateExport;
 use App\Exports\MembersUpdateKelasTemplateExport;
 use App\Http\Controllers\LibraryExcelController;
+use App\Http\Controllers\LabelPrintController;
 use App\Http\Controllers\LibraryKioskController;
 use App\Http\Controllers\LibraryTabExcelController;
 use App\Http\Controllers\LibraryPdfController;
@@ -52,6 +53,32 @@ Route::get('/admin/laporan-perpustakaan/excel', [LibraryExcelController::class, 
 Route::get('/admin/laporan-perpustakaan/excel-tab', [LibraryTabExcelController::class, 'download'])
     ->middleware(['auth'])
     ->name('laporan.perpustakaan.excel.tab');
+
+// Cetak Label QR Code Eksemplar (Petugas saja)
+Route::get('/admin/eksemplar/label/semua', [LabelPrintController::class, 'cetakSemua'])
+    ->middleware(['auth'])
+    ->name('eksemplar.label.semua');
+
+Route::get('/admin/eksemplar/label/buku', [LabelPrintController::class, 'cetakPerBuku'])
+    ->middleware(['auth'])
+    ->name('eksemplar.label.buku');
+
+Route::get('/admin/eksemplar/label/terpilih', [LabelPrintController::class, 'cetakTerpilih'])
+    ->middleware(['auth'])
+    ->name('eksemplar.label.terpilih');
+
+// Cetak Label QR Code Eksemplar Buku Paket (Petugas saja)
+Route::get('/admin/eksemplar-paket/label/semua', [LabelPrintController::class, 'cetakSemuaPaket'])
+    ->middleware(['auth'])
+    ->name('eksemplar-paket.label.semua');
+
+Route::get('/admin/eksemplar-paket/label/buku', [LabelPrintController::class, 'cetakPerBukuPaket'])
+    ->middleware(['auth'])
+    ->name('eksemplar-paket.label.buku');
+
+Route::get('/admin/eksemplar-paket/label/terpilih', [LabelPrintController::class, 'cetakTerpilihPaket'])
+    ->middleware(['auth'])
+    ->name('eksemplar-paket.label.terpilih');
 
 // Template import buku (Petugas saja)
 Route::get('/admin/buku/template', function () {

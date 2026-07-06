@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class ExtracurricularResource extends Resource
 {
     protected static ?string $model = Extracurricular::class;
+    protected static ?string $slug  = 'ekstrakurikuler';
 
     protected static ?string $navigationLabel  = 'Ekstrakurikuler';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';

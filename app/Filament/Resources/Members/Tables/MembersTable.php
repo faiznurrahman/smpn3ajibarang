@@ -67,11 +67,6 @@ class MembersTable
                         default  => 'gray',
                     }),
 
-                TextColumn::make('no_hp')
-                    ->label('No. HP')
-                    ->placeholder('—')
-                    ->searchable()
-                    ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
                 SelectFilter::make('jenis')

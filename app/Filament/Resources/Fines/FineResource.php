@@ -17,11 +17,13 @@ use Filament\Tables\Table;
 class FineResource extends Resource
 {
     protected static ?string $model = Fine::class;
+    protected static ?string $slug  = 'denda';
 
-    protected static ?string $navigationLabel            = 'Denda Keterlambatan';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
+    protected static ?string $navigationLabel            = 'Denda & Pelanggaran';
+    protected static string|\UnitEnum|null $navigationGroup = 'Sirkulasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedCreditCard;
-    protected static ?int    $navigationSort             = 5;
+    protected static ?int    $navigationSort             = 3;
+    protected static bool    $shouldRegisterNavigation   = false;
     protected static ?string $modelLabel                = 'Denda';
     protected static ?string $pluralModelLabel          = 'Denda Keterlambatan';
 

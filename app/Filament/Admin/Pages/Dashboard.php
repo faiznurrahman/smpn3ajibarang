@@ -4,6 +4,7 @@ namespace App\Filament\Admin\Pages;
 
 use App\Enums\UserRole;
 use App\Models\Book;
+use App\Models\Extracurricular;
 use App\Models\Fine;
 use App\Models\Gallery;
 use App\Models\Loan;
@@ -12,8 +13,9 @@ use App\Models\Message;
 use App\Models\Post;
 use App\Models\Setting;
 use App\Models\Teacher;
-use App\Models\TextbookLoan;
+use App\Models\TextbookDistribution;
 use App\Models\Visit;
+use App\Models\WebsiteVisit;
 use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Support\Icons\Heroicon;
 use Illuminate\Support\Str;
@@ -39,12 +41,12 @@ class Dashboard extends BaseDashboard
     public $settings;
 
     // Library dashboard data
-    public int $totalBuku        = 0;
-    public int $totalAnggota     = 0;
-    public int $peminjamAktif    = 0;
-    public int $dendaBelumLunas  = 0;
-    public int $totalDenda       = 0;
-    public int $bukuPaketAktif   = 0;
+    public int $totalBuku          = 0;
+    public int $totalAnggota       = 0;
+    public int $peminjamAktif      = 0;
+    public int $dendaBelumLunas    = 0;
+    public int $totalDenda         = 0;
+    public int $bukuPaketAktif     = 0;
     public int $kunjunganHariIni   = 0;
     public int $kunjunganMingguIni = 0;
     public int $kunjunganBulanIni  = 0;
@@ -53,11 +55,22 @@ class Dashboard extends BaseDashboard
     public $recentLoans;
     public $recentFines;
 
+    // Kepala Sekolah dashboard data
+    public int   $pengunjungBulanIni  = 0;
+    public array $peminjamanPerBulan  = [];
+    public int   $maxPeminjaman       = 1;
+    public array $kunjunganPerBulan   = [];
+    public int   $maxKunjunganBulan   = 1;
+
     public function getView(): string
     {
         $role = auth()->user()?->role;
 
-        if ($role === UserRole::PetugasPerpustakaan || $role === UserRole::KepalaSekolah) {
+        if ($role === UserRole::KepalaSekolah) {
+            return 'filament.admin.pages.kepsek-dashboard';
+        }
+
+        if ($role === UserRole::PetugasPerpustakaan) {
             return 'filament.admin.pages.library-dashboard';
         }
 
@@ -68,7 +81,9 @@ class Dashboard extends BaseDashboard
     {
         $role = auth()->user()?->role;
 
-        if ($role === UserRole::PetugasPerpustakaan || $role === UserRole::KepalaSekolah) {
+        if ($role === UserRole::KepalaSekolah) {
+            $this->loadKepsekData();
+        } elseif ($role === UserRole::PetugasPerpustakaan) {
             $this->loadLibraryData();
         } else {
             $this->loadSchoolData();
@@ -85,7 +100,7 @@ class Dashboard extends BaseDashboard
         $this->totalPesan       = Message::count();
         $this->siswaAktif       = (int) ($this->settings?->jumlah_siswa ?? 0);
         $this->totalGaleri      = Gallery::count();
-        $this->totalEkskul      = \App\Models\Extracurricular::where('is_active', true)->count();
+        $this->totalEkskul      = Extracurricular::where('is_active', true)->count();
 
         $this->recentMessages = Message::where('is_read', false)->latest()->take(5)->get();
         $this->recentPosts    = Post::where('status', 'published')->latest('tanggal_publish')->take(4)->get();
@@ -132,7 +147,7 @@ class Dashboard extends BaseDashboard
         $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
         $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
         $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
-        $this->bukuPaketAktif    = TextbookLoan::where('status', 'aktif')->count();
+        $this->bukuPaketAktif    = TextbookDistribution::where('status', 'aktif')->count();
         $this->kunjunganHariIni   = Visit::whereDate('tgl_kunjungan', today())->count();
         $this->kunjunganMingguIni = Visit::whereBetween('tgl_kunjungan', [now()->startOfWeek(), now()->endOfWeek()])->count();
         $this->kunjunganBulanIni  = Visit::whereMonth('tgl_kunjungan', now()->month)->whereYear('tgl_kunjungan', now()->year)->count();
@@ -158,5 +173,69 @@ class Dashboard extends BaseDashboard
             ->latest()
             ->take(5)
             ->get();
+    }
+
+    private function loadKepsekData(): void
+    {
+        // Website stats
+        $this->settings         = Setting::first();
+        $this->totalBerita      = Post::where('status', 'published')->count();
+        $this->pesanBelumDibaca = Message::where('is_read', false)->count();
+        $this->totalGuru        = Teacher::where('is_active', true)->count();
+        $this->totalGaleri      = Gallery::count();
+        $this->totalEkskul      = Extracurricular::where('is_active', true)->count();
+        $this->pengunjungBulanIni = WebsiteVisit::whereMonth('created_at', now()->month)
+            ->whereYear('created_at', now()->year)->count();
+
+        // Library stats
+        $this->totalBuku       = Book::where('is_active', true)->count();
+        $this->totalAnggota    = Member::where('is_active', true)->count();
+        $this->peminjamAktif   = Loan::where('status', 'dipinjam')->count();
+        $this->dendaBelumLunas = Fine::where('status_bayar', 'belum_lunas')->count();
+        $this->totalDenda      = Fine::where('status_bayar', 'belum_lunas')->sum('nominal');
+        $this->bukuPaketAktif  = TextbookDistribution::where('status', 'aktif')->count();
+        $this->kunjunganBulanIni = Visit::whereMonth('tgl_kunjungan', now()->month)
+            ->whereYear('tgl_kunjungan', now()->year)->count();
+
+        // Chart: peminjaman 6 months
+        $this->peminjamanPerBulan = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $d = now()->subMonths($i);
+            $this->peminjamanPerBulan[] = [
+                'label' => $d->locale('id')->translatedFormat('M Y'),
+                'short' => $d->locale('id')->translatedFormat('M'),
+                'total' => Loan::whereYear('tgl_pinjam', $d->year)
+                    ->whereMonth('tgl_pinjam', $d->month)->count(),
+            ];
+        }
+        $this->maxPeminjaman = max(array_column($this->peminjamanPerBulan, 'total') ?: [1]);
+
+        // Chart: kunjungan perpustakaan 6 months
+        $this->kunjunganPerBulan = [];
+        for ($i = 5; $i >= 0; $i--) {
+            $d = now()->subMonths($i);
+            $this->kunjunganPerBulan[] = [
+                'label' => $d->locale('id')->translatedFormat('M Y'),
+                'short' => $d->locale('id')->translatedFormat('M'),
+                'total' => Visit::whereYear('tgl_kunjungan', $d->year)
+                    ->whereMonth('tgl_kunjungan', $d->month)->count(),
+            ];
+        }
+        $this->maxKunjunganBulan = max(array_column($this->kunjunganPerBulan, 'total') ?: [1]);
+
+        // Recent data
+        $this->recentLoans = Loan::with(['book', 'member'])
+            ->whereIn('status', ['dipinjam', 'terlambat'])
+            ->orderBy('tgl_batas_kembali', 'asc')
+            ->take(5)->get();
+
+        $this->recentFines = Fine::with(['loan.book', 'loan.member'])
+            ->where('status_bayar', 'belum_lunas')
+            ->latest()->take(4)->get();
+
+        $this->recentPosts = Post::where('status', 'published')
+            ->latest('tanggal_publish')->take(5)->get();
+
+        $this->recentMessages = Message::where('is_read', false)->latest()->take(5)->get();
     }
 }

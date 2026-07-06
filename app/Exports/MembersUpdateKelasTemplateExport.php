@@ -19,6 +19,7 @@ class MembersUpdateKelasTemplateExport implements FromCollection, WithMapping, W
             ->where('jenis', 'siswa')
             ->where('status', 'aktif')
             ->whereNotNull('kelas')
+            ->orderBy('tahun_masuk')
             ->orderBy('kelas')
             ->orderBy('nama')
             ->get(['kode_anggota', 'nama', 'kelas']);

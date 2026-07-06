@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class PostResource extends Resource
 {
     protected static ?string $model = Post::class;
+    protected static ?string $slug  = 'berita';
 
     protected static ?string $navigationLabel       = 'Berita & Pengumuman';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';

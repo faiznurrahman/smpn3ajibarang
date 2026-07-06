@@ -2,8 +2,8 @@
 
 @section('content')
 
-{{-- ===================== HEADER ===================== --}}
-<div class="pt-28 pb-8 bg-gray-50">
+{{-- ── HEADER ── --}}
+<div class="pt-28 pb-8 bg-[#f9fafb]">
     <div class="max-w-7xl mx-auto px-4 text-center">
         <div class="text-xs text-gray-400 mb-2 flex items-center justify-center gap-2">
             <a href="{{ route('home') }}" class="hover:text-gray-600 transition">Beranda</a>
@@ -12,7 +12,7 @@
                 {{ $type === 'berita' ? 'Berita' : ($type === 'pengumuman' ? 'Pengumuman' : 'Prestasi') }}
             </span>
         </div>
-        <h1 class="text-2xl font-black text-gray-900">
+        <h1 class="text-2xl font-bold text-gray-900">
             {{ $type === 'berita' ? 'Berita' : ($type === 'pengumuman' ? 'Pengumuman' : 'Prestasi') }}
         </h1>
         <p class="text-sm text-gray-400 mt-1">
@@ -21,24 +21,23 @@
     </div>
 </div>
 
-{{-- ===================== KONTEN ===================== --}}
-<div class="bg-gray-50 pb-16">
-    <div class="max-w-7xl mx-auto px-4 pt-10">
+{{-- ── KONTEN ── --}}
+<div class="bg-[#f9fafb] pb-16">
+    <div class="max-w-7xl mx-auto px-4 pt-8">
 
         {{-- Tab Filter --}}
         <div class="flex gap-2 mb-6 flex-wrap">
             @foreach([
-                'berita'     => ['label' => 'Berita',     'icon' => 'fa-newspaper'],
-                'pengumuman' => ['label' => 'Pengumuman', 'icon' => 'fa-bullhorn'],
-                'prestasi'   => ['label' => 'Prestasi',   'icon' => 'fa-trophy'],
-            ] as $key => $item)
+                'berita'     => 'Berita',
+                'pengumuman' => 'Pengumuman',
+                'prestasi'   => 'Prestasi',
+            ] as $key => $label)
                 <a href="{{ route('information', ['type' => $key]) }}"
-                   class="flex items-center gap-2 px-5 py-2.5 rounded-full text-sm font-semibold transition
+                   class="px-5 py-2 rounded-full text-sm font-medium transition
                           {{ $type === $key
-                              ? 'bg-blue-900 text-white shadow-lg shadow-blue-900/20'
-                              : 'bg-white text-gray-600 border border-gray-200 hover:border-blue-300 hover:text-blue-700' }}">
-                    <i class="fas {{ $item['icon'] }} text-xs"></i>
-                    {{ $item['label'] }}
+                              ? 'bg-[#0d7377] text-white'
+                              : 'bg-white text-gray-600 border border-gray-200 hover:border-[#0d7377]/40 hover:text-[#0d7377]' }}">
+                    {{ $label }}
                 </a>
             @endforeach
         </div>
@@ -52,7 +51,7 @@
                        value="{{ $search ?? '' }}"
                        placeholder="Cari {{ $type === 'berita' ? 'berita' : ($type === 'pengumuman' ? 'pengumuman' : 'prestasi') }}..."
                        class="w-full pl-10 pr-10 py-2.5 rounded-xl border border-gray-200 bg-white text-sm text-gray-700
-                              focus:outline-none focus:border-blue-400 focus:ring-2 focus:ring-blue-100 transition"/>
+                              focus:outline-none focus:border-[#0d7377] transition"/>
                 <i class="fas fa-search absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400 text-xs"></i>
                 @if(!empty($search))
                     <a href="{{ route('information', ['type' => $type]) }}"
@@ -63,7 +62,7 @@
             </div>
             @if(!empty($search))
                 <p class="text-xs text-gray-500 mt-2">
-                    Hasil pencarian untuk <span class="font-semibold text-blue-700">"{{ $search }}"</span>
+                    Hasil pencarian untuk <span class="font-semibold text-[#0d7377]">"{{ $search }}"</span>
                     — {{ $posts->total() }} ditemukan
                 </p>
             @endif
@@ -84,30 +83,29 @@
                 @if($pinned->count())
                 <div class="mb-8">
                     <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-thumbtack text-yellow-500"></i>
-                        <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide">Disematkan</h3>
+                        <h3 class="font-semibold text-gray-700 text-xs uppercase tracking-wide">Disematkan</h3>
                     </div>
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         @foreach($pinned as $post)
                         <a href="{{ route('information.detail', $post->slug) }}"
-                           class="flex items-start gap-4 bg-yellow-50 border border-yellow-200 rounded-2xl p-5 hover:shadow-md transition group">
-                            <div class="w-10 h-10 bg-yellow-400 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fas fa-thumbtack text-white text-sm"></i>
+                           class="flex items-center gap-4 bg-[#e6f4f4] border border-[#0d7377]/20 rounded-xl p-4 hover:border-[#0d7377]/40 transition group">
+                            <div class="w-8 h-8 bg-[#0d7377] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-thumbtack text-white text-xs"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-blue-900 text-sm group-hover:text-blue-700 transition line-clamp-1">
+                                <h4 class="font-semibold text-[#0d7377] text-sm group-hover:text-[#0a5c60] transition line-clamp-1">
                                     {{ $post->judul }}
                                 </h4>
-                                <div class="flex items-center gap-4 mt-1.5 text-xs text-gray-500 flex-wrap">
-                                    <span><i class="fas fa-calendar-alt mr-1"></i>{{ \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y') }}</span>
+                                <div class="text-xs text-gray-500 mt-0.5">
+                                    {{ \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y') }}
                                     @if($post->end_date)
-                                    <span class="text-red-500 font-medium">
-                                        <i class="fas fa-clock mr-1"></i>Sampai {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}
+                                    <span class="text-orange-500 ml-2">
+                                        · Sampai {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}
                                     </span>
                                     @endif
                                 </div>
                             </div>
-                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-blue-400 transition mt-1 flex-shrink-0"></i>
+                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-[#0d7377] transition text-xs flex-shrink-0"></i>
                         </a>
                         @endforeach
                     </div>
@@ -117,31 +115,30 @@
                 {{-- Aktif --}}
                 @if($active->count())
                 <div class="mb-8">
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-bullhorn text-blue-500"></i>
-                        <h3 class="font-bold text-gray-700 text-sm uppercase tracking-wide">Pengumuman Aktif</h3>
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-gray-700 text-xs uppercase tracking-wide">Pengumuman Aktif</h3>
                     </div>
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         @foreach($active as $post)
                         <a href="{{ route('information.detail', $post->slug) }}"
-                           class="flex items-start gap-4 bg-white border border-gray-100 rounded-2xl p-5 hover:shadow-md hover:border-blue-200 transition group">
-                            <div class="w-10 h-10 bg-blue-100 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fas fa-bullhorn text-blue-500 text-sm"></i>
+                           class="flex items-center gap-4 bg-white border border-gray-100 rounded-xl p-4 hover:border-[#0d7377]/30 transition group">
+                            <div class="w-8 h-8 bg-[#e6f4f4] rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-bullhorn text-[#0d7377] text-xs"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-bold text-blue-900 text-sm group-hover:text-blue-700 transition line-clamp-1">
+                                <h4 class="font-medium text-gray-800 text-sm group-hover:text-[#0d7377] transition line-clamp-1">
                                     {{ $post->judul }}
                                 </h4>
-                                <div class="flex items-center gap-4 mt-1.5 text-xs text-gray-500 flex-wrap">
-                                    <span><i class="fas fa-calendar-alt mr-1"></i>{{ \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y') }}</span>
+                                <div class="text-xs text-gray-400 mt-0.5">
+                                    {{ \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y') }}
                                     @if($post->end_date)
-                                    <span class="text-orange-500 font-medium">
-                                        <i class="fas fa-clock mr-1"></i>Sampai {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}
+                                    <span class="text-orange-500 ml-2">
+                                        · Sampai {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}
                                     </span>
                                     @endif
                                 </div>
                             </div>
-                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-blue-400 transition mt-1 flex-shrink-0"></i>
+                            <i class="fas fa-chevron-right text-gray-300 group-hover:text-[#0d7377] transition text-xs flex-shrink-0"></i>
                         </a>
                         @endforeach
                     </div>
@@ -151,25 +148,22 @@
                 {{-- Kadaluarsa --}}
                 @if($expired->count())
                 <div>
-                    <div class="flex items-center gap-2 mb-4">
-                        <i class="fas fa-archive text-gray-400"></i>
-                        <h3 class="font-bold text-gray-400 text-sm uppercase tracking-wide">Sudah Berakhir</h3>
+                    <div class="mb-4">
+                        <h3 class="font-semibold text-gray-400 text-xs uppercase tracking-wide">Sudah Berakhir</h3>
                     </div>
-                    <div class="space-y-3">
+                    <div class="space-y-2">
                         @foreach($expired as $post)
                         <a href="{{ route('information.detail', $post->slug) }}"
-                           class="flex items-start gap-4 bg-gray-50 border border-gray-100 rounded-2xl p-5 hover:shadow-sm transition group opacity-70">
-                            <div class="w-10 h-10 bg-gray-200 rounded-xl flex items-center justify-center flex-shrink-0 mt-0.5">
-                                <i class="fas fa-archive text-gray-400 text-sm"></i>
+                           class="flex items-center gap-4 bg-gray-50 border border-gray-100 rounded-xl p-4 transition group opacity-60">
+                            <div class="w-8 h-8 bg-gray-200 rounded-lg flex items-center justify-center flex-shrink-0">
+                                <i class="fas fa-archive text-gray-400 text-xs"></i>
                             </div>
                             <div class="flex-1 min-w-0">
-                                <h4 class="font-semibold text-gray-600 text-sm line-clamp-1">{{ $post->judul }}</h4>
-                                <div class="flex items-center gap-4 mt-1.5 text-xs text-gray-400 flex-wrap">
-                                    <span><i class="fas fa-calendar-alt mr-1"></i>{{ \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y') }}</span>
-                                    <span><i class="fas fa-clock mr-1"></i>Berakhir {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}</span>
+                                <h4 class="font-medium text-gray-600 text-sm line-clamp-1">{{ $post->judul }}</h4>
+                                <div class="text-xs text-gray-400 mt-0.5">
+                                    Berakhir {{ \Carbon\Carbon::parse($post->end_date)->translatedFormat('d F Y') }}
                                 </div>
                             </div>
-                            <i class="fas fa-chevron-right text-gray-200 mt-1 flex-shrink-0"></i>
                         </a>
                         @endforeach
                     </div>
@@ -178,10 +172,10 @@
 
             {{-- ── Layout Berita & Prestasi ── --}}
             @else
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($posts as $post)
                     <a href="{{ route('information.detail', $post->slug) }}"
-                       class="bg-white rounded-2xl shadow-sm border border-gray-100 hover:shadow-md hover:border-blue-200 transition overflow-hidden group flex flex-col">
+                       class="bg-white rounded-xl border border-gray-100 hover:border-[#0d7377]/30 hover:shadow-sm transition overflow-hidden group flex flex-col">
                         @if(!empty($post->thumbnail))
                             <div class="overflow-hidden h-44">
                                 <img src="{{ Storage::url($post->thumbnail) }}"
@@ -190,19 +184,17 @@
                                      alt="{{ $post->judul }}"/>
                             </div>
                         @else
-                            <div class="h-44 bg-gradient-to-br from-blue-50 to-blue-100 flex items-center justify-center">
-                                <i class="fas {{ $type === 'prestasi' ? 'fa-trophy text-yellow-300' : 'fa-newspaper text-blue-200' }} text-4xl"></i>
+                            <div class="h-44 bg-[#e6f4f4] flex items-center justify-center">
+                                <i class="fas {{ $type === 'prestasi' ? 'fa-trophy' : 'fa-newspaper' }} text-[#0d7377]/30 text-4xl"></i>
                             </div>
                         @endif
                         <div class="p-5 flex flex-col flex-1">
-                            {{-- Badge type --}}
                             <div class="mb-2">
-                                <span class="text-xs font-bold px-2.5 py-1 rounded-full
-                                    {{ $type === 'prestasi' ? 'bg-yellow-100 text-yellow-700' : 'bg-blue-100 text-blue-700' }}">
+                                <span class="text-xs font-medium px-2.5 py-1 rounded-full bg-[#e6f4f4] text-[#0d7377]">
                                     {{ $type === 'berita' ? 'Berita' : 'Prestasi' }}
                                 </span>
                             </div>
-                            <h3 class="font-bold text-blue-900 text-sm leading-snug line-clamp-2 mb-2 group-hover:text-blue-700 transition">
+                            <h3 class="font-semibold text-gray-800 text-sm leading-snug line-clamp-2 mb-2 group-hover:text-[#0d7377] transition">
                                 {{ $post->judul }}
                             </h3>
                             @if(!empty($post->isi_konten))
@@ -210,7 +202,7 @@
                                 {{ Str::limit(strip_tags($post->isi_konten), 100) }}
                             </p>
                             @endif
-                            <div class="text-xs text-gray-400 flex items-center gap-2 mt-auto">
+                            <div class="text-xs text-gray-400 flex items-center gap-1.5 mt-auto">
                                 <i class="fas fa-calendar-alt"></i>
                                 {{ $post->tanggal_publish
                                     ? \Carbon\Carbon::parse($post->tanggal_publish)->translatedFormat('d F Y')
@@ -232,9 +224,9 @@
             <div class="text-center py-24 text-gray-400">
                 <i class="fas fa-inbox text-5xl mb-4 block"></i>
                 @if(!empty($search))
-                    <p class="text-sm font-medium text-gray-500">Tidak ada hasil untuk "<span class="text-blue-600">{{ $search }}</span>"</p>
+                    <p class="text-sm font-medium text-gray-500">Tidak ada hasil untuk "<span class="text-[#0d7377]">{{ $search }}</span>"</p>
                     <a href="{{ route('information', ['type' => $type]) }}"
-                       class="mt-4 inline-block text-sm text-blue-600 hover:underline">Hapus pencarian</a>
+                       class="mt-4 inline-block text-sm text-[#0d7377] hover:underline">Hapus pencarian</a>
                 @else
                     <p class="text-sm">Belum ada {{ $type }} yang dipublikasikan.</p>
                 @endif

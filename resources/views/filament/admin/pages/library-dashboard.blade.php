@@ -153,7 +153,7 @@
     </div>
     @if($isPetugas)
     <div style="display:flex;gap:10px;">
-      <a href="{{ \App\Filament\Resources\Loans\LoanResource::getUrl('create') }}" class="db-btn pri">
+      <a href="{{ \App\Filament\Admin\Pages\CatatPeminjaman::getUrl() }}" class="db-btn pri">
         <svg width="16" height="16"><use href="#dbi-plus"/></svg>Catat Peminjaman
       </a>
     </div>
@@ -257,7 +257,7 @@
           <div class="sub">{{ $peminjamAktif }} transaksi, diurutkan batas kembali terdekat</div>
         </div>
         @if($isPetugas)
-        <a href="{{ \App\Filament\Resources\Returns\ReturnResource::getUrl('index') }}" class="lnk">Proses kembali →</a>
+        <a href="{{ \App\Filament\Admin\Pages\HalamanPengembalian::getUrl() }}" class="lnk">Proses kembali →</a>
         @endif
       </div>
       <div class="db-card-body">
@@ -293,7 +293,7 @@
           <div class="sub">{{ $dendaBelumLunas }} denda menunggu pembayaran</div>
         </div>
         @if($isPetugas)
-        <a href="{{ \App\Filament\Resources\Fines\FineResource::getUrl('index') }}" class="lnk">Semua →</a>
+        <a href="{{ \App\Filament\Admin\Pages\Pelanggaran::getUrl() }}" class="lnk">Semua →</a>
         @endif
       </div>
       <div class="db-card-body" style="flex:1;">
@@ -452,12 +452,12 @@
 
       @if($isPetugas)
       <div class="db-qa-grid">
-        <a href="{{ \App\Filament\Resources\Loans\LoanResource::getUrl('create') }}" class="db-qa">
+        <a href="{{ \App\Filament\Admin\Pages\CatatPeminjaman::getUrl() }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--warn-50);color:var(--warn)"><svg width="16" height="16"><use href="#dbi-check"/></svg></div>
           <b>Catat Peminjaman</b>
           <span>Transaksi pinjam buku</span>
         </a>
-        <a href="{{ \App\Filament\Resources\Returns\ReturnResource::getUrl('index') }}" class="db-qa">
+        <a href="{{ \App\Filament\Admin\Pages\HalamanPengembalian::getUrl() }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--ok-50);color:var(--ok)"><svg width="16" height="16"><use href="#dbi-return"/></svg></div>
           <b>Pengembalian</b>
           <span>Proses buku kembali</span>

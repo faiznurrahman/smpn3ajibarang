@@ -135,16 +135,16 @@
       <h1>Dashboard Admin</h1>
       <p>Ringkasan aktivitas situs sekolah &middot; {{ $tanggal }}</p>
     </div>
-    <div style="display:flex;gap:8px;">
-      <a href="{{ route('filament.admin.resources.messages.index') }}" class="db-btn">
+    <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
+      <a href="{{ route('filament.admin.resources.pesan.index') }}" class="db-btn">
         <svg width="15" height="15"><use href="#dbi-mail"/></svg>
         Pesan
         @if($this->pesanBelumDibaca > 0)
         <span style="min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:var(--acc);color:white;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;">{{ $this->pesanBelumDibaca }}</span>
         @endif
       </a>
-      <a href="{{ route('filament.admin.resources.posts.create') }}" class="db-btn pri">
-        <svg width="15" height="15"><use href="#dbi-plus"/></svg>Tulis Berita
+      <a href="{{ route('filament.admin.resources.berita.create') }}" class="db-btn pri">
+        Tulis Berita
       </a>
     </div>
   </div>
@@ -216,7 +216,7 @@
         @if($this->siswaAktif > 0)
         <span style="color:var(--t3)">Tahun ajaran ini</span>
         @else
-        <a href="{{ route('filament.admin.resources.settings.index') }}" style="color:var(--pri);font-weight:500;">Atur di Pengaturan →</a>
+        <a href="{{ route('filament.admin.resources.pengaturan.index') }}" style="color:var(--pri);font-weight:500;">Atur di Pengaturan →</a>
         @endif
       </div>
       <svg class="db-stat-spark" width="120" height="40" viewBox="0 0 120 40" fill="none">
@@ -242,12 +242,12 @@
             @endif
           </div>
         </div>
-        <a href="{{ route('filament.admin.resources.messages.index') }}" class="lnk">Lihat semua →</a>
+        <a href="{{ route('filament.admin.resources.pesan.index') }}" class="lnk">Lihat semua →</a>
       </div>
       <div class="db-card-body">
         @forelse($this->recentMessages as $i => $msg)
           @if($i > 0)<div class="db-div"></div>@endif
-          <a href="{{ route('filament.admin.resources.messages.view', $msg) }}" class="db-msg">
+          <a href="{{ route('filament.admin.resources.pesan.view', $msg) }}" class="db-msg">
             <div class="db-msg-av">{{ strtoupper(substr($msg->nama, 0, 2)) }}</div>
             <div>
               <div class="db-msg-top">
@@ -309,13 +309,13 @@
           <h3>Berita terbaru</h3>
           <div class="sub">Baru dipublikasi</div>
         </div>
-        <a href="{{ route('filament.admin.resources.posts.index') }}" class="lnk">Semua →</a>
+        <a href="{{ route('filament.admin.resources.berita.index') }}" class="lnk">Semua →</a>
       </div>
       <div class="db-card-body">
         @php $grads = ['g1','g2','g3','g4']; @endphp
         @forelse($this->recentPosts as $i => $post)
           @if($i > 0)<div class="db-div"></div>@endif
-          <a href="{{ route('filament.admin.resources.posts.edit', $post) }}" class="db-post">
+          <a href="{{ route('filament.admin.resources.berita.edit', $post) }}" class="db-post">
             <div class="db-post-thumb {{ $grads[$i % 4] }}"></div>
             <div class="db-post-body">
               <b>{{ $post->judul }}</b>
@@ -343,7 +343,7 @@
       </div>
       <div style="padding:4px 0;">
 
-        <a href="{{ route('filament.admin.resources.posts.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
+        <a href="{{ route('filament.admin.resources.berita.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
           <div class="db-status-ico" style="background:var(--acc-50);color:var(--acc-2)"><svg width="15" height="15"><use href="#dbi-news"/></svg></div>
           <div class="db-status-label">
             <b>Berita & Pengumuman</b>
@@ -356,7 +356,7 @@
           <div class="db-status-num">{{ $this->totalBerita + $this->draftBerita }}<small>total</small></div>
         </a>
 
-        <a href="{{ route('filament.admin.resources.teachers.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
+        <a href="{{ route('filament.admin.resources.guru.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
           <div class="db-status-ico" style="background:var(--inf-50);color:var(--inf)"><svg width="15" height="15"><use href="#dbi-cap"/></svg></div>
           <div class="db-status-label">
             <b>Guru & Staf</b>
@@ -365,7 +365,7 @@
           <div class="db-status-num">{{ $this->totalGuru }}<small>aktif</small></div>
         </a>
 
-        <a href="{{ route('filament.admin.resources.galleries.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
+        <a href="{{ route('filament.admin.resources.galeri.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
           <div class="db-status-ico" style="background:var(--ok-50);color:var(--ok)"><svg width="15" height="15"><use href="#dbi-img"/></svg></div>
           <div class="db-status-label">
             <b>Galeri Foto</b>
@@ -374,7 +374,7 @@
           <div class="db-status-num">{{ $this->totalGaleri }}<small>album</small></div>
         </a>
 
-        <a href="{{ route('filament.admin.resources.extracurriculars.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
+        <a href="{{ route('filament.admin.resources.ekstrakurikuler.index') }}" class="db-status-row" style="text-decoration:none;color:inherit;transition:background 100ms;" onmouseover="this.style.background='#f5f7fc'" onmouseout="this.style.background=''">
           <div class="db-status-ico" style="background:var(--vio-50);color:var(--vio)"><svg width="15" height="15"><use href="#dbi-run"/></svg></div>
           <div class="db-status-label">
             <b>Ekstrakurikuler</b>
@@ -395,22 +395,22 @@
         </div>
       </div>
       <div class="db-qa-grid">
-        <a href="{{ route('filament.admin.resources.posts.create') }}" class="db-qa">
+        <a href="{{ route('filament.admin.resources.berita.create') }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--acc-50);color:var(--acc-2)"><svg width="16" height="16"><use href="#dbi-news"/></svg></div>
           <b>Tulis Berita</b>
           <span>Buat artikel atau pengumuman</span>
         </a>
-        <a href="{{ route('filament.admin.resources.teachers.create') }}" class="db-qa">
+        <a href="{{ route('filament.admin.resources.guru.create') }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--inf-50);color:var(--inf)"><svg width="16" height="16"><use href="#dbi-cap"/></svg></div>
           <b>Tambah Guru</b>
           <span>Daftarkan tenaga pendidik</span>
         </a>
-        <a href="{{ route('filament.admin.resources.galleries.create') }}" class="db-qa">
+        <a href="{{ route('filament.admin.resources.galeri.create') }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--ok-50);color:var(--ok)"><svg width="16" height="16"><use href="#dbi-img"/></svg></div>
           <b>Album Galeri</b>
           <span>Buat album foto kegiatan</span>
         </a>
-        <a href="{{ route('filament.admin.resources.extracurriculars.create') }}" class="db-qa">
+        <a href="{{ route('filament.admin.resources.ekstrakurikuler.create') }}" class="db-qa">
           <div class="db-qa-ico" style="background:var(--vio-50);color:var(--vio)"><svg width="16" height="16"><use href="#dbi-run"/></svg></div>
           <b>Ekstrakurikuler</b>
           <span>Tambah kegiatan siswa</span>

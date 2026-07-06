@@ -20,9 +20,10 @@ class LibraryExcelController extends Controller
         $bulan = $semua ? null : (int) ($request->input('bulan') ?? now()->month);
         $tahun = $semua ? null : (int) ($request->input('tahun') ?? now()->year);
 
+        $bulanLabel = $bulan ? str_pad($bulan, 2, '0', STR_PAD_LEFT) : 'semua';
         $filename = $semua
-            ? 'laporan-perpustakaan-semua.xlsx'
-            : sprintf('laporan-perpustakaan-%04d-%02d.xlsx', $tahun, $bulan);
+            ? 'laporan-bulanan-semua.xlsx'
+            : sprintf('laporan-bulanan-%s-%04d.xlsx', $bulanLabel, $tahun);
 
         return Excel::download(new LibraryReportExport($bulan, $tahun, $semua), $filename);
     }

@@ -38,8 +38,7 @@ class CreateTextbookLoan extends CreateRecord
                             ->label('Tahun Ajaran')
                             ->placeholder('2025/2026')
                             ->helperText('Format: YYYY/YYYY')
-                            ->required()
-                            ->live(debounce: 500),
+                            ->required(),
 
                         Select::make('untuk_tingkat')
                             ->label('Untuk Tingkat')
@@ -65,14 +64,18 @@ class CreateTextbookLoan extends CreateRecord
                     Placeholder::make('siswa_info')
                         ->label('Jumlah Siswa')
                         ->content(function (Get $get): string {
-                            $tahunAjaran = $get('tahun_ajaran');
-                            $tingkat     = $get('untuk_tingkat');
-                            if (! $tahunAjaran || ! $tingkat) {
-                                return 'Isi tahun ajaran dan tingkat kelas untuk melihat jumlah siswa.';
+                            $tingkat = $get('untuk_tingkat');
+                            if (! $tingkat) {
+                                return 'Pilih tingkat kelas untuk melihat jumlah siswa.';
                             }
-                            $count = Member::aktif()->siswa()
-                                ->tingkat($tahunAjaran, (int) $tingkat)
+                            $count = Member::where('jenis', 'siswa')
+                                ->where('status', 'aktif')
+                                ->where('is_active', true)
+                                ->where('kelas', 'LIKE', $tingkat . '%')
                                 ->count();
+                            if ($count === 0) {
+                                return "Tidak ada siswa aktif untuk Kelas {$tingkat}. Pastikan data anggota sudah diimport.";
+                            }
                             return "{$count} siswa aktif di kelas {$tingkat} akan menerima buku paket.";
                         }),
 

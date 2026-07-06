@@ -14,26 +14,17 @@ class MembersTemplateExport implements FromArray, WithHeadings, WithTitle, WithS
     public function array(): array
     {
         return [
-            // Contoh baris 1
-            ['23001', 'Budi Santoso', '7A', 2025, '081234567890'],
-            // Contoh baris 2
-            ['23002', 'Siti Rahayu', '7B', 2025, ''],
-            // Baris kosong untuk diisi
-            array_fill(0, 5, ''),
-            array_fill(0, 5, ''),
-            array_fill(0, 5, ''),
+            ['23001', 'Budi Santoso', '7A', 2025],
+            ['23002', 'Siti Rahayu', '7B', 2025],
+            array_fill(0, 4, ''),
+            array_fill(0, 4, ''),
+            array_fill(0, 4, ''),
         ];
     }
 
     public function headings(): array
     {
-        // Kolom yang diimport: nis, nama, kelas, angkatan, no_hp
-        // - nis       : NIS siswa (wajib, harus unik)
-        // - nama      : Nama lengkap (wajib)
-        // - kelas     : Contoh: 7A, 7B, 7C (wajib)
-        // - angkatan  : Tahun masuk sekolah, contoh: 2025 (wajib)
-        // - no_hp     : Nomor HP/WA (opsional)
-        return ['nis', 'nama', 'kelas', 'angkatan', 'no_hp'];
+        return ['nis', 'nama', 'kelas', 'angkatan'];
     }
 
     public function title(): string
@@ -61,7 +52,6 @@ class MembersTemplateExport implements FromArray, WithHeadings, WithTitle, WithS
             'B' => 32,  // nama
             'C' => 10,  // kelas
             'D' => 12,  // angkatan
-            'E' => 18,  // no_hp
         ];
     }
 }

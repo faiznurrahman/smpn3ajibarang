@@ -7,15 +7,15 @@ use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Table;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\ImageColumn;
 class OrganizationalStructuresTable
 {
     public static function configure(Table $table): Table
     {
         return $table
             ->columns([
-                ImageColumn::make('image')
-                    ->label('Gambar'),
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
 
                 TextColumn::make('title')
                     ->label('Judul')

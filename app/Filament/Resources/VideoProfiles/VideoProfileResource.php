@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class VideoProfileResource extends Resource
 {
     protected static ?string $model = VideoProfile::class;
+    protected static ?string $slug  = 'video-profil';
 
     protected static ?string $navigationLabel  = 'Video Profil';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';

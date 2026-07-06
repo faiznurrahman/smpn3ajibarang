@@ -2,7 +2,7 @@
 
 namespace App\Filament\Resources\TextbookSanksis\Tables;
 
-use App\Models\TextbookLoanItem;
+use App\Models\TextbookDistributionItem;
 use Carbon\Carbon;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
@@ -167,7 +167,7 @@ class TextbookSanksiTable
                             ->label('Catatan Penyelesaian')
                             ->rows(2),
                     ])
-                    ->action(function (TextbookLoanItem $record, array $data) {
+                    ->action(function (TextbookDistributionItem $record, array $data) {
                         $record->update([
                             'status_sanksi'      => 'lunas',
                             'jenis_sanksi'       => $data['penyelesaian'],

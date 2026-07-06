@@ -50,6 +50,13 @@ class VisitTable
                     })
                     ->visibleFrom('md'),
 
+                TextColumn::make('kelas')
+                    ->label('Kelas')
+                    ->formatStateUsing(fn ($state, $record) =>
+                        $record->jenis_pengunjung === 'siswa' ? ($state ?: '—') : '—'
+                    )
+                    ->placeholder('—'),
+
                 TextColumn::make('keperluan')
                     ->label('Keperluan')
                     ->badge()
@@ -107,7 +114,9 @@ class VisitTable
                     ]),
             ])
             ->recordActions([
-                DeleteAction::make()->label('Hapus'),
+                DeleteAction::make()
+                    ->label('Hapus')
+                    ->requiresConfirmation(),
             ])
             ->toolbarActions([
                 BulkActionGroup::make([

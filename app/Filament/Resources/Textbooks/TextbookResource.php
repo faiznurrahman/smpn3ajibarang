@@ -18,18 +18,22 @@ use Filament\Tables\Table;
 class TextbookResource extends Resource
 {
     protected static ?string $model = Textbook::class;
+    protected static ?string $slug  = 'buku-paket';
 
-    protected static ?string $navigationLabel            = 'Data Buku Paket';
+    protected static ?string $navigationLabel            = 'Katalog Buku Paket';
     protected static string|\UnitEnum|null $navigationGroup = 'Buku Paket';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
     protected static ?int    $navigationSort             = 1;
     protected static ?string $modelLabel                = 'Buku Paket';
-    protected static ?string $pluralModelLabel          = 'Data Buku Paket';
+    protected static ?string $pluralModelLabel          = 'Katalog Buku Paket';
 
     public static function canAccess(): bool
     {
         return auth()->user()?->role === UserRole::PetugasPerpustakaan;
     }
+
+    public static function canDelete($record): bool   { return false; }
+    public static function canDeleteAny(): bool        { return false; }
 
     public static function form(Schema $schema): Schema
     {

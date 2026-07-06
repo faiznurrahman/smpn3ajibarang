@@ -1,18 +1,18 @@
-﻿@props(['title', 'breadcrumb'])
+@props(['title', 'breadcrumb'])
 
 @extends('layouts.app')
 
 @section('content')
-    <div class="bg-blue-900 py-10">
+    <div class="bg-[#0d7377] pt-28 pb-10">
         <div class="max-w-7xl mx-auto px-4">
-            <div class="text-xs text-blue-300 mb-2 flex items-center gap-2">
+            <div class="text-xs text-white/60 mb-2 flex items-center gap-2">
                 <a href="{{ route('home') }}" class="hover:text-white transition">Beranda</a>
-                <i class="fas fa-chevron-right text-xs"></i>
+                <i class="fas fa-chevron-right text-[10px]"></i>
                 <span>Tentang Kami</span>
-                <i class="fas fa-chevron-right text-xs"></i>
+                <i class="fas fa-chevron-right text-[10px]"></i>
                 <span class="text-white">{{ $breadcrumb }}</span>
             </div>
-            <h1 class="font-display text-2xl md:text-3xl font-black text-white">{{ $title }}</h1>
+            <h1 class="text-2xl md:text-3xl font-bold text-white">{{ $title }}</h1>
         </div>
     </div>
     <div class="py-12 bg-gray-50">

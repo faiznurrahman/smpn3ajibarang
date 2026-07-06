@@ -18,13 +18,14 @@ use Filament\Tables\Table;
 class BookResource extends Resource
 {
     protected static ?string $model = Book::class;
+    protected static ?string $slug  = 'katalog';
 
-    protected static ?string $navigationLabel            = 'Data Buku';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
+    protected static ?string $navigationLabel            = 'Daftar Katalog';
+    protected static string|\UnitEnum|null $navigationGroup = 'Koleksi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedBookOpen;
     protected static ?int    $navigationSort             = 1;
-    protected static ?string $modelLabel                = 'Buku';
-    protected static ?string $pluralModelLabel          = 'Data Buku';
+    protected static ?string $modelLabel                = 'Katalog';
+    protected static ?string $pluralModelLabel          = 'Data Katalog';
 
     protected static ?string $recordTitleAttribute = 'judul';
 

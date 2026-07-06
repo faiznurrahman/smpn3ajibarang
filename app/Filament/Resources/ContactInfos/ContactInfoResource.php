@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 class ContactInfoResource extends Resource
 {
     protected static ?string $model = ContactInfo::class;
+    protected static ?string $slug  = 'informasi-kontak';
 
     protected static ?string $navigationLabel  = 'Informasi Kontak';
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';

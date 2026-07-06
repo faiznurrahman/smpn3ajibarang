@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 class SettingResource extends Resource
 {
     protected static ?string $model = Setting::class;
+    protected static ?string $slug  = 'pengaturan';
 
     protected static ?string $navigationLabel  = 'Pengaturan';
     protected static string|\UnitEnum|null $navigationGroup = 'Sistem';

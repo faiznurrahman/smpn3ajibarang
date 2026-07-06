@@ -7,14 +7,19 @@ use Illuminate\Database\Eloquent\Model;
 class Book extends Model
 {
     protected $fillable = [
-        'kode_buku', 'isbn', 'judul', 'penulis', 'penerbit', 'tahun',
+        'kode_buku', 'no_panggil', 'isbn', 'judul', 'anak_judul', 'penulis', 'pengarang_tambahan',
+        'penerbit', 'tahun', 'edisi', 'kota_terbit', 'deskripsi_fisik', 'jumlah_halaman', 'dimensi',
+        'bentuk_karya', 'bahasa', 'sumber', 'tgl_masuk', 'harga',
         'kategori', 'rak', 'stok', 'cover', 'deskripsi', 'is_active',
     ];
 
     protected $casts = [
-        'is_active' => 'boolean',
-        'stok'      => 'integer',
-        'tahun'     => 'integer',
+        'is_active'      => 'boolean',
+        'stok'           => 'integer',
+        'tahun'          => 'integer',
+        'harga'          => 'integer',
+        'jumlah_halaman' => 'integer',
+        'tgl_masuk'      => 'date',
     ];
 
     protected static function booted(): void
@@ -25,6 +30,31 @@ class Book extends Model
                 $book->kode_buku = 'BK-' . str_pad($next, 4, '0', STR_PAD_LEFT);
             }
         });
+    }
+
+    public function bookItems()
+    {
+        return $this->hasMany(BookItem::class);
+    }
+
+    public function generateItems(int $jumlah = 1, string $kondisi = 'baik'): void
+    {
+        for ($i = 0; $i < $jumlah; $i++) {
+            $this->bookItems()->create([
+                'kondisi'      => $kondisi,
+                'is_available' => true,
+            ]);
+        }
+    }
+
+    public function getJumlahEksemplarAttribute(): int
+    {
+        return $this->bookItems()->count();
+    }
+
+    public function getEksemplarTersediaAttribute(): int
+    {
+        return $this->bookItems()->where('is_available', true)->count();
     }
 
     public function loans()

@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class GalleryResource extends Resource
 {
     protected static ?string $model = Gallery::class;
+    protected static ?string $slug  = 'galeri';
 
     protected static ?string $navigationLabel  = 'Galeri';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';

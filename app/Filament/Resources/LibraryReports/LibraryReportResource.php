@@ -15,17 +15,18 @@ use Filament\Tables\Table;
 class LibraryReportResource extends Resource
 {
     protected static ?string $model = Loan::class;
+    protected static ?string $slug  = 'laporan-perpustakaan';
 
     protected static ?string $navigationLabel            = 'Laporan Perpustakaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedChartBar;
-    protected static ?int    $navigationSort             = 6;
+    protected static ?int    $navigationSort             = 1;
 
     public static function getNavigationGroup(): ?string
     {
         if (auth()->user()?->role === UserRole::KepalaSekolah) {
             return null;
         }
-        return 'Perpustakaan';
+        return 'Laporan';
     }
     protected static ?string $modelLabel                = 'Laporan';
     protected static ?string $pluralModelLabel          = 'Laporan Perpustakaan';

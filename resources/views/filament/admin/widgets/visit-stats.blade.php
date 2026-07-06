@@ -47,7 +47,7 @@
 .vs-sub {
     font-size: 12px;
     color: #8b94a6;
-    margin-top: 4px;
+    margin-top: 5px;
 }
 
 @media (max-width: 640px) {
@@ -77,8 +77,10 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
       </div>
     </div>
-    <div class="vs-val">{{ $hariIni }}</div>
-    <div class="vs-sub">pengunjung hari ini</div>
+    <div class="vs-val">{{ $hariIniTotal }}</div>
+    <div class="vs-sub">
+      {{ $hariIniSiswa }} Siswa &middot; {{ $hariIniGuru }} Guru &middot; {{ $hariIniTamu }} Tamu
+    </div>
   </div>
 
   {{-- Minggu Ini --}}
@@ -89,8 +91,8 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/></svg>
       </div>
     </div>
-    <div class="vs-val">{{ $mingguIni }}</div>
-    <div class="vs-sub">pengunjung minggu ini</div>
+    <div class="vs-val">{{ $mingguIniTotal }}</div>
+    <div class="vs-sub">{{ $mingguIniRange }}</div>
   </div>
 
   {{-- Bulan Ini --}}
@@ -101,8 +103,8 @@
         <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ef7c2a" stroke-width="1.8" stroke-linecap="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/><line x1="8" y1="14" x2="16" y2="14"/><line x1="8" y1="18" x2="12" y2="18"/></svg>
       </div>
     </div>
-    <div class="vs-val">{{ $bulanIni }}</div>
-    <div class="vs-sub">pengunjung bulan ini</div>
+    <div class="vs-val">{{ $bulanIniTotal }}</div>
+    <div class="vs-sub">{{ $bulanIniLabel }}</div>
   </div>
 
 </div>

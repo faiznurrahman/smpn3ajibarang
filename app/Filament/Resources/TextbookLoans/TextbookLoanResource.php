@@ -19,17 +19,19 @@ use Filament\Tables\Table;
 class TextbookLoanResource extends Resource
 {
     protected static ?string $model = TextbookLoan::class;
+    protected static ?string $slug  = 'distribusi-lama';
 
     protected static ?string $navigationLabel            = 'Distribusi Buku Paket';
     protected static string|\UnitEnum|null $navigationGroup = 'Buku Paket';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedClipboardDocumentList;
     protected static ?int    $navigationSort             = 2;
+    protected static bool    $shouldRegisterNavigation   = false;
     protected static ?string $modelLabel                = 'Distribusi';
     protected static ?string $pluralModelLabel          = 'Distribusi Buku Paket';
 
     public static function canAccess(): bool
     {
-        return auth()->user()?->role === UserRole::PetugasPerpustakaan;
+        return false;
     }
 
     public static function form(Schema $schema): Schema

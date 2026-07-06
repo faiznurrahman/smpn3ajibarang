@@ -19,6 +19,7 @@ use Illuminate\Database\Eloquent\Model;
 class MessageResource extends Resource
 {
     protected static ?string $model = Message::class;
+    protected static ?string $slug  = 'pesan';
 
     protected static ?string $navigationLabel  = 'Pesan Masuk';
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';

@@ -31,9 +31,9 @@ class Member extends Model
         return $this->hasMany(Loan::class)->where('status', 'dipinjam');
     }
 
-    public function textbookLoanItems()
+    public function textbookDistributionItems()
     {
-        return $this->hasMany(TextbookLoanItem::class);
+        return $this->hasMany(TextbookDistributionItem::class);
     }
 
     public function getTingkatAttribute(): ?int

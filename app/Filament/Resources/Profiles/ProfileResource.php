@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 class ProfileResource extends Resource
 {
     protected static ?string $model = Profile::class;
+    protected static ?string $slug  = 'profil-sekolah';
 
     protected static ?string $navigationLabel  = 'Profil Sekolah';
     protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';

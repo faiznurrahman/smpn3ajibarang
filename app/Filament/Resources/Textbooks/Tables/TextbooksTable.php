@@ -2,8 +2,7 @@
 
 namespace App\Filament\Resources\Textbooks\Tables;
 
-use Filament\Actions\BulkActionGroup;
-use Filament\Actions\DeleteBulkAction;
+use App\Models\Textbook;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -16,7 +15,15 @@ class TextbooksTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->extraAttributes(['class' => 'tbl-textbooks'])
             ->columns([
+
+                TextColumn::make('no')
+                    ->label('No')
+                    ->rowIndex()
+                    ->alignCenter()
+                    ->width('50px'),
+
                 TextColumn::make('kode_prefix')
                     ->label('Kode')
                     ->badge()
@@ -31,13 +38,19 @@ class TextbooksTable
                     ->sortable()
                     ->weight('semibold')
                     ->grow()
-                    ->description(fn ($record) => $record->mata_pelajaran),
+                    ->wrap(false)
+                    ->description(fn (Textbook $record) => $record->mata_pelajaran),
 
                 TextColumn::make('untuk_tingkat')
-                    ->label('Kelas')
+                    ->label('Tingkat')
                     ->badge()
                     ->formatStateUsing(fn ($state) => 'Kelas ' . $state)
-                    ->color('info')
+                    ->color(fn ($state) => match ((int) $state) {
+                        7 => 'info',
+                        8 => 'success',
+                        9 => 'warning',
+                        default => 'gray',
+                    })
                     ->sortable(),
 
                 TextColumn::make('total_eksemplar')
@@ -45,10 +58,10 @@ class TextbooksTable
                     ->alignCenter()
                     ->sortable(),
 
-                TextColumn::make('stok_tersedia')
+                TextColumn::make('eksemplar_tersedia')
                     ->label('Tersedia')
                     ->alignCenter()
-                    ->getStateUsing(fn ($record) => $record->items()->where('is_available', true)->count())
+                    ->getStateUsing(fn (Textbook $record) => $record->items()->where('is_available', true)->count())
                     ->badge()
                     ->color(fn ($state) => $state > 0 ? 'success' : 'danger'),
 
@@ -59,10 +72,11 @@ class TextbooksTable
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
                     ->falseColor('gray'),
+
             ])
             ->filters([
                 SelectFilter::make('untuk_tingkat')
-                    ->label('Kelas')
+                    ->label('Tingkat')
                     ->options([
                         '7' => 'Kelas 7',
                         '8' => 'Kelas 8',
@@ -77,11 +91,7 @@ class TextbooksTable
             ->recordActions([
                 EditAction::make()->label('Edit'),
             ])
-            ->toolbarActions([
-                BulkActionGroup::make([
-                    DeleteBulkAction::make(),
-                ]),
-            ])
+            ->toolbarActions([])
             ->defaultSort('untuk_tingkat');
     }
 }

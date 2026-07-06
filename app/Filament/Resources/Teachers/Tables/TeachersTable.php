@@ -6,7 +6,6 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -18,12 +17,9 @@ class TeachersTable
     {
         return $table
             ->columns([
-                ImageColumn::make('foto')
-                    ->label('')
-                    ->circular()
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->nama) . '&background=eef1f6&color=5a6478&bold=true&size=64')
-                    ->width(36)
-                    ->height(36),
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
 
                 TextColumn::make('nama')
                     ->label('Nama')

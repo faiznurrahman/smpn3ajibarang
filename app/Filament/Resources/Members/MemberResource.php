@@ -18,11 +18,12 @@ use Filament\Tables\Table;
 class MemberResource extends Resource
 {
     protected static ?string $model = Member::class;
+    protected static ?string $slug  = 'anggota';
 
-    protected static ?string $navigationLabel            = 'Data Anggota';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
+    protected static ?string $navigationLabel            = 'Daftar Anggota';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keanggotaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUsers;
-    protected static ?int    $navigationSort             = 2;
+    protected static ?int    $navigationSort             = 1;
     protected static ?string $modelLabel                = 'Anggota';
     protected static ?string $pluralModelLabel          = 'Data Anggota';
 

@@ -40,7 +40,7 @@ class ProfileForm
                         RichEditor::make('sejarah')
                             ->label('Isi Sejarah Sekolah')
                             ->toolbarButtons([
-                                'bold', 'italic', 'underline',
+                                'bold', 'italic',
                                 'bulletList', 'orderedList',
                                 'h2', 'h3',
                                 'undo', 'redo',
@@ -52,9 +52,9 @@ class ProfileForm
                 Section::make('Visi')
                     ->schema([
                         RichEditor::make('visi')
-                            ->label('')
+                            ->label('Visi')
                             ->toolbarButtons([
-                                'bold', 'italic', 'underline',
+                                'bold', 'italic',
                                 'bulletList', 'orderedList',
                                 'h2', 'h3',
                                 'undo', 'redo',
@@ -66,9 +66,9 @@ class ProfileForm
                 Section::make('Misi')
                     ->schema([
                         RichEditor::make('misi')
-                            ->label('')
+                            ->label('Misi')
                             ->toolbarButtons([
-                                'bold', 'italic', 'underline',
+                                'bold', 'italic',
                                 'bulletList', 'orderedList',
                                 'h2', 'h3',
                                 'undo', 'redo',

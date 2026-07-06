@@ -4,7 +4,7 @@ namespace App\Filament\Resources\Loans\Pages;
 
 use App\Filament\Resources\Loans\LoanResource;
 use App\Models\Loan;
-use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
@@ -16,22 +16,28 @@ class ListLoans extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            CreateAction::make()->label('Catat Peminjaman'),
+            Action::make('catat_peminjaman')
+                ->label('+ Catat Peminjaman')
+                ->color('primary')
+                ->url('/admin/catat-peminjaman'),
         ];
     }
 
     public function getTabs(): array
     {
-        $aktifCount = Loan::whereIn('status', ['dipinjam', 'terlambat'])->count();
-
         return [
-            'aktif' => Tab::make('Aktif')
-                ->modifyQueryUsing(fn (Builder $query) => $query->whereIn('status', ['dipinjam', 'terlambat']))
-                ->badge($aktifCount ?: null)
-                ->badgeColor('warning'),
+            'semua' => Tab::make('Semua')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', '!=', 'dikembalikan')),
 
-            'riwayat' => Tab::make('Riwayat')
-                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dikembalikan')),
+            'aktif' => Tab::make('Aktif')
+                ->badge(Loan::where('status', 'dipinjam')->count())
+                ->badgeColor('warning')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'dipinjam')),
+
+            'terlambat' => Tab::make('Terlambat')
+                ->badge(Loan::where('status', 'terlambat')->count())
+                ->badgeColor('danger')
+                ->modifyQueryUsing(fn (Builder $query) => $query->where('status', 'terlambat')),
         ];
     }
 }

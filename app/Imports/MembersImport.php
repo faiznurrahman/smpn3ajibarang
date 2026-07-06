@@ -40,7 +40,6 @@ class MembersImport implements ToCollection, WithHeadingRow
                     'jenis'        => 'siswa',
                     'kelas'        => $kelas ?: null,
                     'tahun_masuk'  => $angkatan,
-                    'no_hp'        => !empty($row['no_hp']) ? trim($row['no_hp']) : null,
                     'status'       => 'aktif',
                     'is_active'    => true,
                 ]);

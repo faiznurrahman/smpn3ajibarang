@@ -251,7 +251,7 @@
     Total: {{ $sanksis->count() }} kasus &nbsp;|&nbsp;
     Belum Lunas: {{ $sanksis->where('status_sanksi','belum_lunas')->count() }} &nbsp;|&nbsp;
     Lunas: {{ $sanksis->where('status_sanksi','lunas')->count() }} &nbsp;|&nbsp;
-    Rusak: {{ $sanksis->where('kondisi_kembali','rusak')->count() }} &nbsp;|&nbsp;
+    Rusak: {{ $sanksis->whereIn('kondisi_kembali',['rusak_ringan','rusak_berat'])->count() }} &nbsp;|&nbsp;
     Hilang: {{ $sanksis->where('kondisi_kembali','hilang')->count() }}
   </div>
 </div>
@@ -281,13 +281,13 @@
         <span class="sub mono">{{ $sanksi->textbookItem?->kode_item }}</span>
       </td>
       <td>
-        {{ $sanksi->loan?->tahun_ajaran ?? '—' }}<br>
-        <span class="sub">Kelas {{ $sanksi->loan?->untuk_tingkat }}</span>
+        {{ $sanksi->distribution?->tahun_ajaran ?? '—' }}<br>
+        <span class="sub">Kelas {{ $sanksi->distribution?->untuk_tingkat }}</span>
       </td>
       <td class="ta-c">
         @php $k = $sanksi->kondisi_kembali; @endphp
-        <span class="badge {{ match($k) { 'baik'=>'b-ok','rusak'=>'b-warn','hilang'=>'b-red',default=>'b-gray' } }}">
-          {{ match($k) { 'baik'=>'Baik','rusak'=>'Rusak','hilang'=>'Hilang',default=>'—' } }}
+        <span class="badge {{ match($k) { 'baik'=>'b-ok','rusak_ringan'=>'b-warn','rusak_berat'=>'b-warn','hilang'=>'b-red',default=>'b-gray' } }}">
+          {{ match($k) { 'baik'=>'Baik','rusak_ringan'=>'Rusak Ringan','rusak_berat'=>'Rusak Berat','hilang'=>'Hilang',default=>'—' } }}
         </span>
       </td>
       <td>

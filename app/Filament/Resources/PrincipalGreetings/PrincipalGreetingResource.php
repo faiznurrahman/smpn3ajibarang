@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class PrincipalGreetingResource extends Resource
 {
     protected static ?string $model = PrincipalGreeting::class;
+    protected static ?string $slug  = 'sambutan-kepala-sekolah';
 
     protected static ?string $navigationLabel  = 'Sambutan Kepala Sekolah';
     protected static string|\UnitEnum|null $navigationGroup = 'Konten Sekolah';

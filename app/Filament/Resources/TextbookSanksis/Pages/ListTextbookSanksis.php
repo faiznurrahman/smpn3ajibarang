@@ -4,7 +4,7 @@ namespace App\Filament\Resources\TextbookSanksis\Pages;
 
 use App\Filament\Resources\TextbookSanksis\TextbookSanksiResource;
 use App\Filament\Widgets\RekapSanksiBukuStatsWidget;
-use App\Models\TextbookLoanItem;
+use App\Models\TextbookDistributionItem;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
@@ -27,7 +27,7 @@ class ListTextbookSanksis extends ListRecords
 
     public function getTabs(): array
     {
-        $belumLunasCount = TextbookLoanItem::where('status_sanksi', 'belum_lunas')->count();
+        $belumLunasCount = TextbookDistributionItem::where('status_sanksi', 'belum_lunas')->count();
 
         return [
             'belum_lunas' => Tab::make('Belum Lunas')

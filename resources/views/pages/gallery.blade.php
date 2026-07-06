@@ -3,23 +3,23 @@
 @section('content')
 
     {{-- Breadcrumb --}}
-    <div class="pt-28 pb-8 bg-gray-50">
-    <div class="max-w-7xl mx-auto px-4 text-center">
-        <div class="text-xs text-gray-400 mb-2 flex items-center justify-center gap-2">
-            <a href="{{ route('home') }}" class="hover:text-gray-600 transition">Beranda</a>
-            <i class="fas fa-chevron-right text-[9px] text-gray-300"></i>
-            <span class="text-gray-500">Galeri</span>
+    <div class="pt-28 pb-8 bg-[#f9fafb]">
+        <div class="max-w-7xl mx-auto px-4 text-center">
+            <div class="text-xs text-gray-400 mb-2 flex items-center justify-center gap-2">
+                <a href="{{ route('home') }}" class="hover:text-gray-600 transition">Beranda</a>
+                <i class="fas fa-chevron-right text-[9px] text-gray-300"></i>
+                <span class="text-gray-500">Galeri</span>
+            </div>
+            <h1 class="text-2xl font-bold text-gray-900">Galeri Foto</h1>
+            <p class="text-sm text-gray-400 mt-1">Dokumentasi kegiatan SMPN 3 Ajibarang</p>
         </div>
-        <h1 class="text-2xl font-black text-gray-900">Galeri Foto</h1>
-        <p class="text-sm text-gray-400 mt-1">Dokumentasi kegiatan SMPN 3 Ajibarang</p>
     </div>
-</div>
 
-    <div class="pb-16 bg-gray-50 pt-6">
+    <div class="pb-16 bg-[#f9fafb] pt-6">
         <div class="max-w-7xl mx-auto px-4">
 
             @if($galleries->count())
-                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                     @foreach($galleries as $gallery)
                         @if($gallery->images->count())
                         @php
@@ -27,7 +27,7 @@
                             $total  = $gallery->images->count();
                             $photos = $gallery->images->sortBy('order');
                         @endphp
-                        <div class="bg-white rounded-2xl shadow-sm border border-gray-100 overflow-hidden hover:shadow-md hover:border-blue-200 transition cursor-pointer group"
+                        <div class="bg-white rounded-xl border border-gray-100 overflow-hidden hover:border-[#0d7377]/30 hover:shadow-sm transition cursor-pointer group"
                              onclick="openAlbum({{ $gallery->id }})">
 
                             {{-- Cover --}}
@@ -36,30 +36,30 @@
                                      alt="{{ $gallery->judul }}"
                                      loading="lazy"
                                      class="w-full h-full object-cover group-hover:scale-105 transition duration-500"/>
-                                {{-- Overlay jumlah foto --}}
-                                <div class="absolute bottom-3 right-3 bg-black/60 text-white text-xs font-semibold px-3 py-1 rounded-full flex items-center gap-1.5">
-                                    <i class="fas fa-images text-[10px]"></i> {{ $total }} Foto
+                                {{-- Badge jumlah foto --}}
+                                <div class="absolute bottom-3 right-3 bg-black/50 text-white text-xs font-medium px-2.5 py-1 rounded-full flex items-center gap-1">
+                                    <i class="fas fa-images text-[9px]"></i> {{ $total }} Foto
                                 </div>
                             </div>
 
                             {{-- Info --}}
-                            <div class="p-5">
-                                <h3 class="font-bold text-blue-900 text-base group-hover:text-blue-700 transition">
+                            <div class="p-4">
+                                <h3 class="font-semibold text-gray-800 text-sm group-hover:text-[#0d7377] transition">
                                     {{ $gallery->judul }}
                                 </h3>
                                 @if(!empty($gallery->deskripsi))
-                                    <p class="text-xs text-gray-400 mt-1 line-clamp-2">{{ $gallery->deskripsi }}</p>
+                                    <p class="text-xs text-gray-400 mt-1 line-clamp-1">{{ $gallery->deskripsi }}</p>
                                 @endif
-                                <div class="mt-3 flex items-center gap-1.5 text-xs text-blue-600 font-semibold">
+                                <div class="mt-3 flex items-center gap-1 text-xs text-[#0d7377] font-medium">
                                     Lihat Foto <i class="fas fa-arrow-right text-[10px]"></i>
                                 </div>
                             </div>
 
                             {{-- Preview strip --}}
                             @if($total > 1)
-                                <div class="flex gap-1 px-5 pb-5">
+                                <div class="flex gap-1 px-4 pb-4">
                                     @foreach($photos->skip(1)->take(4) as $img)
-                                        <div class="flex-1 h-12 rounded-lg overflow-hidden bg-gray-100">
+                                        <div class="flex-1 h-10 rounded-lg overflow-hidden bg-gray-100">
                                             <img src="{{ Storage::url($img->gambar) }}"
                                                  class="w-full h-full object-cover"
                                                  loading="lazy"
@@ -67,8 +67,8 @@
                                         </div>
                                     @endforeach
                                     @if($total > 5)
-                                        <div class="flex-1 h-12 rounded-lg bg-blue-50 flex items-center justify-center">
-                                            <span class="text-xs text-blue-500 font-bold">+{{ $total - 5 }}</span>
+                                        <div class="flex-1 h-10 rounded-lg bg-[#e6f4f4] flex items-center justify-center">
+                                            <span class="text-xs text-[#0d7377] font-semibold">+{{ $total - 5 }}</span>
                                         </div>
                                     @endif
                                 </div>
@@ -103,22 +103,22 @@
     <div id="album-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
          onclick="closeAlbum(event)">
         <div class="absolute inset-0 bg-black/60 backdrop-blur-sm"></div>
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto z-10">
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-4xl max-h-[90vh] overflow-y-auto z-10">
 
             {{-- Header Modal --}}
             <div class="sticky top-0 bg-white border-b border-gray-100 px-6 py-4 flex items-center justify-between rounded-t-2xl z-10">
                 <div>
-                    <h3 id="modal-album-title" class="font-bold text-blue-900 text-lg"></h3>
+                    <h3 id="modal-album-title" class="font-semibold text-gray-900 text-base"></h3>
                     <p id="modal-album-desc" class="text-xs text-gray-400 mt-0.5"></p>
                 </div>
                 <button onclick="closeAlbumBtn()"
-                        class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition">
+                        class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition">
                     <i class="fas fa-times text-gray-500 text-sm"></i>
                 </button>
             </div>
 
             {{-- Grid Foto --}}
-            <div id="modal-album-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-6">
+            <div id="modal-album-grid" class="grid grid-cols-2 sm:grid-cols-3 gap-3 p-5">
             </div>
 
         </div>
@@ -210,7 +210,7 @@
 
     function updateLightbox() {
         const photo = currentPhotos[currentIndex];
-        document.getElementById('lightbox-img').src          = photo.src;
+        document.getElementById('lightbox-img').src             = photo.src;
         document.getElementById('lightbox-caption').textContent = photo.caption || '';
         document.getElementById('lightbox-counter').textContent = `${currentIndex + 1} / ${currentPhotos.length}`;
     }
@@ -223,7 +223,7 @@
     function closeLightbox() {
         document.getElementById('lightbox').classList.add('hidden');
         document.getElementById('lightbox-img').src = '';
-        document.body.style.overflow = 'hidden'; // keep album modal scroll locked
+        document.body.style.overflow = 'hidden';
     }
 
     document.addEventListener('keydown', e => {

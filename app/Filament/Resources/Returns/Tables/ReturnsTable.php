@@ -2,37 +2,49 @@
 
 namespace App\Filament\Resources\Returns\Tables;
 
-use App\Models\Fine;
 use App\Models\Loan;
 use Carbon\Carbon;
 use Filament\Actions\Action;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Textarea;
-use Filament\Notifications\Notification;
 use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Table;
+use Illuminate\Database\Eloquent\Builder;
 
 class ReturnsTable
 {
     public static function configure(Table $table): Table
     {
         return $table
+            ->extraAttributes(['class' => 'tbl-returns'])
             ->columns([
+
+                TextColumn::make('no')
+                    ->label('No')
+                    ->rowIndex()
+                    ->alignCenter()
+                    ->width('50px'),
+
                 TextColumn::make('member.nama')
                     ->label('Anggota')
-                    ->searchable()
+                    ->searchable(query: function (Builder $query, string $search) {
+                        $query->whereHas('member', fn ($q) => $q
+                            ->where('nama', 'like', "%{$search}%")
+                            ->orWhere('kode_anggota', 'like', "%{$search}%")
+                        );
+                    })
                     ->sortable()
                     ->weight('semibold')
-                    ->description(fn ($record) => $record->member?->kode_anggota),
+                    ->description(fn (Loan $record) => collect([
+                        $record->member?->kode_anggota,
+                        $record->member?->kelas ? 'Kelas ' . $record->member->kelas : null,
+                    ])->filter()->implode(' · ')),
 
                 TextColumn::make('book.judul')
                     ->label('Buku')
                     ->searchable()
                     ->sortable()
                     ->grow()
-                    ->description(fn ($record) => $record->book?->kode_buku),
+                    ->wrap(false)
+                    ->description(fn (Loan $record) => $record->book?->kode_buku),
 
                 TextColumn::make('tgl_pinjam')
                     ->label('Tgl Pinjam')
@@ -43,166 +55,61 @@ class ReturnsTable
                     ->label('Batas Kembali')
                     ->date('d M Y')
                     ->sortable()
-                    ->description(fn ($record) => $record->isLate()
-                        ? 'Terlambat ' . $record->jumlahHariTerlambat() . ' hari'
-                        : null)
-                    ->color(fn ($record) => $record->isLate() ? 'danger' : null),
+                    ->color(fn (Loan $record) =>
+                        $record->tgl_batas_kembali?->lt(Carbon::today()) && $record->status !== 'dikembalikan'
+                            ? 'danger'
+                            : null
+                    ),
+
+                TextColumn::make('hari_terlambat')
+                    ->label('Terlambat')
+                    ->getStateUsing(function (Loan $record): ?int {
+                        $hari = $record->jumlahHariTerlambat();
+                        return $hari > 0 ? $hari : null;
+                    })
+                    ->formatStateUsing(fn ($state) => $state ? '+' . $state . ' hari' : '—')
+                    ->color(fn ($state) => $state ? 'danger' : null)
+                    ->weight(fn ($state) => $state ? 'bold' : null),
 
                 TextColumn::make('tgl_kembali')
                     ->label('Tgl Dikembalikan')
                     ->date('d M Y')
                     ->placeholder('—')
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
 
                 TextColumn::make('status')
                     ->label('Status')
                     ->badge()
-                    ->formatStateUsing(fn ($state) => $state === 'terlambat' ? 'Terlambat' : 'Dipinjam')
-                    ->color(fn ($state) => $state === 'terlambat' ? 'danger' : 'warning'),
-
-                TextColumn::make('kondisi_kembali')
-                    ->label('Kondisi')
-                    ->badge()
-                    ->placeholder('—')
                     ->formatStateUsing(fn ($state) => match ($state) {
-                        'baik'   => 'Baik',
-                        'rusak'  => 'Rusak',
-                        'hilang' => 'Hilang',
-                        default  => '—',
+                        'dipinjam'     => 'Dipinjam',
+                        'terlambat'    => 'Terlambat',
+                        'dikembalikan' => 'Dikembalikan',
+                        default        => $state,
                     })
                     ->color(fn ($state) => match ($state) {
-                        'baik'   => 'success',
-                        'rusak'  => 'warning',
-                        'hilang' => 'danger',
-                        default  => 'gray',
+                        'dipinjam'     => 'warning',
+                        'terlambat'    => 'danger',
+                        'dikembalikan' => 'success',
+                        default        => 'gray',
                     }),
 
-                TextColumn::make('status_sanksi')
-                    ->label('Sanksi')
-                    ->badge()
-                    ->formatStateUsing(fn ($state) => match ($state) {
-                        'tidak_ada'   => 'Tidak Ada',
-                        'belum_lunas' => 'Belum Lunas',
-                        'lunas'       => 'Lunas',
-                        default       => '—',
-                    })
-                    ->color(fn ($state) => match ($state) {
-                        'tidak_ada'   => 'gray',
-                        'belum_lunas' => 'danger',
-                        'lunas'       => 'success',
-                        default       => 'gray',
-                    }),
             ])
-            ->filters([
-                SelectFilter::make('status')
-                    ->label('Status')
-                    ->options([
-                        'dipinjam'  => 'Dipinjam',
-                        'terlambat' => 'Terlambat',
-                    ]),
-
-                SelectFilter::make('kondisi_kembali')
-                    ->label('Kondisi Kembali')
-                    ->options([
-                        'baik'   => 'Baik',
-                        'rusak'  => 'Rusak',
-                        'hilang' => 'Hilang',
-                    ]),
-
-                SelectFilter::make('status_sanksi')
-                    ->label('Status Sanksi')
-                    ->options([
-                        'tidak_ada'   => 'Tidak Ada',
-                        'belum_lunas' => 'Belum Lunas',
-                        'lunas'       => 'Lunas',
-                    ]),
-            ])
+            ->filters([])
             ->recordActions([
-                Action::make('kembalikan')
-                    ->label('Kembalikan')
-                    ->icon('heroicon-o-arrow-uturn-left')
-                    ->color('success')
-                    ->hidden(fn (Loan $record) => $record->tgl_kembali !== null)
-                    ->form([
-                        DatePicker::make('tgl_kembali')
-                            ->label('Tanggal Dikembalikan')
-                            ->default(today()->format('Y-m-d'))
-                            ->required(),
-
-                        Select::make('kondisi_kembali')
-                            ->label('Kondisi Buku Saat Dikembalikan')
-                            ->options([
-                                'baik'   => 'Baik',
-                                'rusak'  => 'Rusak',
-                                'hilang' => 'Hilang',
-                            ])
-                            ->default('baik')
-                            ->required()
-                            ->live(),
-
-                        Select::make('jenis_sanksi')
-                            ->label('Jenis Sanksi')
-                            ->options([
-                                'ganti_buku'  => 'Ganti Buku yang Sama',
-                                'bayar_harga' => 'Bayar Harga Buku',
-                            ])
-                            ->hidden(fn ($get) => $get('kondisi_kembali') === 'baik' || $get('kondisi_kembali') === null)
-                            ->default(fn ($get) => match ($get('kondisi_kembali')) {
-                                'rusak'  => 'bayar_harga',
-                                'hilang' => 'ganti_buku',
-                                default  => null,
-                            }),
-
-                        Textarea::make('catatan_sanksi')
-                            ->label('Catatan Sanksi')
-                            ->helperText('Contoh: harga buku, kondisi kerusakan')
-                            ->hidden(fn ($get) => $get('kondisi_kembali') === 'baik' || $get('kondisi_kembali') === null)
-                            ->rows(3),
-                    ])
-                    ->action(function (Loan $record, array $data) {
-                        $tglKembali   = Carbon::parse($data['tgl_kembali']);
-                        $isLate       = $tglKembali->gt($record->tgl_batas_kembali);
-                        $kondisi      = $data['kondisi_kembali'];
-                        $adaSanksi    = in_array($kondisi, ['rusak', 'hilang']);
-
-                        $record->update([
-                            'tgl_kembali'      => $tglKembali->toDateString(),
-                            'status'           => $isLate ? 'terlambat' : 'dikembalikan',
-                            'kondisi_kembali'  => $kondisi,
-                            'jenis_sanksi'     => $adaSanksi ? ($data['jenis_sanksi'] ?? ($kondisi === 'hilang' ? 'ganti_buku' : 'bayar_harga')) : 'tidak_ada',
-                            'status_sanksi'    => $adaSanksi ? 'belum_lunas' : 'tidak_ada',
-                            'catatan_sanksi'   => $adaSanksi ? ($data['catatan_sanksi'] ?? null) : null,
-                        ]);
-
-                        if ($isLate && ! $record->fine) {
-                            $jumlahHari = (int) $record->tgl_batas_kembali->diffInDays($tglKembali);
-                            Fine::create([
-                                'loan_id'      => $record->id,
-                                'jumlah_hari'  => $jumlahHari,
-                                'nominal'      => $jumlahHari * 1000,
-                                'status_bayar' => 'belum_lunas',
-                            ]);
-                        }
-
-                        $title = 'Buku berhasil dikembalikan';
-                        $color = 'success';
-                        if ($isLate && $adaSanksi) {
-                            $title = 'Buku dikembalikan — ada denda keterlambatan & sanksi';
-                            $color = 'danger';
-                        } elseif ($isLate) {
-                            $title = 'Buku dikembalikan — ada denda keterlambatan';
-                            $color = 'warning';
-                        } elseif ($adaSanksi) {
-                            $title = 'Buku dikembalikan — ada sanksi kondisi buku';
-                            $color = 'warning';
-                        }
-
-                        Notification::make()
-                            ->title($title)
-                            ->color($color)
-                            ->send();
-                    }),
+                Action::make('detail')
+                    ->label('Detail')
+                    ->icon('heroicon-o-eye')
+                    ->color('gray')
+                    ->modalHeading('Detail Peminjaman')
+                    ->modalSubmitAction(false)
+                    ->modalCancelActionLabel('Tutup')
+                    ->modalContent(fn (Loan $record) => view(
+                        'filament.admin.partials.loan-detail',
+                        ['record' => $record->load(['member', 'book', 'bookItem', 'fine', 'petugas'])]
+                    )),
             ])
-            ->defaultSort('tgl_batas_kembali', 'asc');
+            ->toolbarActions([])
+            ->defaultSort('tgl_batas_kembali', 'desc');
     }
 }

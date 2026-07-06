@@ -352,7 +352,7 @@ html  { color-scheme: light !important; }
 .fi-ta-cell {
     padding: 9px 14px !important;
     border-bottom: 1px solid #f1f3f8 !important;
-    font-size: 13px !important;
+    font-size: 12.5px !important;
     color: #0f172a !important;
     vertical-align: middle !important;
 }
@@ -369,7 +369,7 @@ html  { color-scheme: light !important; }
 
 /* Description text under main value */
 .fi-ta-text-description {
-    font-size: 11.5px !important;
+    font-size: 11px !important;
     color: #8b94a6 !important;
     margin-top: 2px !important;
 }
@@ -448,33 +448,36 @@ html  { color-scheme: light !important; }
 }
 
 /* ============================================================
-   Page tabs (getTabs() in ListRecords) — match .rp-tabs/.rp-tab
+   Page tabs (getTabs() in ListRecords) — flat underline style
+   Matches Pelanggaran: aktif = navy text + light-blue bg +
+   bottom border, nonaktif = abu, tidak ada pill besar.
    ============================================================ */
 
-/* Tab bar container */
+/* Tab bar container — border, full radius, no inner padding */
 .fi-tabs {
     display: flex !important;
-    gap: 4px !important;
+    gap: 0 !important;
     background: #fff !important;
     border: 1px solid #e6eaf2 !important;
     border-radius: 12px !important;
-    padding: 4px !important;
+    padding: 0 !important;
     margin-bottom: 16px !important;
+    overflow: hidden !important;
     box-shadow: 0 1px 2px rgba(15,23,42,.04) !important;
-    flex-wrap: wrap !important;
+    flex-wrap: nowrap !important;
 }
 
 /* Individual tab button */
 .fi-tabs-item {
     flex: 1 !important;
-    min-width: 110px !important;
-    padding: 8px 12px !important;
-    border-radius: 9px !important;
+    min-width: 0 !important;
+    padding: 11px 14px !important;
+    border-radius: 0 !important;
     border: none !important;
     background: none !important;
-    font-size: 12.5px !important;
-    font-weight: 500 !important;
-    color: #5a6478 !important;
+    font-size: 13px !important;
+    font-weight: 600 !important;
+    color: #8b94a6 !important;
     cursor: pointer !important;
     transition: background 100ms, color 100ms !important;
     display: inline-flex !important;
@@ -482,43 +485,56 @@ html  { color-scheme: light !important; }
     justify-content: center !important;
     gap: 6px !important;
     white-space: nowrap !important;
+    border-bottom: 2px solid transparent !important;
+    position: relative !important;
 }
 
 .fi-tabs-item-label {
-    font-size: 12.5px !important;
+    font-size: 13px !important;
 }
 
 .fi-tabs-item:hover {
-    background: #f5f7fc !important;
+    background: #f8f9fc !important;
     color: #0f172a !important;
 }
 
-/* Active tab — semi-blue fill, white text */
+/* Active tab — light-blue bg, navy text, navy bottom border */
 .fi-tabs-item.fi-active,
 .fi-tabs-item[aria-selected="true"],
 .fi-tabs-item[aria-selected="1"] {
-    background: rgba(30, 58, 138, 0.82) !important;
-    color: #fff !important;
-    font-weight: 600 !important;
-    box-shadow: 0 1px 3px rgba(30,58,138,.25) !important;
+    background: #eef2ff !important;
+    color: #1e3a8a !important;
+    font-weight: 700 !important;
+    border-bottom-color: #1e3a8a !important;
+    box-shadow: none !important;
 }
 
-/* Label & icon inside active tab — force white */
+/* Label inside active tab */
 .fi-tabs-item.fi-active .fi-tabs-item-label,
 .fi-tabs-item[aria-selected="true"] .fi-tabs-item-label,
-.fi-tabs-item[aria-selected="1"] .fi-tabs-item-label,
-.fi-tabs-item.fi-active > .fi-icon,
-.fi-tabs-item[aria-selected="true"] > .fi-icon,
-.fi-tabs-item[aria-selected="1"] > .fi-icon {
-    color: #fff !important;
+.fi-tabs-item[aria-selected="1"] .fi-tabs-item-label {
+    color: #1e3a8a !important;
 }
 
-/* Badge inside active tab — keep visible against blue bg */
+/* Badge di semua tab — merah, compact */
+.fi-tabs-item .fi-badge {
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
+    border: none !important;
+    min-width: 20px !important;
+    height: 18px !important;
+    font-size: 10px !important;
+    padding: 0 6px !important;
+    border-radius: 999px !important;
+    white-space: nowrap !important;
+}
+
+/* Badge di tab aktif — tetap merah (kontras di atas light-blue) */
 .fi-tabs-item.fi-active .fi-badge,
 .fi-tabs-item[aria-selected="true"] .fi-badge,
 .fi-tabs-item[aria-selected="1"] .fi-badge {
-    background: rgba(255,255,255,0.25) !important;
-    color: #fff !important;
+    background: #fee2e2 !important;
+    color: #dc2626 !important;
 }
 
 /* ============================================================
@@ -827,101 +843,59 @@ html  { color-scheme: light !important; }
 }
 
 /* ============================================================
-   Loans table — setiap kolom punya ruang cukup, scroll
-   horizontal otomatis muncul saat container lebih sempit
-   dari min-width tabel.
+   Loans table
    ============================================================ */
 
-.tbl-loans .fi-ta-header-cell,
-.fi-ta-main.tbl-loans .fi-ta-header-cell {
-    padding: 7px 10px !important;
-    font-size: 9.5px !important;
-    letter-spacing: 0.06em !important;
+.tbl-loans .fi-ta-header-cell {
+    padding: 10px 14px !important;
+    font-size: 10.5px !important;
+    font-weight: 700 !important;
+    text-transform: uppercase !important;
+    letter-spacing: .06em !important;
+    color: #8b94a6 !important;
     white-space: nowrap !important;
+    background: #f8f9fc !important;
+}
+
+.tbl-loans .fi-ta-cell {
+    padding: 11px 14px !important;
+    font-size: 13px !important;
     vertical-align: middle !important;
 }
 
-.tbl-loans .fi-ta-cell,
-.fi-ta-main.tbl-loans .fi-ta-cell {
-    padding: 8px 10px !important;
-    font-size: 12.5px !important;
-    vertical-align: top !important;
-}
-
-/* Description (kode anggota / kode buku) — biarkan wrap, jangan terpotong */
-.tbl-loans .fi-ta-text-description,
-.fi-ta-main.tbl-loans .fi-ta-text-description {
-    font-size: 10.5px !important;
+.tbl-loans .fi-ta-text-description {
+    font-size: 11.5px !important;
+    color: #8b94a6 !important;
     margin-top: 2px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
+    font-family: 'SF Mono','Fira Code',ui-monospace,monospace !important;
+    letter-spacing: .01em !important;
 }
 
-/* Badge */
-.tbl-loans .fi-badge,
-.fi-ta-main.tbl-loans .fi-badge {
-    height: 18px !important;
-    font-size: 10px !important;
-    padding: 0 7px !important;
-}
-
-/* Tombol aksi per baris */
-.tbl-loans .fi-ta-row .fi-btn,
-.fi-ta-main.tbl-loans .fi-ta-row .fi-btn {
-    height: 26px !important;
-    padding: 0 8px !important;
+.tbl-loans .fi-badge {
+    height: 20px !important;
     font-size: 11px !important;
+    font-weight: 600 !important;
+    padding: 0 8px !important;
+    border-radius: 999px !important;
+}
+
+.tbl-loans .fi-ta-row .fi-btn {
+    height: 28px !important;
+    padding: 0 10px !important;
+    font-size: 12px !important;
+    border-radius: 7px !important;
     white-space: nowrap !important;
 }
 
-/* Tabel selalu auto-layout dengan lebar minimum cukup.
-   Jika container < 900px → .fi-ta-content-ctn scroll horizontal. */
-.tbl-loans .fi-ta-table,
-.fi-ta-main.tbl-loans .fi-ta-table {
+.tbl-loans .fi-ta-table {
     table-layout: auto !important;
     width: 100% !important;
-    min-width: 900px !important;
+    min-width: 0 !important;
 }
 
-/* Anggota: wrap isi, lebar tetap 160px */
-.tbl-loans .fi-ta-table th:nth-child(2),
-.tbl-loans .fi-ta-table td:nth-child(2) {
-    width: 160px !important;
-    min-width: 160px !important;
-    max-width: 160px !important;
-    white-space: normal !important;
-    word-break: break-word !important;
-}
-
-/* Buku: wrap, ambil sisa ruang */
-.tbl-loans .fi-ta-table th:nth-child(3),
-.tbl-loans .fi-ta-table td:nth-child(3) {
-    white-space: normal !important;
-    word-break: break-word !important;
-}
-
-/* Tgl Pinjam, Batas Kembali, Tgl Kembali: nowrap, ukuran ikut konten */
-.tbl-loans .fi-ta-table th:nth-child(4),
-.tbl-loans .fi-ta-table td:nth-child(4),
-.tbl-loans .fi-ta-table th:nth-child(5),
-.tbl-loans .fi-ta-table td:nth-child(5),
-.tbl-loans .fi-ta-table th:nth-child(6),
-.tbl-loans .fi-ta-table td:nth-child(6) {
-    white-space: nowrap !important;
-}
-
-/* Status: center */
-.tbl-loans .fi-ta-table th:nth-child(7),
-.tbl-loans .fi-ta-table td:nth-child(7) {
-    white-space: nowrap !important;
-    text-align: center !important;
-}
-
-/* Aksi: center */
-.tbl-loans .fi-ta-table th:last-child,
-.tbl-loans .fi-ta-table td:last-child {
-    white-space: nowrap !important;
-    text-align: center !important;
+.tbl-loans .fi-ta-content-ctn {
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
 }
 
 /* ============================================================
@@ -930,6 +904,84 @@ html  { color-scheme: light !important; }
 html, body {
   overflow-x: hidden;
   max-width: 100%;
+}
+
+/* ============================================================
+   LAYOUT — Navbar sticky + sidebar fixed + scroll mandiri
+   Berlaku untuk desktop (≥ 1024 px)
+   ============================================================ */
+@media (min-width: 1024px) {
+
+    /* Kunci tinggi viewport — body bukan lagi scroll container */
+    html,
+    body {
+        height: 100dvh !important;
+        overflow: hidden !important;
+    }
+
+    /* Wrapper luar: isi penuh viewport */
+    .fi-layout {
+        height: 100dvh !important;
+        overflow: hidden !important;
+    }
+
+    /* ── Sidebar ── fixed-height kolom, nav scroll mandiri ── */
+    .fi-sidebar {
+        height: 100dvh !important;
+        max-height: 100dvh !important;
+        flex-shrink: 0 !important;
+        display: flex !important;
+        flex-direction: column !important;
+        overflow: hidden !important;
+    }
+
+    .fi-sidebar-header {
+        flex-shrink: 0 !important;
+    }
+
+    /* Nav: ambil sisa tinggi sidebar, scroll jika menu panjang */
+    .fi-sidebar-nav {
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    .fi-sidebar-footer {
+        flex-shrink: 0 !important;
+    }
+
+    /* ── Panel kanan: topbar terkunci di atas, konten scroll ─ */
+    .fi-main-ctn {
+        flex: 1 1 0% !important;
+        min-width: 0 !important;
+        min-height: 0 !important;
+        height: 100dvh !important;
+        display: flex !important;
+        flex-direction: column !important;
+        /* Tanpa overflow:hidden agar dropdown topbar tidak terpotong */
+    }
+
+    /* Topbar: flex-shrink:0 membuatnya selalu terlihat di puncak */
+    .fi-topbar-ctn {
+        flex-shrink: 0 !important;
+        position: relative !important; /* ganti sticky Filament — tidak perlu di flex layout */
+        z-index: 30 !important;
+    }
+
+    /* Konten utama: isi sisa tinggi, scroll mandiri */
+    .fi-main {
+        flex: 1 1 0% !important;
+        min-height: 0 !important;
+        overflow-y: auto !important;
+        overflow-x: hidden !important;
+    }
+
+    /* Scrollbar tipis untuk fi-main */
+    .fi-main::-webkit-scrollbar          { width: 6px; }
+    .fi-main::-webkit-scrollbar-track    { background: transparent; }
+    .fi-main::-webkit-scrollbar-thumb    { background: #d4dae6; border-radius: 4px; }
+    .fi-main::-webkit-scrollbar-thumb:hover { background: #b0b8ca; }
 }
 
 /* ============================================================
@@ -1039,26 +1091,22 @@ html, body {
     overflow-x: hidden !important;
   }
 
-  /* ── Filament tabs: tidak overflow ───────────────────── */
+  /* ── Filament tabs: kompak di mobile ─────────────────── */
   .fi-tabs {
-    gap: 3px !important;
-    overflow-x: hidden !important;
+    overflow-x: auto !important;
+    -webkit-overflow-scrolling: touch !important;
   }
 
   .fi-tabs-item {
     min-width: 0 !important;
-    flex: 1 1 0% !important;
-    padding: 7px 8px !important;
+    flex: 1 1 auto !important;
+    padding: 9px 10px !important;
     font-size: 11.5px !important;
-    white-space: normal !important;
-    line-height: 1.3 !important;
-    text-align: center !important;
+    white-space: nowrap !important;
   }
 
   .fi-tabs-item-label {
     font-size: 11.5px !important;
-    white-space: normal !important;
-    line-height: 1.3 !important;
   }
 
   /* ── Table toolbar ────────────────────────────────────── */
@@ -1102,3 +1150,50 @@ html, body {
   }
 }
 
+/* ============================================================
+   PADDING-BOTTOM DESKTOP — konten terbawah tidak tertutup
+   taskbar Windows. Berlaku md (768 px) ke atas.
+   Mobile (<768 px) tidak terpengaruh.
+   ============================================================ */
+@media (min-width: 768px) {
+    /* Sidebar nav: 64px = 48px (tinggi taskbar Win11) + 16px buffer
+       Memastikan item paling bawah bisa di-scroll ke posisi aman di atas taskbar */
+    .fi-sidebar-nav {
+        padding-bottom: 64px !important;
+    }
+
+    /* Konten utama: sama, agar pagination/tabel paling bawah tidak tertutup taskbar */
+    .fi-main {
+        padding-bottom: 64px !important;
+    }
+}
+
+/* ============================================================
+   Tabel Katalog — baris compact, padding atas-bawah lebih rapat
+   ============================================================ */
+.tbl-katalog .fi-ta-header-cell {
+    padding: 7px 12px !important;
+}
+
+.tbl-katalog .fi-ta-cell {
+    padding: 6px 12px !important;
+    vertical-align: middle !important;
+}
+
+.tbl-katalog .fi-ta-text-description {
+    font-size: 11px !important;
+    margin-top: 1px !important;
+    line-height: 1.3 !important;
+}
+
+.tbl-katalog .fi-badge {
+    height: 18px !important;
+    font-size: 10.5px !important;
+    padding: 0 7px !important;
+}
+
+.tbl-katalog .fi-ta-row .fi-btn {
+    height: 26px !important;
+    padding: 0 8px !important;
+    font-size: 11.5px !important;
+}

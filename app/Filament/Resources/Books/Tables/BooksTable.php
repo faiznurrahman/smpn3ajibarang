@@ -5,8 +5,6 @@ namespace App\Filament\Resources\Books\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\IconColumn;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\TernaryFilter;
@@ -17,19 +15,20 @@ class BooksTable
     public static function configure(Table $table): Table
     {
         return $table
+            ->extraAttributes(['class' => 'tbl-katalog'])
             ->columns([
-                ImageColumn::make('cover')
-                    ->label('')
-                    ->defaultImageUrl(fn ($record) => 'https://ui-avatars.com/api/?name=' . urlencode($record->judul) . '&background=eef1f6&color=5a6478&bold=true&size=64')
-                    ->width(36)
-                    ->height(48),
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex()
+                    ->width('50px'),
 
                 TextColumn::make('kode_buku')
                     ->label('Kode')
                     ->searchable()
                     ->sortable()
                     ->fontFamily('mono')
-                    ->size('sm'),
+                    ->size('sm')
+                    ->width('100px'),
 
                 TextColumn::make('judul')
                     ->label('Judul Buku')
@@ -37,31 +36,29 @@ class BooksTable
                     ->sortable()
                     ->weight('semibold')
                     ->grow()
+                    ->wrap()
                     ->description(fn ($record) => $record->penulis . ($record->tahun ? ' · ' . $record->tahun : '')),
 
-                TextColumn::make('kategori')
-                    ->label('Kategori')
-                    ->badge()
-                    ->color('primary')
-                    ->placeholder('—'),
-
-                TextColumn::make('rak')
-                    ->label('Rak')
+                TextColumn::make('no_panggil')
+                    ->label('No. Panggil')
                     ->placeholder('—')
-                    ->size('sm'),
+                    ->size('sm')
+                    ->width('120px'),
 
-                TextColumn::make('stok')
-                    ->label('Stok')
-                    ->sortable()
-                    ->description(fn ($record) => 'Tersedia: ' . $record->stok_tersedia . ' · Dipinjam: ' . $record->stok_dipinjam),
+                TextColumn::make('jumlah_eksemplar')
+                    ->label('Eksemplar')
+                    ->getStateUsing(fn ($record) => $record->bookItems()->count())
+                    ->alignCenter()
+                    ->size('sm')
+                    ->width('90px'),
 
-                IconColumn::make('is_active')
-                    ->label('Aktif')
-                    ->boolean()
-                    ->trueIcon('heroicon-o-check-circle')
-                    ->falseIcon('heroicon-o-x-circle')
-                    ->trueColor('success')
-                    ->falseColor('gray'),
+                TextColumn::make('is_active')
+                    ->label('Status')
+                    ->badge()
+                    ->formatStateUsing(fn ($state) => $state ? 'Aktif' : 'Nonaktif')
+                    ->color(fn ($state) => $state ? 'success' : 'danger')
+                    ->alignCenter()
+                    ->width('80px'),
             ])
             ->filters([
                 SelectFilter::make('kategori')

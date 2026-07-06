@@ -4,6 +4,7 @@ namespace App\Filament\Resources\Returns\Pages;
 
 use App\Filament\Resources\Returns\ReturnResource;
 use App\Models\Loan;
+use Filament\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Filament\Schemas\Components\Tabs\Tab;
 use Illuminate\Database\Eloquent\Builder;
@@ -14,7 +15,13 @@ class ListReturns extends ListRecords
 
     protected function getHeaderActions(): array
     {
-        return [];
+        return [
+            Action::make('proses_pengembalian')
+                ->label('Proses Pengembalian')
+                ->color('primary')
+                ->icon('heroicon-o-arrow-uturn-left')
+                ->url('/admin/proses-pengembalian'),
+        ];
     }
 
     public function getTabs(): array

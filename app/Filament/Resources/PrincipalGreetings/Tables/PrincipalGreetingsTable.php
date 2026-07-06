@@ -5,7 +5,6 @@ namespace App\Filament\Resources\PrincipalGreetings\Tables;
 use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Actions\EditAction;
-use Filament\Tables\Columns\ImageColumn;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Table;
 
@@ -15,11 +14,9 @@ class PrincipalGreetingsTable
     {
         return $table
             ->columns([
-                ImageColumn::make('foto')
-                    ->label('')
-                    ->circular()
-                    ->width(36)
-                    ->height(36),
+                TextColumn::make('index')
+                    ->label('No')
+                    ->rowIndex(),
 
                 TextColumn::make('nama_kepala_sekolah')
                     ->label('Nama Kepala Sekolah')

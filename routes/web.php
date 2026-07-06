@@ -6,6 +6,7 @@ use App\Exports\MembersTemplateExport;
 use App\Exports\MembersUpdateKelasTemplateExport;
 use App\Http\Controllers\LibraryExcelController;
 use App\Http\Controllers\LibraryKioskController;
+use App\Http\Controllers\LibraryTabExcelController;
 use App\Http\Controllers\LibraryPdfController;
 use App\Http\Controllers\PageController;
 use App\Http\Middleware\TrackWebsiteVisit;
@@ -35,7 +36,7 @@ Route::middleware([TrackWebsiteVisit::class])->group(function () {
     // Kontak
     Route::get('/kontak', [PageController::class, 'contact'])->name('contact');
 });
-Route::post('/kontak', [PageController::class, 'sendMessage'])->name('contact.send');
+Route::post('/kontak', [PageController::class, 'sendMessage'])->middleware(['throttle:5,1'])->name('contact.send');
 
 // Laporan PDF Perpustakaan (Petugas + Kepala)
 Route::get('/admin/laporan-perpustakaan/pdf', [LibraryPdfController::class, 'download'])
@@ -47,14 +48,19 @@ Route::get('/admin/laporan-perpustakaan/excel', [LibraryExcelController::class, 
     ->middleware(['auth'])
     ->name('laporan.perpustakaan.excel');
 
+// Export Excel per-tab Perpustakaan (Petugas + Kepala)
+Route::get('/admin/laporan-perpustakaan/excel-tab', [LibraryTabExcelController::class, 'download'])
+    ->middleware(['auth'])
+    ->name('laporan.perpustakaan.excel.tab');
+
 // Template import buku (Petugas saja)
-Route::get('/admin/books/template', function () {
+Route::get('/admin/buku/template', function () {
     abort_unless(auth()->user()?->role === UserRole::PetugasPerpustakaan, 403);
     return Excel::download(new BooksTemplateExport, 'template-import-buku.xlsx');
-})->middleware(['auth'])->name('books.template');
+})->middleware(['auth'])->name('buku.template');
 
 // Template anggota (Petugas saja)
-Route::middleware(['auth'])->prefix('/admin/members/template')->name('members.template.')->group(function () {
+Route::middleware(['auth'])->prefix('/admin/anggota/template')->name('anggota.template.')->group(function () {
     Route::get('/import', function () {
         abort_unless(auth()->user()?->role === UserRole::PetugasPerpustakaan, 403);
         return Excel::download(new MembersTemplateExport, 'template-import-anggota.xlsx');
@@ -70,7 +76,7 @@ Route::middleware(['auth'])->prefix('/admin/members/template')->name('members.te
 Route::prefix('perpustakaan')->name('perpustakaan.')->group(function () {
     Route::get('/',             [LibraryKioskController::class, 'index'])->name('index');
     Route::get('/hadir',           [LibraryKioskController::class, 'hadir'])->name('hadir');
-    Route::post('/hadir',          [LibraryKioskController::class, 'simpanHadir'])->name('hadir.simpan');
+    Route::post('/hadir',          [LibraryKioskController::class, 'simpanHadir'])->middleware(['throttle:10,1'])->name('hadir.simpan');
     Route::get('/hadir/sukses',    [LibraryKioskController::class, 'hadirSukses'])->name('hadir.sukses');
     Route::get('/anggota/cari',    [LibraryKioskController::class, 'cariAnggota'])->name('anggota.cari');
     Route::get('/katalog',      [LibraryKioskController::class, 'katalog'])->name('katalog');

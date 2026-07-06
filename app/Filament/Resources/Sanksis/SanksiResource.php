@@ -14,11 +14,13 @@ use Filament\Tables\Table;
 class SanksiResource extends Resource
 {
     protected static ?string $model = Loan::class;
+    protected static ?string $slug  = 'sanksi-buku';
 
     protected static ?string $navigationLabel            = 'Sanksi Buku';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Sirkulasi';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedExclamationTriangle;
-    protected static ?int    $navigationSort             = 6;
+    protected static ?int    $navigationSort             = 4;
+    protected static bool    $shouldRegisterNavigation   = false;
     protected static ?string $modelLabel                = 'Sanksi';
     protected static ?string $pluralModelLabel          = 'Sanksi Buku';
 

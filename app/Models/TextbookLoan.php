@@ -28,9 +28,12 @@ class TextbookLoan extends Model
 
     public function distributeToMembers(array $textbookIds): array
     {
-        $members = Member::aktif()->siswa()
-            ->tingkat($this->tahun_ajaran, $this->untuk_tingkat)
-            ->orderBy('kode_anggota', 'asc')
+        $members = Member::where('jenis', 'siswa')
+            ->where('status', 'aktif')
+            ->where('is_active', true)
+            ->where('kelas', 'LIKE', $this->untuk_tingkat . '%')
+            ->orderBy('kelas')
+            ->orderBy('nama')
             ->get();
 
         $assigned         = 0;

@@ -251,7 +251,7 @@
 <div class="mv-wrap">
 
   {{-- Tombol kembali --}}
-  <a href="{{ route('filament.admin.resources.messages.index') }}" class="mv-back">
+  <a href="{{ route('filament.admin.resources.pesan.index') }}" class="mv-back">
     <svg><use href="#mv-arrow"/></svg>
     Pesan Masuk
   </a>

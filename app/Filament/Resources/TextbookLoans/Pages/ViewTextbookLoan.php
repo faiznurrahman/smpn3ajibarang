@@ -4,11 +4,10 @@ namespace App\Filament\Resources\TextbookLoans\Pages;
 
 use App\Filament\Resources\TextbookLoans\TextbookLoanResource;
 use App\Models\Member;
-use App\Models\TextbookLoan;
-use App\Models\TextbookLoanItem;
+use App\Models\TextbookDistribution;
+use App\Models\TextbookDistributionItem;
 use Filament\Actions\Action;
 use Filament\Forms\Components\Checkbox;
-use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\Hidden;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Repeater\TableColumn;
@@ -30,62 +29,34 @@ class ViewTextbookLoan extends Page implements HasTable
     protected string $view = 'filament.admin.resources.textbook-loans.pages.view-textbook-loan';
 
     public int $recordId;
-    public ?TextbookLoan $loan = null;
+    public ?TextbookDistribution $distribution = null;
 
     public function mount(int|string $record): void
     {
-        $this->recordId = (int) $record;
-        $this->loan     = TextbookLoan::findOrFail($this->recordId);
+        $this->recordId     = (int) $record;
+        $this->distribution = TextbookDistribution::findOrFail($this->recordId);
     }
 
     public function getTitle(): string
     {
-        return 'Detail Distribusi — ' . $this->loan->tahun_ajaran . ' (Kelas ' . $this->loan->untuk_tingkat . ')';
+        return 'Detail Distribusi — ' . $this->distribution->tahun_ajaran
+            . ' (Kelas ' . $this->distribution->untuk_tingkat . ')';
     }
 
     protected function getHeaderActions(): array
     {
-        return [
-            Action::make('tambah_buku_paket')
-                ->label('Tambah Buku Paket')
-                ->icon('heroicon-o-plus-circle')
-                ->color('primary')
-                ->visible(fn () => $this->loan->status === 'aktif')
-                ->form([
-                    CheckboxList::make('buku_ids')
-                        ->label('Pilih Buku Paket untuk Ditambahkan')
-                        ->options(function () {
-                            return \App\Models\Textbook::where('is_active', true)
-                                ->where('untuk_tingkat', $this->loan->untuk_tingkat)
-                                ->get()
-                                ->mapWithKeys(fn ($t) => [
-                                    $t->id => "[{$t->kode_prefix}] {$t->judul} — {$t->items()->where('is_available', true)->count()} eksemplar tersedia",
-                                ]);
-                        })
-                        ->columns(2)
-                        ->required(),
-                ])
-                ->action(function (array $data) {
-                    $result = $this->loan->distributeToMembers($data['buku_ids']);
-
-                    Notification::make()
-                        ->title('Buku paket berhasil ditambahkan')
-                        ->body("{$result['assigned']} buku didistribusikan ke {$result['siswa']} siswa.")
-                        ->success()
-                        ->send();
-                }),
-        ];
+        return [];
     }
 
     public function table(Table $table): Table
     {
-        $loanId = $this->recordId;
+        $distributionId = $this->recordId;
 
         return $table
             ->query(
                 Member::query()
                     ->whereIn('id',
-                        TextbookLoanItem::where('loan_id', $loanId)
+                        TextbookDistributionItem::where('distribution_id', $distributionId)
                             ->distinct()
                             ->pluck('member_id')
                     )
@@ -110,14 +81,14 @@ class ViewTextbookLoan extends Page implements HasTable
                 TextColumn::make('total_buku')
                     ->label('Total Buku')
                     ->alignCenter()
-                    ->getStateUsing(fn (Member $record) => TextbookLoanItem::where('loan_id', $loanId)
+                    ->getStateUsing(fn (Member $record) => TextbookDistributionItem::where('distribution_id', $distributionId)
                         ->where('member_id', $record->id)
                         ->count()),
 
                 TextColumn::make('sudah_kembali')
                     ->label('Sudah Kembali')
                     ->alignCenter()
-                    ->getStateUsing(fn (Member $record) => TextbookLoanItem::where('loan_id', $loanId)
+                    ->getStateUsing(fn (Member $record) => TextbookDistributionItem::where('distribution_id', $distributionId)
                         ->where('member_id', $record->id)
                         ->whereNotNull('tgl_kembali_aktual')
                         ->count()),
@@ -125,9 +96,9 @@ class ViewTextbookLoan extends Page implements HasTable
                 TextColumn::make('status_pengembalian')
                     ->label('Status')
                     ->badge()
-                    ->getStateUsing(function (Member $record) use ($loanId) {
-                        $total    = TextbookLoanItem::where('loan_id', $loanId)->where('member_id', $record->id)->count();
-                        $returned = TextbookLoanItem::where('loan_id', $loanId)->where('member_id', $record->id)->whereNotNull('tgl_kembali_aktual')->count();
+                    ->getStateUsing(function (Member $record) use ($distributionId) {
+                        $total    = TextbookDistributionItem::where('distribution_id', $distributionId)->where('member_id', $record->id)->count();
+                        $returned = TextbookDistributionItem::where('distribution_id', $distributionId)->where('member_id', $record->id)->whereNotNull('tgl_kembali_aktual')->count();
                         return $total > 0 && $total === $returned ? 'selesai' : 'belum_selesai';
                     })
                     ->formatStateUsing(fn ($state) => $state === 'selesai' ? 'Selesai' : 'Belum Selesai')
@@ -141,14 +112,14 @@ class ViewTextbookLoan extends Page implements HasTable
                     ->modalHeading(fn (Member $record) => 'Pengembalian Buku — ' . $record->nama)
                     ->modalDescription('Centang buku yang dikembalikan. Buku tidak dicentang → wajib pilih sanksi.')
                     ->modalWidth('4xl')
-                    ->visible(function (Member $record) use ($loanId) {
-                        return TextbookLoanItem::where('loan_id', $loanId)
+                    ->visible(function (Member $record) use ($distributionId) {
+                        return TextbookDistributionItem::where('distribution_id', $distributionId)
                             ->where('member_id', $record->id)
                             ->whereNull('tgl_kembali_aktual')
                             ->exists();
                     })
-                    ->fillForm(function (Member $record) use ($loanId) {
-                        $items = TextbookLoanItem::where('loan_id', $loanId)
+                    ->fillForm(function (Member $record) use ($distributionId) {
+                        $items = TextbookDistributionItem::where('distribution_id', $distributionId)
                             ->where('member_id', $record->id)
                             ->whereNull('tgl_kembali_aktual')
                             ->with('textbookItem.textbook')
@@ -177,7 +148,7 @@ class ViewTextbookLoan extends Page implements HasTable
                                     ->live()
                                     ->afterStateUpdated(fn ($state, $set) => $set(
                                         'kondisi_atau_sanksi',
-                                        $state ? 'baik' : 'ganti_buku'
+                                        $state ? 'baik' : 'bayar_harga'
                                     )),
 
                                 TextInput::make('kode_item')
@@ -194,13 +165,14 @@ class ViewTextbookLoan extends Page implements HasTable
                                     ->label('Kondisi / Sanksi')
                                     ->options(fn ($get) => (bool) $get('dikembalikan')
                                         ? [
-                                            'baik'   => 'Baik',
-                                            'rusak'  => 'Rusak',
-                                            'hilang' => 'Hilang',
+                                            'baik'        => 'Baik',
+                                            'rusak_ringan'=> 'Rusak Ringan',
+                                            'rusak_berat' => 'Rusak Berat',
+                                            'hilang'      => 'Hilang',
                                         ]
                                         : [
-                                            'ganti_buku'  => 'Ganti Buku',
                                             'bayar_harga' => 'Bayar Harga Buku',
+                                            'ganti_buku'  => 'Ganti Buku',
                                         ]
                                     )
                                     ->required()
@@ -217,9 +189,9 @@ class ViewTextbookLoan extends Page implements HasTable
                             ->reorderable(false)
                             ->extraAttributes(['style' => 'max-height: 380px; overflow-y: auto;']),
                     ])
-                    ->action(function (Member $record, array $data) use ($loanId) {
+                    ->action(function (Member $record, array $data) use ($distributionId) {
                         foreach ($data['items'] as $itemData) {
-                            $item = TextbookLoanItem::find($itemData['id']);
+                            $item = TextbookDistributionItem::find($itemData['id']);
                             if (! $item) {
                                 continue;
                             }
@@ -227,9 +199,9 @@ class ViewTextbookLoan extends Page implements HasTable
                             if ($itemData['dikembalikan']) {
                                 $kondisi = $itemData['kondisi_atau_sanksi'];
                                 $jenisSanksi  = match ($kondisi) {
-                                    'rusak'  => 'bayar_harga',
-                                    'hilang' => 'ganti_buku',
-                                    default  => 'tidak_ada',
+                                    'rusak_ringan', 'rusak_berat' => 'bayar_harga',
+                                    'hilang'                      => 'ganti_buku',
+                                    default                       => 'tidak_ada',
                                 };
                                 $statusSanksi = $jenisSanksi !== 'tidak_ada' ? 'belum_lunas' : 'tidak_ada';
 
@@ -241,7 +213,7 @@ class ViewTextbookLoan extends Page implements HasTable
                                 ]);
 
                                 $item->textbookItem->update([
-                                    'kondisi'      => $kondisi,
+                                    'kondisi'      => in_array($kondisi, ['rusak_ringan', 'rusak_berat']) ? 'rusak' : $kondisi,
                                     'is_available' => $kondisi !== 'hilang',
                                 ]);
                             } else {
@@ -252,13 +224,13 @@ class ViewTextbookLoan extends Page implements HasTable
                             }
                         }
 
-                        $allReturned = TextbookLoanItem::where('loan_id', $loanId)
+                        $allReturned = TextbookDistributionItem::where('distribution_id', $distributionId)
                             ->whereNull('tgl_kembali_aktual')
                             ->doesntExist();
 
                         if ($allReturned) {
-                            TextbookLoan::find($loanId)?->update(['status' => 'selesai']);
-                            $this->loan->refresh();
+                            TextbookDistribution::find($distributionId)?->update(['status' => 'selesai']);
+                            $this->distribution->refresh();
                         }
 
                         Notification::make()

@@ -28,7 +28,7 @@ class MemberForm
 
                         TextInput::make('kode_anggota')
                             ->label(fn ($get) => $get('jenis') === 'guru' ? 'NIP' : 'NIS')
-                            ->helperText(fn ($get) => $get('jenis') === 'guru' ? 'Nomor Induk Pegawai' : 'Nomor Induk Siswa')
+                            ->placeholder(fn ($get) => $get('jenis') === 'guru' ? 'Nomor Induk Pegawai' : 'Nomor Induk Siswa')
                             ->required()
                             ->unique(ignoreRecord: true),
 
@@ -64,11 +64,6 @@ class MemberForm
                             ])
                             ->default('aktif')
                             ->required(),
-
-                        TextInput::make('no_hp')
-                            ->label('No. HP / WhatsApp')
-                            ->tel()
-                            ->placeholder('08xxxxxxxxxx'),
 
                     ]),
                 ]),

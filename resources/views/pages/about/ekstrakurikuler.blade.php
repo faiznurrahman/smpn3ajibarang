@@ -2,29 +2,24 @@
 
 @section('content')
     <div class="pt-28 pb-2 px-4 max-w-7xl mx-auto">
-        <div class="text-xs text-gray-500 mb-3 flex items-center gap-2">
-            <a href="{{ route('home') }}" class="hover:text-blue-700 transition">Beranda</a>
-            <i class="fas fa-chevron-right text-xs"></i>
+        <div class="text-xs text-gray-400 mb-3 flex items-center gap-2">
+            <a href="{{ route('home') }}" class="hover:text-[#0d7377] transition">Beranda</a>
+            <i class="fas fa-chevron-right text-[9px]"></i>
             <span>Tentang Kami</span>
-            <i class="fas fa-chevron-right text-xs"></i>
-            <span class="text-blue-700 font-medium">Ekstrakurikuler</span>
+            <i class="fas fa-chevron-right text-[9px]"></i>
+            <span class="text-[#0d7377] font-medium">Ekstrakurikuler</span>
         </div>
     </div>
 
-    <div class="pb-8 bg-gray-50">
+    <div class="pb-8 bg-[#f9fafb]">
         <div class="max-w-7xl mx-auto px-4">
             <div class="flex flex-col lg:flex-row gap-8">
                 <main class="flex-1 min-w-0">
-                    <div class="bg-white rounded-2xl shadow-sm border border-gray-100 p-8">
-                        <div class="flex items-center gap-3 mb-6">
-                            <div class="w-10 h-10 bg-orange-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-star text-orange-500"></i>
-                            </div>
-                            <h2 class="font-family: 'Oswald', sans-serif; text-2xl font-black text-blue-900">Ekstrakurikuler</h2>
-                        </div>
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+                    <div class="bg-white rounded-xl border border-gray-100 p-7">
+                        <h2 class="text-xl font-bold text-gray-900 mb-6 teal-underline">Ekstrakurikuler</h2>
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
                             @forelse($extracurriculars as $ekstra)
-                                <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-blue-200 hover:bg-blue-50 transition cursor-pointer"
+                                <div class="flex gap-4 p-4 rounded-xl border border-gray-100 hover:border-[#0d7377]/30 hover:bg-[#f9fafb] transition cursor-pointer"
                                      onclick="openModal(
                                          '{{ $ekstra->nama }}',
                                          '{{ !empty($ekstra->gambar) ? Storage::url($ekstra->gambar) : '' }}',
@@ -32,22 +27,22 @@
                                      )">
                                     @if(!empty($ekstra->gambar))
                                         <img src="{{ Storage::url($ekstra->gambar) }}"
-                                             class="w-16 h-16 rounded-xl object-cover flex-shrink-0"
+                                             class="w-14 h-14 rounded-xl object-cover flex-shrink-0"
                                              loading="lazy"
                                              alt="{{ $ekstra->nama }}"/>
                                     @else
-                                        <div class="w-16 h-16 rounded-xl bg-orange-50 flex items-center justify-center flex-shrink-0">
-                                            <i class="fas fa-star text-orange-300 text-xl"></i>
+                                        <div class="w-14 h-14 rounded-xl bg-[#e6f4f4] flex items-center justify-center flex-shrink-0">
+                                            <i class="fas fa-star text-[#0d7377]/40 text-xl"></i>
                                         </div>
                                     @endif
                                     <div class="flex-1 min-w-0">
-                                        <div class="font-semibold text-blue-900 text-sm">{{ $ekstra->nama }}</div>
+                                        <div class="font-semibold text-gray-800 text-sm">{{ $ekstra->nama }}</div>
                                         @if(!empty($ekstra->deskripsi))
-                                            <div class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-3">
+                                            <div class="text-xs text-gray-500 mt-1 leading-relaxed line-clamp-2">
                                                 {{ strip_tags($ekstra->deskripsi) }}
                                             </div>
                                         @endif
-                                        <div class="mt-2 text-xs text-blue-600 font-medium flex items-center gap-1">
+                                        <div class="mt-2 text-xs text-[#0d7377] font-medium flex items-center gap-1">
                                             Lihat Detail <i class="fas fa-arrow-right text-[10px]"></i>
                                         </div>
                                     </div>
@@ -68,24 +63,20 @@
          class="hidden fixed inset-0 z-50 flex items-center justify-center p-4"
          onclick="closeModal(event)">
 
-        {{-- Backdrop --}}
         <div class="absolute inset-0 bg-black/50 backdrop-blur-sm"></div>
 
-        {{-- Modal Box --}}
-        <div class="relative bg-white rounded-2xl shadow-2xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10">
+        <div class="relative bg-white rounded-2xl shadow-xl w-full max-w-lg max-h-[90vh] overflow-y-auto z-10">
 
-            {{-- Gambar --}}
             <div id="modal-img-wrap" class="hidden">
                 <img id="modal-img" src="" alt=""
                      class="w-full h-52 object-cover rounded-t-2xl"/>
             </div>
 
-            {{-- Konten --}}
             <div class="p-6">
                 <div class="flex items-start justify-between gap-4 mb-4">
-                    <h3 id="modal-title" class="font-display text-xl font-black text-blue-900"></h3>
+                    <h3 id="modal-title" class="text-lg font-bold text-gray-900"></h3>
                     <button onclick="closeModalBtn()"
-                            class="w-8 h-8 flex items-center justify-center rounded-full bg-gray-100 hover:bg-gray-200 transition flex-shrink-0">
+                            class="w-8 h-8 flex items-center justify-center rounded-lg bg-gray-100 hover:bg-gray-200 transition flex-shrink-0">
                         <i class="fas fa-times text-gray-500 text-sm"></i>
                     </button>
                 </div>

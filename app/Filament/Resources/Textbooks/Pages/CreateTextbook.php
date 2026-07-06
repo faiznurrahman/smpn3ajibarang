@@ -12,10 +12,9 @@ class CreateTextbook extends CreateRecord
 
     protected function afterCreate(): void
     {
-        $this->record->generateItems();
-
+        // Item di-generate otomatis via Textbook::booted() created event
         Notification::make()
-            ->title("{$this->record->total_eksemplar} item berhasil di-generate untuk \"{$this->record->judul}\"")
+            ->title("{$this->record->total_eksemplar} eksemplar berhasil di-generate untuk \"{$this->record->judul}\"")
             ->success()
             ->send();
     }

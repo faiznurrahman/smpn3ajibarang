@@ -18,6 +18,7 @@ use Filament\Tables\Table;
 class SocialMediaResource extends Resource
 {
     protected static ?string $model = SocialMedia::class;
+    protected static ?string $slug  = 'media-sosial';
 
     protected static ?string $navigationLabel  = 'Media Sosial';
     protected static string|\UnitEnum|null $navigationGroup = 'Komunikasi';

@@ -11,7 +11,7 @@
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Oswald:wght@700;800&family=Poppins:wght@400;500;600;700;800;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
 
     {{-- Font Awesome --}}
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css"/>
@@ -21,24 +21,23 @@
 
     <style>
         :root {
-            --navy:       #0d2b6b;
-            --navy-light: #1a3f8f;
-            --gold:       #e8a020;
-            --gold-light: #f5c842;
-            --bg:         #f7f9fc;
+            --teal:       #0d7377;
+            --teal-dark:  #0a5c60;
+            --teal-light: #e6f4f4;
+            --teal-mid:   #14a5ab;
+            --bg:         #f9fafb;
         }
         body { font-family: 'Poppins', sans-serif; background: var(--bg); color: #1e293b; }
-        .font-display { font-family: 'Playfair Display', serif; }
 
-        .gold-underline::after {
+        .teal-underline::after {
             content: ''; display: block;
-            width: 52px; height: 4px;
-            background: var(--gold); border-radius: 2px; margin-top: 8px;
+            width: 40px; height: 3px;
+            background: var(--teal); border-radius: 2px; margin-top: 8px;
         }
-        .gold-underline-center::after {
+        .teal-underline-center::after {
             content: ''; display: block;
-            width: 52px; height: 4px;
-            background: var(--gold); border-radius: 2px;
+            width: 40px; height: 3px;
+            background: var(--teal); border-radius: 2px;
             margin: 8px auto 0;
         }
 
@@ -47,7 +46,7 @@
             content: ''; position: absolute;
             left: 0; bottom: -3px;
             width: 0; height: 2px;
-            background: var(--gold); transition: width 0.3s;
+            background: var(--teal); transition: width 0.3s;
         }
         .nav-link:hover::after,
         .nav-link.active::after { width: 100%; }
@@ -63,22 +62,18 @@
 
         input:focus, textarea:focus, select:focus {
             outline: none;
-            border-color: var(--navy-light);
-            box-shadow: 0 0 0 3px rgba(26,63,143,0.14);
+            border-color: var(--teal);
+            box-shadow: 0 0 0 3px rgba(13,115,119,0.12);
         }
 
         #toast { transition: opacity 0.3s; }
 
         /* ── Page Loader ── */
         @keyframes loader-spin   { to { transform: rotate(360deg); } }
-        @keyframes loader-pulse  { 0%,100% { transform:scale(1); filter:drop-shadow(0 0 0px rgba(13,43,107,0)); } 50% { transform:scale(1.05); filter:drop-shadow(0 6px 18px rgba(13,43,107,0.18)); } }
-        @keyframes loader-dots   { 0%,80%,100% { opacity:0.2; transform:scale(0.7); } 40% { opacity:1; transform:scale(1); } }
         @keyframes loader-fadein { from { opacity:0; transform:translateY(8px); } to { opacity:1; transform:translateY(0); } }
 
-        /* ── Scroll-reveal smooth easing ── */
-        .reveal-ready {
-            will-change: opacity, transform;
-        }
+        /* ── Scroll-reveal ── */
+        .reveal-ready { will-change: opacity, transform; }
     </style>
 
     @stack('styles')
@@ -88,22 +83,21 @@
     {{-- ── Page Loader ── --}}
     <div id="page-loader" style="position:fixed;inset:0;z-index:9999;background:#fff;display:flex;flex-direction:column;align-items:center;justify-content:center;">
 
-        {{-- Logo + 2 ring spinner mengelilingi --}}
-        <div style="position:relative;width:120px;height:120px;display:flex;align-items:center;justify-content:center;">
+        <div style="position:relative;width:100px;height:100px;display:flex;align-items:center;justify-content:center;">
 
-            {{-- Ring luar — biru, searah jarum jam --}}
-            <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(30,58,138,0.1);border-top-color:#1e3a8a;animation:loader-spin 1s linear infinite;"></div>
+            {{-- Ring luar --}}
+            <div style="position:absolute;inset:0;border-radius:50%;border:3px solid rgba(13,115,119,0.1);border-top-color:#0d7377;animation:loader-spin 1s linear infinite;"></div>
 
-            {{-- Ring dalam — emas, berlawanan --}}
-            <div style="position:absolute;inset:9px;border-radius:50%;border:2.5px solid rgba(232,160,32,0.12);border-bottom-color:#e8a020;animation:loader-spin 1.4s linear infinite reverse;"></div>
+            {{-- Ring dalam --}}
+            <div style="position:absolute;inset:9px;border-radius:50%;border:2.5px solid rgba(20,165,171,0.1);border-bottom-color:#14a5ab;animation:loader-spin 1.4s linear infinite reverse;"></div>
 
             {{-- Logo di tengah --}}
             @if(!empty($settings->logo))
                 <img src="{{ Storage::url($settings->logo) }}"
                      alt="Logo {{ $settings->nama_sekolah ?? 'SMPN 3 Ajibarang' }}"
-                     style="width:72px;height:72px;object-fit:contain;position:relative;z-index:1;">
+                     style="width:60px;height:60px;object-fit:contain;position:relative;z-index:1;">
             @else
-                <div style="width:68px;height:68px;border-radius:50%;background:#1e3a8a;display:flex;align-items:center;justify-content:center;font-family:'Oswald',sans-serif;font-weight:800;font-size:20px;color:#fff;position:relative;z-index:1;">S3</div>
+                <div style="width:60px;height:60px;border-radius:50%;background:#0d7377;display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:18px;color:#fff;position:relative;z-index:1;">S3</div>
             @endif
 
         </div>
@@ -122,8 +116,8 @@
     @include('components.footer')
 
     {{-- Toast Notifikasi --}}
-    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 px-6 py-3 rounded-2xl shadow-2xl text-white font-semibold text-sm">
-        <i id="toast-icon" class="text-xl"></i>
+    <div id="toast" class="hidden fixed bottom-6 right-6 z-50 flex items-center gap-3 px-6 py-3 rounded-xl shadow-lg text-white font-medium text-sm">
+        <i id="toast-icon" class="text-lg"></i>
         <span id="toast-msg">Pesan berhasil dikirim!</span>
     </div>
 
@@ -134,7 +128,7 @@
             const msgEl = document.getElementById('toast-msg');
             toast.className = toast.className.replace(/bg-\w+-\d+/g, '');
             toast.classList.add(type === 'success' ? 'bg-green-600' : 'bg-red-500');
-            icon.className  = `text-xl fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}`;
+            icon.className  = `text-lg fas ${type === 'success' ? 'fa-check-circle' : 'fa-times-circle'}`;
             msgEl.textContent = msg;
             toast.classList.remove('hidden');
             setTimeout(() => toast.classList.add('hidden'), 3200);
@@ -164,7 +158,7 @@
             });
         })();
 
-        // ── Scroll-reveal: animate below-fold opacity-0 elements ──
+        // ── Scroll-reveal ──
         (function () {
             if (!('IntersectionObserver' in window)) return;
             var els = document.querySelectorAll('.anim-fade-up.opacity-0');

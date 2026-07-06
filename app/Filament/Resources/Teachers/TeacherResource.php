@@ -19,6 +19,7 @@ use Filament\Tables\Columns\IconColumn;
 class TeacherResource extends Resource
 {
     protected static ?string $model = Teacher::class;
+    protected static ?string $slug  = 'guru';
 
     protected static ?string $navigationLabel  = 'Guru & Tenaga Pendidik';
     protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';

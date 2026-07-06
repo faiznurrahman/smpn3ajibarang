@@ -7,7 +7,7 @@ use App\Models\Fine;
 use App\Models\Loan;
 use App\Models\Member;
 use App\Models\Setting;
-use App\Models\TextbookLoanItem;
+use App\Models\TextbookDistributionItem;
 use App\Models\Visit;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
@@ -52,7 +52,8 @@ class LibraryPdfController extends Controller
         $fines = $fineQuery->orderByDesc('created_at')->get();
 
         // Sanksi Buku Paket
-        $sanksiQuery = TextbookLoanItem::with(['member', 'textbookItem.textbook', 'loan'])
+        $sanksiQuery = TextbookDistributionItem::with(['member', 'textbookItem.textbook', 'distribution'])
+            ->where('jenis_sanksi', '!=', 'tidak_ada')
             ->whereIn('status_sanksi', ['belum_lunas', 'lunas']);
         if (!$semua) {
             $sanksiQuery->whereMonth('tgl_kembali_aktual', $bulan)->whereYear('tgl_kembali_aktual', $tahun);

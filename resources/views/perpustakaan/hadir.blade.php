@@ -111,6 +111,12 @@
             <div class="kf-card-title">Isi Daftar Hadir</div>
             <div class="kf-card-sub">Catat kunjungan Anda ke perpustakaan hari ini</div>
 
+            @error('throttle')
+            <div style="margin-bottom:16px;padding:10px 14px;background:#fff7ed;border:1px solid #fed7aa;border-radius:9px;color:#c2410c;font-size:13px;display:flex;align-items:center;gap:8px;">
+                <i class="fas fa-clock"></i> {{ $message }}
+            </div>
+            @enderror
+
             <form method="POST" action="{{ route('perpustakaan.hadir.simpan') }}" id="hadir-form">
                 @csrf
 
@@ -341,6 +347,15 @@
             return str.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
         }
     })();
+
+    // ── Disable submit button on submit ─────────────────────────────────
+    document.getElementById('hadir-form').addEventListener('submit', function () {
+        var btn = this.querySelector('.kf-submit');
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i> Menyimpan...';
+        btn.style.opacity = '0.7';
+        btn.style.cursor  = 'not-allowed';
+    });
     </script>
     </x-slot>
 </x-kiosk>

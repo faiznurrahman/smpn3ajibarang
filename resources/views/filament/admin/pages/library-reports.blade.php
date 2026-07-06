@@ -8,7 +8,6 @@
         'denda'        => ['icon' => '#rpi-money',  'label' => 'Denda'],
         'kunjungan'    => ['icon' => '#rpi-visit',  'label' => 'Kunjungan'],
     ];
-    $printTitle = $tabs[$activeTab]['label'] ?? 'Laporan';
 @endphp
 
 <style>
@@ -33,8 +32,8 @@
 .rp-tab  { flex:1; min-width:110px; padding:8px 10px; border-radius:9px; border:none; background:none; font:inherit; font-size:12.5px; font-weight:500; color:var(--t2); cursor:pointer; transition:background 100ms, color 100ms; display:inline-flex; align-items:center; justify-content:center; gap:5px; white-space:nowrap; }
 .rp-tab:hover  { background:#f5f7fc; color:var(--t1); }
 .rp-tab.active { background:var(--pri); color:#fff; font-weight:600; box-shadow:0 1px 3px rgba(30,58,138,.25); }
-/* Filter bar */
-.rp-filters { background:#fff; border:1px solid var(--line); border-radius:12px; padding:12px 16px; margin-bottom:16px; display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; box-shadow:var(--sh-sm); }
+/* Filter section */
+.rp-filters { background:#f8f9fc; border:1px solid var(--line); border-radius:10px; padding:16px; margin-bottom:12px; display:flex; gap:10px; flex-wrap:wrap; align-items:flex-end; }
 .rp-fg { display:flex; flex-direction:column; gap:4px; }
 .rp-fg label { font-size:10.5px; font-weight:700; color:var(--t3); text-transform:uppercase; letter-spacing:.07em; }
 .rp-fg input, .rp-fg select {
@@ -43,14 +42,10 @@
   transition:border-color 100ms, box-shadow 100ms; min-width:0;
 }
 .rp-fg input:focus, .rp-fg select:focus { border-color:var(--pri); box-shadow:0 0 0 3px rgba(30,58,138,.1); }
-.rp-fg input[type=search] { width:200px; padding-left:32px; background:#fff url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='14' height='14' fill='none' stroke='%238b94a6' stroke-width='2' stroke-linecap='round'%3E%3Ccircle cx='6' cy='6' r='5'/%3E%3Cpath d='M10 10l3 3'/%3E%3C/svg%3E") 10px center no-repeat; }
 .rp-fg input[type=date] { width:145px; }
 .rp-fg select { min-width:130px; padding-right:28px; }
-/* Period buttons */
-.rp-period { display:flex; gap:3px; }
-.rp-pbtn { height:34px; padding:0 12px; border-radius:7px; border:1px solid var(--line-2); background:#fff; font:inherit; font-size:12.5px; font-weight:500; color:var(--t2); cursor:pointer; transition:all 100ms; }
-.rp-pbtn:hover { border-color:var(--pri-100); color:var(--pri); background:var(--pri-50); }
-.rp-pbtn.active { border-color:var(--pri); color:var(--pri); background:var(--pri-50); font-weight:600; }
+/* Filter action buttons */
+.rp-filter-actions { margin-left:auto; display:flex; gap:8px; align-items:center; }
 /* Card */
 .rp-card { background:#fff; border:1px solid var(--line); border-radius:var(--r); box-shadow:var(--sh-sm); overflow:hidden; }
 .rp-card-head { padding:14px 20px 12px; border-bottom:1px solid var(--line); display:flex; align-items:center; justify-content:space-between; gap:12px; }
@@ -89,83 +84,77 @@
 .rp-btn:hover { background:#f5f7fc; border-color:var(--line-2); }
 .rp-btn.pri { background:var(--pri); color:#fff; border-color:transparent; font-weight:600; }
 .rp-btn.pri:hover { background:var(--pri-2); }
-/* Empty */
-.rp-empty { padding:52px 20px; text-align:center; color:var(--t3); font-size:13.5px; }
-.rp-empty svg { display:block; margin:0 auto 10px; opacity:.4; }
-/* Separator */
-.rp-sep { height:1px; background:var(--line); margin:0 16px; }
-/* Stat cards row */
-.rp-stat-row { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px; }
-.rp-stat-card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; box-shadow:var(--sh-sm); }
-.rp-stat-card .rp-sc-val { font-size:24px; font-weight:700; color:var(--t1); line-height:1.1; }
-.rp-stat-card .rp-sc-label { font-size:11px; font-weight:600; color:var(--t3); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
-.rp-stat-card .rp-sc-icon { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
-/* Charts row */
-.rp-chart-row { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
-.rp-chart-card { background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:var(--sh-sm); overflow:hidden; }
-.rp-chart-card .rp-card-head { padding:13px 18px 11px; }
-.rp-chart-body { padding:16px 18px 18px; position:relative; height:220px; }
+/* Empty state — filter-first */
+.rp-filter-empty { padding:64px 20px; text-align:center; background:#fff; border:1px solid var(--line); border-radius:14px; }
+.rp-filter-empty svg { display:block; margin:0 auto 12px; opacity:.35; }
+.rp-filter-empty h4 { font-size:14px; font-weight:600; color:var(--t2); margin:0 0 6px; }
+.rp-filter-empty p  { font-size:13px; color:var(--t3); margin:0; }
+/* Data toolbar (above table) */
+.rp-data-toolbar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:8px; flex-wrap:wrap; }
+.rp-data-info    { font-size:12.5px; color:var(--t3); }
+.rp-data-right   { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
+/* Per-page selector */
+.rp-perpage { display:flex; align-items:center; gap:2px; }
+.rp-perpage-lbl { font-size:12px; color:var(--t3); margin-right:4px; }
+.rp-pp-btn { height:28px; padding:0 12px; border-radius:6px; border:1px solid var(--line); background:#fff; font:inherit; font-size:12px; font-weight:500; color:var(--t2); cursor:pointer; transition:all 80ms; }
+.rp-pp-btn:hover { border-color:var(--pri-100); color:var(--pri); background:var(--pri-50); }
+.rp-pp-btn.active { border-color:var(--pri); color:var(--pri); background:var(--pri-50); font-weight:600; }
 /* Pagination */
-.rp-pagination { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--line); }
+.rp-pagination { display:flex; align-items:center; justify-content:space-between; padding:12px 16px; border-top:1px solid var(--line); flex-wrap:wrap; gap:8px; }
 .rp-pagination-info { font-size:12.5px; color:var(--t3); }
 .rp-pagination-nav  { display:flex; gap:4px; align-items:center; }
 .rp-pg-btn { height:30px; min-width:30px; padding:0 8px; border-radius:7px; border:1px solid var(--line); background:#fff; color:var(--t1); font:inherit; font-size:12px; font-weight:500; cursor:pointer; display:inline-flex; align-items:center; justify-content:center; gap:4px; transition:background 100ms; }
 .rp-pg-btn:hover:not(:disabled) { background:#f5f7fc; border-color:var(--line-2); }
 .rp-pg-btn.active { background:var(--pri); color:#fff; border-color:var(--pri); font-weight:600; }
 .rp-pg-btn:disabled { opacity:.4; cursor:not-allowed; }
+/* Stat cards row */
+.rp-stat-row { display:grid; grid-template-columns:repeat(5,1fr); gap:12px; margin-bottom:20px; }
+.rp-stat-card { background:#fff; border:1px solid var(--line); border-radius:12px; padding:14px 16px; box-shadow:var(--sh-sm); }
+.rp-stat-card .rp-sc-val   { font-size:24px; font-weight:700; color:var(--t1); line-height:1.1; }
+.rp-stat-card .rp-sc-label { font-size:11px; font-weight:600; color:var(--t3); text-transform:uppercase; letter-spacing:.06em; margin-top:4px; }
+.rp-stat-card .rp-sc-icon  { width:36px; height:36px; border-radius:9px; display:flex; align-items:center; justify-content:center; margin-bottom:10px; }
+/* Charts row */
+.rp-chart-row  { display:grid; grid-template-columns:1fr 1fr; gap:14px; margin-bottom:20px; }
+.rp-chart-card { background:#fff; border:1px solid var(--line); border-radius:14px; box-shadow:var(--sh-sm); overflow:hidden; }
+.rp-chart-card .rp-card-head { padding:13px 18px 11px; }
+.rp-chart-body { padding:16px 18px 18px; position:relative; height:220px; }
 
 /* ============================================================
    RESPONSIVE — MOBILE
    ============================================================ */
 @media (max-width: 900px) {
-  .rp-stat-row   { grid-template-columns:repeat(3,1fr); }
-  .rp-chart-row  { grid-template-columns:1fr; }
+  .rp-stat-row  { grid-template-columns:repeat(3,1fr); }
+  .rp-chart-row { grid-template-columns:1fr; }
 }
 @media (max-width: 640px) {
-  /* Wrapper */
   .rp.fi-page-content { padding:14px 12px 40px !important; }
-
-  /* Header */
   .rp-head { flex-direction:column; align-items:flex-start; gap:10px; margin-bottom:14px; }
   .rp-head h1 { font-size:20px; }
   .rp-head p  { font-size:12.5px; }
   .rp-head .rp-btn { width:100%; justify-content:center; height:38px; }
-
-  /* Stat cards — 2 cols */
   .rp-stat-row { grid-template-columns:repeat(2,1fr); gap:8px; margin-bottom:14px; }
-  .rp-stat-card { padding:10px 12px 10px; }
+  .rp-stat-card { padding:10px 12px; }
   .rp-stat-card .rp-sc-icon { width:30px; height:30px; border-radius:8px; margin-bottom:8px; }
-  .rp-stat-card .rp-sc-icon svg { width:15px; height:15px; }
-  .rp-stat-card .rp-sc-val   { font-size:clamp(15px,4vw,22px); }
+  .rp-stat-card .rp-sc-val  { font-size:clamp(15px,4vw,22px); }
   .rp-stat-card .rp-sc-label { font-size:10px; }
-
-  /* Charts */
   .rp-chart-row { gap:10px; margin-bottom:14px; }
   .rp-chart-body { height:170px; padding:10px 12px; }
   .rp-chart-card .rp-card-head { padding:10px 14px 9px; }
   .rp-chart-card .rp-card-head h3 { font-size:13px; }
-
-  /* Tabs — 2×3 grid */
   .rp-tabs { display:grid; grid-template-columns:repeat(2,1fr); gap:4px; padding:4px; margin-bottom:12px; }
   .rp-tab  { flex:none; min-width:0; font-size:11.5px; padding:8px 6px; white-space:normal; line-height:1.3; }
-
-  /* Filters — stack vertically */
-  .rp-filters { flex-direction:column; align-items:stretch; padding:10px 12px; gap:8px; margin-bottom:10px; }
+  .rp-filters { flex-direction:column; align-items:stretch; padding:12px; gap:8px; margin-bottom:10px; }
   .rp-fg { width:100%; }
-  .rp-fg input,
-  .rp-fg select { width:100% !important; min-width:0 !important; box-sizing:border-box; }
-  .rp-fg input[type=search] { width:100% !important; }
-  .rp-fg input[type=date]   { width:100% !important; }
-  .rp-period { flex-wrap:wrap; gap:4px; }
-  .rp-pbtn { flex:1; min-width:0; font-size:12px; padding:0 8px; }
-
-  /* Card head */
+  .rp-fg input, .rp-fg select { width:100% !important; min-width:0 !important; box-sizing:border-box; }
+  .rp-fg input[type=date] { width:100% !important; }
+  .rp-filter-actions { margin-left:0; width:100%; }
+  .rp-filter-actions .rp-btn { flex:1; justify-content:center; }
   .rp-card-head { flex-direction:column; align-items:flex-start; gap:8px; padding:12px 14px 10px; }
   .rp-card-head h3 { font-size:13.5px; }
   .rp-card-stats { gap:4px; }
   .rp-chip { font-size:10.5px; padding:0 7px; }
-
-  /* Pagination */
+  .rp-data-toolbar { flex-direction:column; align-items:flex-start; }
+  .rp-data-right { width:100%; }
   .rp-pagination { flex-direction:column; align-items:center; gap:8px; padding:10px 12px; }
   .rp-pagination-info { font-size:12px; }
 }
@@ -184,13 +173,11 @@
     <symbol id="rpi-return" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="1 4 1 10 7 10"/><path d="M3.51 15a9 9 0 102.13-9.36L1 10"/></symbol>
     <symbol id="rpi-money"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></symbol>
     <symbol id="rpi-visit"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/></symbol>
-    <symbol id="rpi-print"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="6 9 6 2 18 2 18 9"/><path d="M6 18H4a2 2 0 01-2-2v-5a2 2 0 012-2h16a2 2 0 012 2v5a2 2 0 01-2 2h-2"/><rect x="6" y="14" width="12" height="8"/></symbol>
     <symbol id="rpi-search" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></symbol>
     <symbol id="rpi-excel"  viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 00-2 2v16a2 2 0 002 2h12a2 2 0 002-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="8" y1="13" x2="16" y2="13"/><line x1="8" y1="17" x2="16" y2="17"/><line x1="10" y1="9" x2="14" y2="9"/></symbol>
   </defs>
 </svg>
 
-{{-- Chart.js CDN --}}
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.4/dist/chart.umd.min.js"></script>
 
 <div class="rp fi-page-content" style="padding:28px 28px 60px;width:100%;box-sizing:border-box;overflow-x:hidden;">
@@ -201,57 +188,49 @@
       <h1>Laporan Perpustakaan</h1>
       <p>SMP Negeri 3 Ajibarang &middot; {{ $tanggal }}</p>
     </div>
-    <button onclick="document.getElementById('excel-modal').style.display='flex'" class="rp-btn" style="border-color:#16a34a;color:#16a34a;">
+    <button wire:click="$set('showModalBulanan', true)" class="rp-btn" style="border-color:#16a34a;color:#16a34a;">
       <svg width="15" height="15"><use href="#rpi-excel"/></svg>
-      Unduh Excel
+      Unduh Laporan Bulanan
     </button>
   </div>
 
-  {{-- Modal Excel --}}
-  <div id="excel-modal" style="display:none;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.5);align-items:center;justify-content:center;">
-    <div style="background:#fff;border-radius:16px;padding:24px;width:min(380px,calc(100vw - 32px));box-shadow:0 20px 60px rgba(0,0,0,.2);">
-      <h3 style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:6px;">Unduh Laporan Excel</h3>
-      <p style="font-size:13px;color:#5a6478;margin-bottom:20px;">File Excel berisi 4 sheet: Ringkasan, Peminjaman, Denda, dan Kunjungan.</p>
-      <form id="excel-form" action="{{ route('laporan.perpustakaan.excel') }}" method="GET">
-        <div style="margin-bottom:14px;">
-          <label style="font-size:11px;font-weight:700;color:#8b94a6;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px;">Periode</label>
-          <div style="display:flex;gap:8px;">
-            <select name="bulan" id="xl-bulan" style="flex:1;height:36px;border:1px solid #d4dae6;border-radius:8px;padding:0 10px;font-size:13px;color:#0f172a;">
-              @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $idx => $nm)
-              <option value="{{ $idx+1 }}" {{ ($idx+1)==now()->month ? 'selected' : '' }}>{{ $nm }}</option>
-              @endforeach
-            </select>
-            <select name="tahun" id="xl-tahun" style="width:90px;height:36px;border:1px solid #d4dae6;border-radius:8px;padding:0 10px;font-size:13px;color:#0f172a;">
-              @for($y = now()->year; $y >= now()->year - 4; $y--)
-              <option value="{{ $y }}" {{ $y==now()->year ? 'selected' : '' }}>{{ $y }}</option>
-              @endfor
-            </select>
-          </div>
-        </div>
-        <div style="margin-bottom:20px;">
-          <label style="display:flex;align-items:center;gap:8px;font-size:13px;color:#0f172a;cursor:pointer;">
-            <input type="checkbox" name="semua" value="1" id="xl-semua" style="width:16px;height:16px;"
-              onchange="document.getElementById('xl-bulan').disabled=this.checked;document.getElementById('xl-tahun').disabled=this.checked;">
-            Semua periode (tanpa filter bulan/tahun)
-          </label>
-        </div>
+  {{-- Modal Laporan Bulanan (Livewire-controlled) --}}
+  @if($showModalBulanan)
+  <div style="display:flex;position:fixed;inset:0;z-index:9999;background:rgba(15,23,42,.5);align-items:center;justify-content:center;" wire:click.self="$set('showModalBulanan', false)">
+    <div style="background:#fff;border-radius:16px;padding:24px;width:min(400px,calc(100vw - 32px));box-shadow:0 20px 60px rgba(0,0,0,.2);">
+      <h3 style="font-size:16px;font-weight:700;color:#0f172a;margin-bottom:6px;">Unduh Laporan Bulanan</h3>
+      <p style="font-size:13px;color:#5a6478;margin-bottom:20px;">File Excel berisi 5 sheet: Rekap, Peminjaman, Pengembalian, Denda, dan Kunjungan.</p>
+      <div style="margin-bottom:14px;">
+        <label style="font-size:11px;font-weight:700;color:#8b94a6;text-transform:uppercase;letter-spacing:.06em;display:block;margin-bottom:5px;">Periode</label>
         <div style="display:flex;gap:8px;">
-          <button type="button" onclick="document.getElementById('excel-modal').style.display='none'"
-            style="flex:1;height:38px;border:1px solid #e6eaf2;border-radius:9px;background:#fff;font-size:13px;font-weight:500;cursor:pointer;color:#0f172a;">
-            Batal
-          </button>
-          <button type="submit"
-            style="flex:1;height:38px;border:none;border-radius:9px;background:#16a34a;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
-            Unduh Excel
-          </button>
+          <select wire:model="bulanLaporan" style="flex:1;height:36px;border:1px solid #d4dae6;border-radius:8px;padding:0 10px;font-size:13px;color:#0f172a;">
+            @foreach(['Januari','Februari','Maret','April','Mei','Juni','Juli','Agustus','September','Oktober','November','Desember'] as $idx => $nm)
+            <option value="{{ $idx+1 }}">{{ $nm }}</option>
+            @endforeach
+          </select>
+          <select wire:model="tahunLaporan" style="width:100px;height:36px;border:1px solid #d4dae6;border-radius:8px;padding:0 10px;font-size:13px;color:#0f172a;">
+            @for($y = now()->year; $y >= now()->year - 4; $y--)
+            <option value="{{ $y }}">{{ $y }}</option>
+            @endfor
+          </select>
         </div>
-      </form>
+      </div>
+      <div style="display:flex;gap:8px;margin-top:20px;">
+        <button wire:click="$set('showModalBulanan', false)"
+          style="flex:1;height:38px;border:1px solid #e6eaf2;border-radius:9px;background:#fff;font-size:13px;font-weight:500;cursor:pointer;color:#0f172a;">
+          Batal
+        </button>
+        <button wire:click="downloadLaporan" wire:loading.attr="disabled"
+          style="flex:1;height:38px;border:none;border-radius:9px;background:#16a34a;color:#fff;font-size:13px;font-weight:600;cursor:pointer;">
+          <span wire:loading.remove wire:target="downloadLaporan">Unduh Excel</span>
+          <span wire:loading wire:target="downloadLaporan">Memuat…</span>
+        </button>
+      </div>
     </div>
   </div>
+  @endif
 
-  {{-- ============================================================
-       STAT CARDS + GRAFIK (selalu tampil di semua tab)
-  ============================================================ --}}
+  {{-- STAT CARDS (selalu tampil) --}}
   <div class="rp-stat-row">
     <div class="rp-stat-card">
       <div class="rp-sc-icon" style="background:#eef2ff;">
@@ -290,7 +269,7 @@
     </div>
   </div>
 
-  {{-- Grafik --}}
+  {{-- GRAFIK (selalu tampil) --}}
   <div class="rp-chart-row">
     <div class="rp-chart-card">
       <div class="rp-card-head">
@@ -317,63 +296,25 @@
     const LABELS  = @json($chartLabels);
     const LOANS   = @json($chartLoans);
     const VISITS  = @json($chartVisits);
-
     function initCharts() {
-      // hancurkan instance lama jika ada
-      ['chart-loans', 'chart-visits'].forEach(id => {
-        const existing = Chart.getChart(id);
-        if (existing) existing.destroy();
-      });
-
+      ['chart-loans','chart-visits'].forEach(id => { const e = Chart.getChart(id); if (e) e.destroy(); });
       const baseOpts = {
-        responsive: true,
-        maintainAspectRatio: false,
-        plugins: { legend: { display: false } },
-        scales: {
-          x: { grid: { display: false }, ticks: { font: { size: 11 }, color: '#8b94a6' } },
-          y: { grid: { color: '#f1f3f8' }, ticks: { font: { size: 11 }, color: '#8b94a6', stepSize: 1, precision: 0 }, beginAtZero: true },
+        responsive:true, maintainAspectRatio:false,
+        plugins:{ legend:{display:false} },
+        scales:{
+          x:{ grid:{display:false}, ticks:{font:{size:11},color:'#8b94a6'} },
+          y:{ grid:{color:'#f1f3f8'}, ticks:{font:{size:11},color:'#8b94a6',stepSize:1,precision:0}, beginAtZero:true },
         },
       };
-
-      new Chart(document.getElementById('chart-loans'), {
-        type: 'bar',
-        data: {
-          labels: LABELS,
-          datasets: [{ data: LOANS, backgroundColor: 'rgba(30,58,138,0.80)', borderRadius: 6, borderSkipped: false }],
-        },
-        options: baseOpts,
-      });
-
-      new Chart(document.getElementById('chart-visits'), {
-        type: 'line',
-        data: {
-          labels: LABELS,
-          datasets: [{
-            data: VISITS,
-            borderColor: '#2563eb',
-            backgroundColor: 'rgba(37,99,235,0.10)',
-            borderWidth: 2.5,
-            pointBackgroundColor: '#2563eb',
-            pointRadius: 4,
-            tension: 0.35,
-            fill: true,
-          }],
-        },
-        options: baseOpts,
-      });
+      new Chart(document.getElementById('chart-loans'),{type:'bar',data:{labels:LABELS,datasets:[{data:LOANS,backgroundColor:'rgba(30,58,138,0.80)',borderRadius:6,borderSkipped:false}]},options:baseOpts});
+      new Chart(document.getElementById('chart-visits'),{type:'line',data:{labels:LABELS,datasets:[{data:VISITS,borderColor:'#2563eb',backgroundColor:'rgba(37,99,235,0.10)',borderWidth:2.5,pointBackgroundColor:'#2563eb',pointRadius:4,tension:0.35,fill:true}]},options:baseOpts});
     }
-
-    // Init saat DOM siap dan setelah setiap navigasi Livewire
-    if (document.readyState === 'loading') {
-      document.addEventListener('DOMContentLoaded', initCharts);
-    } else {
-      initCharts();
-    }
-    document.addEventListener('livewire:navigated', initCharts);
+    if (document.readyState==='loading') { document.addEventListener('DOMContentLoaded',initCharts); } else { initCharts(); }
+    document.addEventListener('livewire:navigated',initCharts);
   })();
   </script>
 
-  {{-- Tab navigation --}}
+  {{-- TAB NAVIGATION --}}
   <div class="rp-tabs" role="tablist">
     @foreach($tabs as $key => $tab)
     <button wire:click="setTab('{{ $key }}')"
@@ -385,16 +326,12 @@
     @endforeach
   </div>
 
-  {{-- ============================================================
+  {{-- ================================================================
        TAB: DATA BUKU
-  ============================================================ --}}
+  ================================================================ --}}
   @if($activeTab === 'buku')
 
   <div class="rp-filters">
-    <div class="rp-fg">
-      <label>Cari</label>
-      <input type="search" wire:model.live.debounce.400ms="bukuSearch" placeholder="Judul, penulis, kode…">
-    </div>
     <div class="rp-fg">
       <label>Kategori</label>
       <select wire:model.live="bukuKategori">
@@ -411,6 +348,38 @@
         <option value="aktif">Aktif</option>
         <option value="nonaktif">Nonaktif</option>
       </select>
+    </div>
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
+    </div>
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat data koleksi buku</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} buku ditemukan &middot; Total stok: {{ number_format($totalStok) }}</div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
     </div>
   </div>
 
@@ -438,35 +407,28 @@
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $buku)
+          @forelse($records as $buku)
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td><span class="rp-mono">{{ $buku->kode_buku }}</span></td>
-            <td>
-              <div class="rp-name">{{ $buku->judul }}</div>
-            </td>
+            <td><div class="rp-name">{{ $buku->judul }}</div></td>
             <td style="color:var(--t2);font-size:12.5px">{{ $buku->penulis ?: '—' }}</td>
             <td style="color:var(--t2);font-size:12.5px">{{ $buku->penerbit ?: '—' }}</td>
             <td style="color:var(--t2);font-size:12.5px">{{ $buku->tahun ?: '—' }}</td>
             <td>
               @if($buku->kategori)
               <span class="rp-badge pri">{{ $buku->kategori }}</span>
-              @else
-              <span style="color:var(--t3)">—</span>
-              @endif
+              @else<span style="color:var(--t3)">—</span>@endif
             </td>
             <td style="text-align:center;font-weight:600;">{{ $buku->stok }}</td>
             <td style="text-align:center">
               @if($buku->is_active)
               <span class="rp-badge ok">Aktif</span>
-              @else
-              <span class="rp-badge gray">Nonaktif</span>
-              @endif
+              @else<span class="rp-badge gray">Nonaktif</span>@endif
             </td>
           </tr>
           @empty
-          <tr><td colspan="9" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-book"/></svg>
+          <tr><td colspan="9" class="rp-empty" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">
             Tidak ada data buku ditemukan.
           </td></tr>
           @endforelse
@@ -485,16 +447,14 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'buku'])
   </div>
 
-  {{-- ============================================================
+  @endif {{-- showData --}}
+
+  {{-- ================================================================
        TAB: DATA ANGGOTA
-  ============================================================ --}}
+  ================================================================ --}}
   @elseif($activeTab === 'anggota')
 
   <div class="rp-filters">
-    <div class="rp-fg">
-      <label>Cari</label>
-      <input type="search" wire:model.live.debounce.400ms="anggotaSearch" placeholder="Nama atau kode anggota…">
-    </div>
     <div class="rp-fg">
       <label>Jenis</label>
       <select wire:model.live="anggotaJenis">
@@ -522,6 +482,38 @@
         <option value="keluar">Keluar</option>
       </select>
     </div>
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
+    </div>
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat data anggota perpustakaan</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} anggota ditemukan &middot; {{ $jmlSiswa }} siswa &middot; {{ $jmlGuru }} guru</div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
+    </div>
   </div>
 
   <div class="rp-card">
@@ -531,7 +523,6 @@
         <span class="rp-chip tot">{{ $records->total() }} anggota</span>
         <span class="rp-chip pri">{{ $jmlSiswa }} siswa</span>
         <span class="rp-chip warn">{{ $jmlGuru }} guru</span>
-        <span class="rp-chip ok">{{ $records->getCollection()->where('status', 'aktif')->count() }} aktif (hal ini)</span>
       </div>
     </div>
     <div class="rp-table-wrap">
@@ -543,12 +534,12 @@
             <th>Nama</th>
             <th>Jenis</th>
             <th>Kelas</th>
-            <th>No. HP</th>
+            <th>Angkatan</th>
             <th style="text-align:center">Status</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $anggota)
+          @forelse($records as $anggota)
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td><span class="rp-mono">{{ $anggota->kode_anggota }}</span></td>
@@ -561,24 +552,19 @@
             <td>
               @if($anggota->jenis === 'guru')
               <span class="rp-badge warn">Guru</span>
-              @else
-              <span class="rp-badge pri">Siswa</span>
-              @endif
+              @else<span class="rp-badge pri">Siswa</span>@endif
             </td>
             <td style="color:var(--t2);font-size:12.5px">{{ $anggota->kelas ?: '—' }}</td>
-            <td style="color:var(--t2);font-size:12.5px">{{ $anggota->no_hp ?: '—' }}</td>
+            <td style="color:var(--t2);font-size:12.5px">{{ $anggota->tahun_masuk ?: '—' }}</td>
             <td style="text-align:center">
               @php $st = $anggota->status; @endphp
-              <span class="rp-badge {{ match($st) { 'aktif' => 'ok', 'lulus' => 'gray', 'pindah' => 'warn', 'keluar' => 'red', default => 'gray' } }}">
-                {{ match($st) { 'aktif' => 'Aktif', 'lulus' => 'Lulus', 'pindah' => 'Pindah', 'keluar' => 'Keluar', default => $st } }}
+              <span class="rp-badge {{ match($st) { 'aktif'=>'ok','lulus'=>'gray','pindah'=>'warn','keluar'=>'red',default=>'gray' } }}">
+                {{ match($st) { 'aktif'=>'Aktif','lulus'=>'Lulus','pindah'=>'Pindah','keluar'=>'Keluar',default=>$st } }}
               </span>
             </td>
           </tr>
           @empty
-          <tr><td colspan="7" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-user"/></svg>
-            Tidak ada data anggota ditemukan.
-          </td></tr>
+          <tr><td colspan="7" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">Tidak ada data anggota ditemukan.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -586,15 +572,21 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'anggota'])
   </div>
 
-  {{-- ============================================================
+  @endif {{-- showData --}}
+
+  {{-- ================================================================
        TAB: PEMINJAMAN
-  ============================================================ --}}
+  ================================================================ --}}
   @elseif($activeTab === 'peminjaman')
 
   <div class="rp-filters">
     <div class="rp-fg">
-      <label>Cari</label>
-      <input type="search" wire:model.live.debounce.400ms="pinjamSearch" placeholder="Nama anggota atau judul buku…">
+      <label>Tgl Pinjam Dari</label>
+      <input type="date" wire:model.live="pinjamDari">
+    </div>
+    <div class="rp-fg">
+      <label>Tgl Pinjam Sampai</label>
+      <input type="date" wire:model.live="pinjamSampai">
     </div>
     <div class="rp-fg">
       <label>Status</label>
@@ -605,13 +597,37 @@
         <option value="terlambat">Terlambat</option>
       </select>
     </div>
-    <div class="rp-fg">
-      <label>Tgl Pinjam Dari</label>
-      <input type="date" wire:model.live="pinjamDari">
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
     </div>
-    <div class="rp-fg">
-      <label>Sampai</label>
-      <input type="date" wire:model.live="pinjamSampai">
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat laporan peminjaman buku</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} transaksi &middot; <span style="color:#f59e0b;font-weight:600">{{ $jmlDipinjam }} dipinjam</span> &middot; <span style="color:#dc2626;font-weight:600">{{ $jmlTerlambat }} terlambat</span> &middot; <span style="color:#16a34a;font-weight:600">{{ $jmlKembali }} dikembalikan</span></div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
     </div>
   </div>
 
@@ -635,24 +651,24 @@
             <th>Tgl Pinjam</th>
             <th>Batas Kembali</th>
             <th>Tgl Dikembalikan</th>
+            <th style="text-align:center">Terlambat</th>
             <th style="text-align:center">Status</th>
-            <th>Denda</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $loan)
+          @forelse($records as $loan)
           @php
-            $isLate = in_array($loan->status, ['terlambat']);
+            $isLate = $loan->status === 'terlambat';
             $isDue  = $loan->status === 'dipinjam' && $loan->tgl_batas_kembali?->isPast();
           @endphp
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td>
               <div class="rp-name">{{ $loan->member?->nama ?? '—' }}</div>
-              <div class="rp-sub">{{ $loan->member?->kode_anggota }}</div>
+              <div class="rp-sub">{{ $loan->member?->kode_anggota }} &middot; {{ $loan->member?->kelas ?: '—' }}</div>
             </td>
             <td>
-              <div style="font-size:13px;color:var(--t1);">{{ \Illuminate\Support\Str::limit($loan->book?->judul, 40) ?? '—' }}</div>
+              <div style="font-size:13px;color:var(--t1)">{{ \Illuminate\Support\Str::limit($loan->book?->judul, 40) ?? '—' }}</div>
               <div class="rp-sub">{{ $loan->book?->kode_buku }}</div>
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $loan->tgl_pinjam?->format('d M Y') ?? '—' }}</td>
@@ -660,26 +676,19 @@
               {{ $loan->tgl_batas_kembali?->format('d M Y') ?? '—' }}
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $loan->tgl_kembali?->format('d M Y') ?? '—' }}</td>
-            <td style="text-align:center">
-              <span class="rp-badge {{ match($loan->status) { 'dipinjam' => 'warn', 'dikembalikan' => 'ok', 'terlambat' => 'red', default => 'gray' } }}">
-                {{ match($loan->status) { 'dipinjam' => 'Dipinjam', 'dikembalikan' => 'Dikembalikan', 'terlambat' => 'Terlambat', default => $loan->status } }}
-              </span>
+            <td style="text-align:center;font-size:12.5px">
+              @if($isLate || $isDue)
+              <span style="color:var(--red);font-weight:600">Ya</span>
+              @else<span style="color:var(--t3)">—</span>@endif
             </td>
-            <td style="font-size:12.5px">
-              @if($loan->fine)
-                <span style="{{ $loan->fine->status_bayar === 'belum_lunas' ? 'color:var(--red);font-weight:600' : 'color:var(--ok);font-weight:600' }}">
-                  Rp {{ number_format($loan->fine->nominal, 0, ',', '.') }}
-                </span>
-              @else
-                <span style="color:var(--t3)">—</span>
-              @endif
+            <td style="text-align:center">
+              <span class="rp-badge {{ match($loan->status) { 'dipinjam'=>'warn','dikembalikan'=>'ok','terlambat'=>'red',default=>'gray' } }}">
+                {{ match($loan->status) { 'dipinjam'=>'Dipinjam','dikembalikan'=>'Dikembalikan','terlambat'=>'Terlambat',default=>$loan->status } }}
+              </span>
             </td>
           </tr>
           @empty
-          <tr><td colspan="8" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-loan"/></svg>
-            Tidak ada data peminjaman ditemukan.
-          </td></tr>
+          <tr><td colspan="8" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">Tidak ada data peminjaman ditemukan.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -687,15 +696,21 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'pinjam'])
   </div>
 
-  {{-- ============================================================
+  @endif {{-- showData --}}
+
+  {{-- ================================================================
        TAB: PENGEMBALIAN
-  ============================================================ --}}
+  ================================================================ --}}
   @elseif($activeTab === 'pengembalian')
 
   <div class="rp-filters">
     <div class="rp-fg">
-      <label>Cari</label>
-      <input type="search" wire:model.live.debounce.400ms="kembaliSearch" placeholder="Nama anggota…">
+      <label>Tgl Kembali Dari</label>
+      <input type="date" wire:model.live="kembaliDari">
+    </div>
+    <div class="rp-fg">
+      <label>Tgl Kembali Sampai</label>
+      <input type="date" wire:model.live="kembaliSampai">
     </div>
     <div class="rp-fg">
       <label>Kondisi Buku</label>
@@ -706,13 +721,37 @@
         <option value="hilang">Hilang</option>
       </select>
     </div>
-    <div class="rp-fg">
-      <label>Tgl Kembali Dari</label>
-      <input type="date" wire:model.live="kembaliDari">
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
     </div>
-    <div class="rp-fg">
-      <label>Sampai</label>
-      <input type="date" wire:model.live="kembaliSampai">
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat laporan pengembalian buku</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} transaksi &middot; <span style="color:#16a34a;font-weight:600">{{ $jmlBaik }} baik</span> &middot; <span style="color:#f59e0b;font-weight:600">{{ $jmlRusak }} rusak</span> &middot; <span style="color:#dc2626;font-weight:600">{{ $jmlHilang }} hilang</span></div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
     </div>
   </div>
 
@@ -735,71 +774,50 @@
             <th>Judul Buku</th>
             <th>Tgl Pinjam</th>
             <th>Tgl Kembali</th>
-            <th>Keterlambatan</th>
             <th style="text-align:center">Kondisi</th>
+            <th style="text-align:right">Denda (Rp)</th>
             <th style="text-align:center">Sanksi</th>
-            <th>Denda</th>
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $loan)
-          @php
-            $hari = $loan->jumlahHariTerlambat();
-          @endphp
+          @forelse($records as $loan)
+          @php $hari = $loan->jumlahHariTerlambat(); @endphp
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td>
               <div class="rp-name">{{ $loan->member?->nama ?? '—' }}</div>
-              <div class="rp-sub">{{ $loan->member?->kode_anggota }}</div>
+              <div class="rp-sub">{{ $loan->member?->kode_anggota }} &middot; {{ $loan->member?->kelas ?: '—' }}</div>
             </td>
             <td>
-              <div style="font-size:13px;color:var(--t1);">{{ \Illuminate\Support\Str::limit($loan->book?->judul, 38) ?? '—' }}</div>
+              <div style="font-size:13px;color:var(--t1)">{{ \Illuminate\Support\Str::limit($loan->book?->judul, 38) ?? '—' }}</div>
               <div class="rp-sub">{{ $loan->book?->kode_buku }}</div>
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $loan->tgl_pinjam?->format('d M Y') ?? '—' }}</td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $loan->tgl_kembali?->format('d M Y') ?? '—' }}</td>
-            <td style="font-size:12.5px">
-              @if($hari > 0)
-              <span style="color:var(--red);font-weight:600;">+{{ $hari }} hari</span>
-              @else
-              <span style="color:var(--ok)">Tepat waktu</span>
-              @endif
-            </td>
             <td style="text-align:center">
               @php $k = $loan->kondisi_kembali; @endphp
               @if($k)
-              <span class="rp-badge {{ match($k) { 'baik' => 'ok', 'rusak' => 'warn', 'hilang' => 'red', default => 'gray' } }}">
-                {{ match($k) { 'baik' => 'Baik', 'rusak' => 'Rusak', 'hilang' => 'Hilang', default => '—' } }}
+              <span class="rp-badge {{ match($k) { 'baik'=>'ok','rusak'=>'warn','hilang'=>'red',default=>'gray' } }}">
+                {{ match($k) { 'baik'=>'Baik','rusak'=>'Rusak','hilang'=>'Hilang',default=>'—' } }}
               </span>
-              @else
-              <span style="color:var(--t3)">—</span>
-              @endif
+              @else<span style="color:var(--t3)">—</span>@endif
+            </td>
+            <td style="text-align:right;font-size:12.5px">
+              @if($loan->fine)
+              <span style="{{ $loan->fine->status_bayar==='belum_lunas' ? 'color:var(--red);font-weight:600' : 'color:var(--ok);font-weight:600' }}">
+                Rp {{ number_format($loan->fine->nominal,0,',','.') }}
+              </span>
+              @else<span style="color:var(--t3)">—</span>@endif
             </td>
             <td style="text-align:center">
               @php $sk = $loan->status_sanksi; @endphp
               @if($sk && $sk !== 'tidak_ada')
-              <span class="rp-badge {{ $sk === 'belum_lunas' ? 'red' : 'ok' }}">
-                {{ $sk === 'belum_lunas' ? 'Belum Lunas' : 'Lunas' }}
-              </span>
-              @else
-              <span class="rp-badge gray">Tidak Ada</span>
-              @endif
-            </td>
-            <td style="font-size:12.5px">
-              @if($loan->fine)
-              <span style="{{ $loan->fine->status_bayar === 'belum_lunas' ? 'color:var(--red);font-weight:600' : 'color:var(--ok);font-weight:600' }}">
-                Rp {{ number_format($loan->fine->nominal, 0, ',', '.') }}
-              </span>
-              @else
-              <span style="color:var(--t3)">—</span>
-              @endif
+              <span class="rp-badge {{ $sk==='belum_lunas' ? 'red' : 'ok' }}">{{ $sk==='belum_lunas' ? 'Belum Lunas' : 'Lunas' }}</span>
+              @else<span class="rp-badge gray">Tidak Ada</span>@endif
             </td>
           </tr>
           @empty
-          <tr><td colspan="9" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-return"/></svg>
-            Tidak ada data pengembalian ditemukan.
-          </td></tr>
+          <tr><td colspan="8" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">Tidak ada data pengembalian ditemukan.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -807,15 +825,21 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'kembali'])
   </div>
 
-  {{-- ============================================================
+  @endif {{-- showData --}}
+
+  {{-- ================================================================
        TAB: DENDA
-  ============================================================ --}}
+  ================================================================ --}}
   @elseif($activeTab === 'denda')
 
   <div class="rp-filters">
     <div class="rp-fg">
-      <label>Cari</label>
-      <input type="search" wire:model.live.debounce.400ms="dendaSearch" placeholder="Nama anggota…">
+      <label>Tgl Dari</label>
+      <input type="date" wire:model.live="dendaDari">
+    </div>
+    <div class="rp-fg">
+      <label>Tgl Sampai</label>
+      <input type="date" wire:model.live="dendaSampai">
     </div>
     <div class="rp-fg">
       <label>Status Bayar</label>
@@ -825,6 +849,38 @@
         <option value="lunas">Lunas</option>
       </select>
     </div>
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
+    </div>
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat laporan denda keterlambatan</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} kasus &middot; Total: <strong>Rp {{ number_format($totalNominal,0,',','.') }}</strong></div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
+    </div>
   </div>
 
   <div class="rp-card">
@@ -832,9 +888,9 @@
       <h3>Laporan Denda Keterlambatan</h3>
       <div class="rp-card-stats">
         <span class="rp-chip tot">{{ $records->total() }} kasus</span>
-        <span class="rp-chip red">Belum Lunas: Rp {{ number_format($totalBelum, 0, ',', '.') }}</span>
-        <span class="rp-chip ok">Lunas: Rp {{ number_format($totalLunas, 0, ',', '.') }}</span>
-        <span class="rp-chip inf">Total: Rp {{ number_format($totalNominal, 0, ',', '.') }}</span>
+        <span class="rp-chip red">Belum Lunas: Rp {{ number_format($totalBelum,0,',','.') }}</span>
+        <span class="rp-chip ok">Lunas: Rp {{ number_format($totalLunas,0,',','.') }}</span>
+        <span class="rp-chip inf">Total: Rp {{ number_format($totalNominal,0,',','.') }}</span>
       </div>
     </div>
     <div class="rp-table-wrap">
@@ -844,7 +900,7 @@
             <th style="width:40px">No</th>
             <th>Anggota</th>
             <th>Judul Buku</th>
-            <th>Tgl Kembali</th>
+            <th>Tgl Bayar / Kembali</th>
             <th style="text-align:center">Hari Terlambat</th>
             <th style="text-align:right">Nominal Denda</th>
             <th style="text-align:center">Status Bayar</th>
@@ -852,40 +908,36 @@
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $fine)
+          @forelse($records as $fine)
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td>
               <div class="rp-name">{{ $fine->loan?->member?->nama ?? '—' }}</div>
-              <div class="rp-sub">{{ $fine->loan?->member?->kode_anggota }}</div>
+              <div class="rp-sub">{{ $fine->loan?->member?->kode_anggota }} &middot; {{ $fine->loan?->member?->kelas ?: '—' }}</div>
             </td>
             <td>
-              <div style="font-size:13px;color:var(--t1);">{{ \Illuminate\Support\Str::limit($fine->loan?->book?->judul, 38) ?? '—' }}</div>
+              <div style="font-size:13px;color:var(--t1)">{{ \Illuminate\Support\Str::limit($fine->loan?->book?->judul, 38) ?? '—' }}</div>
+              <div class="rp-sub">{{ $fine->loan?->book?->kode_buku }}</div>
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $fine->loan?->tgl_kembali?->format('d M Y') ?? '—' }}</td>
             <td style="text-align:center;font-weight:600;color:var(--red)">{{ $fine->jumlah_hari }} hari</td>
-            <td style="text-align:right;font-weight:600;font-size:13px">Rp {{ number_format($fine->nominal, 0, ',', '.') }}</td>
+            <td style="text-align:right;font-weight:600;font-size:13px">Rp {{ number_format($fine->nominal,0,',','.') }}</td>
             <td style="text-align:center">
               @if($fine->status_bayar === 'lunas')
               <span class="rp-badge ok">Lunas</span>
-              @else
-              <span class="rp-badge red">Belum Lunas</span>
-              @endif
+              @else<span class="rp-badge red">Belum Lunas</span>@endif
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $fine->tgl_bayar?->format('d M Y') ?? '—' }}</td>
           </tr>
           @empty
-          <tr><td colspan="8" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-money"/></svg>
-            Tidak ada data denda ditemukan.
-          </td></tr>
+          <tr><td colspan="8" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">Tidak ada data denda ditemukan.</td></tr>
           @endforelse
         </tbody>
         @if($records->isNotEmpty())
         <tfoot>
           <tr>
             <td colspan="5" style="font-weight:700;color:var(--t1)">Total</td>
-            <td style="text-align:right;font-weight:700;color:var(--t1)">Rp {{ number_format($totalNominal, 0, ',', '.') }}</td>
+            <td style="text-align:right;font-weight:700;color:var(--t1)">Rp {{ number_format($totalNominal,0,',','.') }}</td>
             <td colspan="2"></td>
           </tr>
         </tfoot>
@@ -895,30 +947,22 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'denda'])
   </div>
 
-  {{-- ============================================================
+  @endif {{-- showData --}}
+
+  {{-- ================================================================
        TAB: KUNJUNGAN
-  ============================================================ --}}
+  ================================================================ --}}
   @elseif($activeTab === 'kunjungan')
 
   <div class="rp-filters">
     <div class="rp-fg">
-      <label>Periode Cepat</label>
-      <div class="rp-period">
-        <button wire:click="setPeriode('hari')"   class="rp-pbtn {{ $kunjunganPeriode === 'hari'   ? 'active' : '' }}">Hari Ini</button>
-        <button wire:click="setPeriode('minggu')" class="rp-pbtn {{ $kunjunganPeriode === 'minggu' ? 'active' : '' }}">Minggu Ini</button>
-        <button wire:click="setPeriode('bulan')"  class="rp-pbtn {{ $kunjunganPeriode === 'bulan'  ? 'active' : '' }}">Bulan Ini</button>
-      </div>
-    </div>
-    @if(!$kunjunganPeriode)
-    <div class="rp-fg">
-      <label>Dari Tanggal</label>
+      <label>Tgl Kunjungan Dari</label>
       <input type="date" wire:model.live="kunjunganDari">
     </div>
     <div class="rp-fg">
-      <label>Sampai</label>
+      <label>Tgl Kunjungan Sampai</label>
       <input type="date" wire:model.live="kunjunganSampai">
     </div>
-    @endif
     <div class="rp-fg">
       <label>Jenis Pengunjung</label>
       <select wire:model.live="kunjunganJenis">
@@ -927,6 +971,38 @@
         <option value="guru">Guru / Staf</option>
         <option value="umum">Tamu</option>
       </select>
+    </div>
+    <div class="rp-filter-actions">
+      <button wire:click="tampilkanData" class="rp-btn pri" wire:loading.attr="disabled">
+        <svg width="14" height="14"><use href="#rpi-search"/></svg>
+        <span wire:loading.remove wire:target="tampilkanData">Tampilkan Data</span>
+        <span wire:loading wire:target="tampilkanData">Memuat…</span>
+      </button>
+      <button wire:click="resetFilter" class="rp-btn">Reset Filter</button>
+    </div>
+  </div>
+
+  @if(!$showData)
+  <div class="rp-filter-empty">
+    <svg width="40" height="40"><use href="#rpi-search"/></svg>
+    <h4>Atur filter dan klik "Tampilkan Data"</h4>
+    <p>untuk melihat laporan kunjungan perpustakaan</p>
+  </div>
+  @else
+
+  <div class="rp-data-toolbar">
+    <div class="rp-data-info">{{ number_format($records->total()) }} kunjungan &middot; {{ $jmlSiswa }} siswa &middot; {{ $jmlGuru }} guru &middot; {{ $jmlUmum }} tamu</div>
+    <div class="rp-data-right">
+      <div class="rp-perpage">
+        <span class="rp-perpage-lbl">Tampilkan:</span>
+        @foreach([10=>10, 25=>25, 50=>50, 0=>'Semua'] as $val => $lbl)
+        <button wire:click="$set('perPage', {{ $val }})" class="rp-pp-btn {{ $perPage === $val ? 'active' : '' }}">{{ $lbl }}</button>
+        @endforeach
+      </div>
+      <button wire:click="exportTab('{{ $activeTab }}')" class="rp-btn" style="height:28px;padding:0 12px;font-size:12px;border-color:#16a34a;color:#16a34a;">
+        <svg width="13" height="13"><use href="#rpi-excel"/></svg>
+        Export Excel
+      </button>
     </div>
   </div>
 
@@ -954,37 +1030,26 @@
           </tr>
         </thead>
         <tbody>
-          @forelse($records as $i => $visit)
+          @forelse($records as $visit)
           <tr>
             <td style="color:var(--t3);font-size:12px">{{ $records->firstItem() + $loop->index }}</td>
             <td><div class="rp-name">{{ $visit->nama }}</div></td>
             <td>
               @php $jp = $visit->jenis_pengunjung; @endphp
-              <span class="rp-badge {{ match($jp) { 'siswa' => 'pri', 'guru' => 'warn', default => 'gray' } }}">
-                {{ match($jp) { 'siswa' => 'Siswa', 'guru' => 'Guru', 'umum' => 'Tamu', default => $jp } }}
+              <span class="rp-badge {{ match($jp) { 'siswa'=>'pri','guru'=>'warn',default=>'gray' } }}">
+                {{ match($jp) { 'siswa'=>'Siswa','guru'=>'Guru','umum'=>'Tamu',default=>$jp } }}
               </span>
             </td>
-            <td style="font-size:12.5px;color:var(--t2)">{{ ($jp === 'siswa' && $visit->kelas) ? $visit->kelas : '—' }}</td>
+            <td style="font-size:12.5px;color:var(--t2)">{{ ($jp==='siswa' && $visit->kelas) ? $visit->kelas : '—' }}</td>
             <td>
-              @php
-                $kpBadge = match($visit->keperluan) {
-                  'Membaca'                     => 'inf',
-                  'Meminjam Buku'               => 'ok',
-                  'Mengembalikan Buku'          => 'warn',
-                  'Belajar / Mengerjakan Tugas' => 'pri',
-                  default                       => 'gray',
-                };
-              @endphp
+              @php $kpBadge = match($visit->keperluan) { 'Membaca'=>'inf','Meminjam Buku'=>'ok','Mengembalikan Buku'=>'warn','Belajar / Mengerjakan Tugas'=>'pri',default=>'gray' }; @endphp
               <span class="rp-badge {{ $kpBadge }}">{{ $visit->keperluan ?? '—' }}</span>
             </td>
             <td style="font-size:12.5px;color:var(--t2)">{{ $visit->tgl_kunjungan?->format('d M Y') ?? '—' }}</td>
-            <td style="font-size:12.5px;color:var(--t2)">{{ $visit->jam_kunjungan ? substr($visit->jam_kunjungan, 0, 5) : '—' }}</td>
+            <td style="font-size:12.5px;color:var(--t2)">{{ $visit->jam_kunjungan ? substr($visit->jam_kunjungan,0,5) : '—' }}</td>
           </tr>
           @empty
-          <tr><td colspan="7" class="rp-empty">
-            <svg width="32" height="32"><use href="#rpi-visit"/></svg>
-            Tidak ada data kunjungan ditemukan.
-          </td></tr>
+          <tr><td colspan="7" style="padding:40px;text-align:center;color:var(--t3);font-size:13px;">Tidak ada data kunjungan ditemukan.</td></tr>
           @endforelse
         </tbody>
       </table>
@@ -992,7 +1057,9 @@
     @include('filament.admin.pages._rp_pagination', ['tabKey' => 'kunjungan'])
   </div>
 
-  @endif
+  @endif {{-- showData --}}
+
+  @endif {{-- activeTab --}}
 
 </div>
 </div>{{-- /livewire root --}}

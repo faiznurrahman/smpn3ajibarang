@@ -16,6 +16,7 @@ use Filament\Tables\Table;
 class OrganizationalStructureResource extends Resource
 {
     protected static ?string $model = OrganizationalStructure::class;
+    protected static ?string $slug  = 'struktur-organisasi';
 
     protected static ?string $navigationLabel  = 'Struktur Organisasi';
     protected static string|\UnitEnum|null $navigationGroup = 'Profil & Organisasi';

@@ -7,7 +7,7 @@ use Illuminate\Database\Eloquent\Model;
 class Teacher extends Model
 {
     protected $fillable = [
-        'nama', 'foto', 'jenis', 'jabatan', 'mapel', 'is_active', 'order',
+        'nama', 'foto', 'jenis', 'jabatan', 'mata_pelajaran', 'is_active', 'order',
     ];
 
     protected $casts = [
@@ -23,11 +23,12 @@ class Teacher extends Model
     {
         static::created(function (self $teacher) {
             Member::create([
-                'teacher_id' => $teacher->id,
-                'nama'       => $teacher->nama,
-                'jenis'      => 'guru',
-                'is_active'  => $teacher->is_active,
-                'status'     => $teacher->is_active ? 'aktif' : 'keluar',
+                'teacher_id'   => $teacher->id,
+                'kode_anggota' => 'GRU-' . str_pad($teacher->id, 4, '0', STR_PAD_LEFT),
+                'nama'         => $teacher->nama,
+                'jenis'        => 'guru',
+                'is_active'    => $teacher->is_active,
+                'status'       => $teacher->is_active ? 'aktif' : 'keluar',
             ]);
         });
 

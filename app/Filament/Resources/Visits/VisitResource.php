@@ -15,11 +15,12 @@ use Filament\Tables\Table;
 class VisitResource extends Resource
 {
     protected static ?string $model = Visit::class;
+    protected static ?string $slug  = 'kunjungan';
 
     protected static ?string $navigationLabel               = 'Kunjungan';
-    protected static string|\UnitEnum|null $navigationGroup = 'Perpustakaan';
+    protected static string|\UnitEnum|null $navigationGroup = 'Keanggotaan';
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedUserGroup;
-    protected static ?int    $navigationSort                = 7;
+    protected static ?int    $navigationSort                = 3;
     protected static ?string $modelLabel                   = 'Kunjungan';
     protected static ?string $pluralModelLabel             = 'Data Kunjungan';
 

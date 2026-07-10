@@ -8,6 +8,11 @@
     <title>{{ $title ?? ($settings->nama_sekolah ?? 'SMPN 3 Ajibarang') }} – Sekolah Adiwiyata</title>
     <meta name="description" content="{{ $metaDesc ?? 'Website resmi SMPN 3 Ajibarang – Berkomitmen mencetak generasi yang berkarakter, berprestasi, dan peduli lingkungan.' }}">
 
+    @if(!empty($settings->logo))
+        <link rel="icon" href="{{ Storage::url($settings->logo) }}">
+        <link rel="apple-touch-icon" href="{{ Storage::url($settings->logo) }}">
+    @endif
+
     {{-- Google Fonts --}}
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>

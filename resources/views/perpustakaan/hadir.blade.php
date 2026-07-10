@@ -13,7 +13,7 @@
         .kf-card {
             background: #fff; border-radius: 18px;
             padding: 36px 32px;
-            box-shadow: 0 4px 20px rgba(30,58,138,.09);
+            box-shadow: 0 4px 20px rgba(13,115,119,.09);
         }
         .kf-card-title { font-size: 22px; font-weight: 800; color: var(--k-navy); margin-bottom: 4px; }
         .kf-card-sub   { font-size: 13px; color: #64748b; margin-bottom: 28px; }
@@ -34,7 +34,7 @@
         }
         .kf-input:focus, .kf-select:focus {
             border-color: var(--k-navy2);
-            box-shadow: 0 0 0 3px rgba(30,58,138,.1);
+            box-shadow: 0 0 0 3px rgba(13,115,119,.12);
         }
         .kf-error { color: #ef4444; font-size: 12px; margin-top: 5px; }
 
@@ -59,14 +59,14 @@
             color: #64748b; cursor: pointer; text-align: center;
             transition: border-color .15s, color .15s, background .15s;
         }
-        .kf-jenis-btn.active { border-color: var(--k-navy); color: var(--k-navy); background: #eff6ff; }
+        .kf-jenis-btn.active { border-color: var(--k-navy); color: var(--k-navy); background: #e6f4f4; }
 
         /* Autocomplete */
         .kf-ac-wrap { position: relative; }
         .kf-ac-dropdown {
             position: absolute; top: calc(100% + 4px); left: 0; right: 0; z-index: 50;
             background: #fff; border: 1.5px solid #e5e7eb; border-radius: 10px;
-            box-shadow: 0 8px 28px rgba(30,58,138,.14);
+            box-shadow: 0 8px 28px rgba(13,115,119,.14);
             max-height: 260px; overflow-y: auto;
             display: none;
         }
@@ -76,7 +76,7 @@
             display: flex; align-items: center; gap: 10px;
             transition: background .1s;
         }
-        .kf-ac-item:hover, .kf-ac-item.focused { background: #eff6ff; }
+        .kf-ac-item:hover, .kf-ac-item.focused { background: #e6f4f4; }
         .kf-ac-item + .kf-ac-item { border-top: 1px solid #f1f5f9; }
         .kf-ac-avatar {
             width: 34px; height: 34px; border-radius: 50%; flex-shrink: 0;
@@ -103,8 +103,8 @@
     </style>
 
     <div class="kf-wrap">
-        <a href="{{ route('perpustakaan.index') }}" class="kf-back">
-            <i class="fas fa-arrow-left"></i> Kembali ke Menu Utama
+        <a href="{{ route('perpustakaan.layanan') }}" class="kf-back">
+            <i class="fas fa-arrow-left"></i> Kembali ke Layanan
         </a>
 
         <div class="kf-card">

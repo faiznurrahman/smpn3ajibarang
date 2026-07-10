@@ -22,7 +22,8 @@ class TextbooksTable
                     ->label('No')
                     ->rowIndex()
                     ->alignCenter()
-                    ->width('50px'),
+                    ->width('50px')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('kode_prefix')
                     ->label('Kode')
@@ -30,7 +31,8 @@ class TextbooksTable
                     ->color('primary')
                     ->searchable()
                     ->sortable()
-                    ->fontFamily('mono'),
+                    ->fontFamily('mono')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('judul')
                     ->label('Judul Buku')
@@ -56,7 +58,8 @@ class TextbooksTable
                 TextColumn::make('total_eksemplar')
                     ->label('Total')
                     ->alignCenter()
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
 
                 TextColumn::make('eksemplar_tersedia')
                     ->label('Tersedia')
@@ -71,7 +74,8 @@ class TextbooksTable
                     ->trueIcon('heroicon-o-check-circle')
                     ->falseIcon('heroicon-o-x-circle')
                     ->trueColor('success')
-                    ->falseColor('gray'),
+                    ->falseColor('gray')
+                    ->visibleFrom('md'),
 
             ])
             ->filters([

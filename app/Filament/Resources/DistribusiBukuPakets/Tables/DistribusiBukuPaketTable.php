@@ -19,7 +19,8 @@ class DistribusiBukuPaketTable
                     ->label('No')
                     ->rowIndex()
                     ->alignCenter()
-                    ->width('50px'),
+                    ->width('50px')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('tahun_ajaran')
                     ->label('Tahun Ajaran')
@@ -27,7 +28,8 @@ class DistribusiBukuPaketTable
                     ->sortable()
                     ->weight('semibold')
                     ->badge()
-                    ->color('primary'),
+                    ->color('primary')
+                    ->description(fn (TextbookDistribution $record) => 'Kelas ' . $record->untuk_tingkat),
 
                 TextColumn::make('untuk_tingkat')
                     ->label('Tingkat')
@@ -39,29 +41,28 @@ class DistribusiBukuPaketTable
                         9 => 'warning',
                         default => 'gray',
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
 
                 TextColumn::make('tgl_distribusi')
                     ->label('Tgl Distribusi')
                     ->date('d M Y')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder('—')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('tgl_kembali_rencana')
                     ->label('Tgl Kembali')
                     ->date('d M Y')
                     ->sortable()
-                    ->placeholder('—'),
+                    ->placeholder('—')
+                    ->visibleFrom('md'),
 
-                TextColumn::make('jumlah_siswa')
-                    ->label('Siswa')
+                TextColumn::make('progres_kembali')
+                    ->label('Siswa Kembali')
                     ->alignCenter()
-                    ->getStateUsing(fn (TextbookDistribution $record) => $record->jumlah_siswa),
-
-                TextColumn::make('jumlah_kembali')
-                    ->label('Dikembalikan')
-                    ->alignCenter()
-                    ->getStateUsing(fn (TextbookDistribution $record) => $record->jumlah_kembali),
+                    ->getStateUsing(fn (TextbookDistribution $record) => $record->jumlah_kembali . '/' . $record->jumlah_siswa)
+                    ->weight('semibold'),
 
                 TextColumn::make('status')
                     ->label('Status')

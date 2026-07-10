@@ -21,7 +21,7 @@
         }
         .kk-search-input:focus {
             border-color: var(--k-navy2);
-            box-shadow: 0 0 0 3px rgba(30,58,138,.1);
+            box-shadow: 0 0 0 3px rgba(13,115,119,.1);
         }
         .kk-search-select {
             padding: 12px 14px;
@@ -34,7 +34,7 @@
             padding: 12px 20px;
             background: var(--k-navy); color: #fff; border: none;
             border-radius: 10px; font-family: inherit; font-size: 14px;
-            font-weight: 700; cursor: pointer;
+            font-weight: 700; cursor: pointer; flex-shrink: 0;
         }
         .kk-clear {
             font-size: 13px; color: #64748b; text-decoration: none;
@@ -42,7 +42,16 @@
         }
         .kk-clear:hover { color: var(--k-navy); }
 
-        .kk-meta { font-size: 13px; color: #64748b; margin-bottom: 18px; }
+        /* ── Mobile: cegah search bar & filter meluber ke samping (scroll horizontal) ── */
+        @media (max-width: 640px) {
+            .kk-top { flex-direction: column; align-items: stretch; gap: 12px; }
+            .kk-search-wrap { width: 100%; min-width: 0; }
+            .kk-search-row { flex-wrap: wrap; }
+            .kk-search-input { flex: 1 1 100%; min-width: 0; }
+            .kk-search-select { flex: 1 1 auto; min-width: 0; width: auto; }
+        }
+
+        .kk-meta { font-size: 13px; color: #64748b; margin-bottom: 14px; }
         .kk-meta strong { color: #1e293b; }
 
         .kk-empty {
@@ -51,40 +60,36 @@
         .kk-empty i { font-size: 52px; margin-bottom: 16px; display: block; }
         .kk-empty p { font-size: 15px; }
 
-        .kk-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
-            gap: 18px;
-            margin-bottom: 28px;
+        /* ── Tabel ── */
+        .kk-card {
+            background: #fff; border-radius: 14px; border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 12px rgba(13,115,119,.06);
+            overflow: hidden; margin-bottom: 24px;
         }
-        .kk-book {
-            background: #fff; border-radius: 14px;
-            box-shadow: 0 2px 12px rgba(30,58,138,.07);
-            overflow: hidden; display: flex; flex-direction: column;
-            transition: transform .15s, box-shadow .15s;
+        .kk-tbl-wrap { overflow-x: auto; }
+        .kk-tbl { width: 100%; border-collapse: collapse; font-size: 13.5px; }
+        .kk-tbl thead tr { background: #f9fafb; border-bottom: 1px solid #f1f5f9; }
+        .kk-tbl th {
+            padding: 11px 16px; text-align: left; font-size: 11px; font-weight: 700;
+            text-transform: uppercase; letter-spacing: .06em; color: #94a3b8; white-space: nowrap;
         }
-        .kk-book:hover { transform: translateY(-3px); box-shadow: 0 8px 28px rgba(30,58,138,.13); }
+        .kk-tbl th.center { text-align: center; }
+        .kk-tbl tbody tr { border-bottom: 1px solid #f1f5f9; transition: background .1s; }
+        .kk-tbl tbody tr:last-child { border-bottom: none; }
+        .kk-tbl tbody tr:hover { background: #f9fafb; }
+        .kk-tbl td { padding: 13px 16px; vertical-align: middle; color: #1e293b; }
+        .kk-tbl td.center { text-align: center; }
+        .kk-tbl td.no { color: #94a3b8; font-size: 12px; text-align: center; width: 44px; }
+        .kk-judul { font-weight: 700; font-size: 13.5px; color: #1e293b; }
+        .kk-pengarang { font-size: 12px; color: #94a3b8; margin-top: 2px; }
 
-        .kk-cover {
-            width: 100%; aspect-ratio: 3/4; object-fit: cover;
-            background: #f0f4fb;
-        }
-        .kk-cover-placeholder {
-            width: 100%; aspect-ratio: 3/4;
-            background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
-            display: flex; align-items: center; justify-content: center;
-            font-size: 40px; color: #93c5fd;
-        }
-        .kk-info { padding: 14px 14px 16px; flex: 1; display: flex; flex-direction: column; gap: 6px; }
-        .kk-judul { font-size: 14px; font-weight: 700; color: #1e293b; line-height: 1.3; }
-        .kk-pengarang { font-size: 12px; color: #64748b; }
-        .kk-meta-row { display: flex; align-items: center; justify-content: space-between; margin-top: auto; padding-top: 8px; }
         .kk-kategori {
-            font-size: 11px; font-weight: 600; padding: 3px 8px; border-radius: 5px;
-            background: #eff6ff; color: var(--k-navy);
+            display: inline-block; font-size: 11px; font-weight: 600; padding: 3px 9px; border-radius: 999px;
+            background: #e6f4f4; color: var(--k-navy); white-space: nowrap;
         }
         .kk-stok {
-            font-size: 11px; font-weight: 700; padding: 3px 8px; border-radius: 5px;
+            display: inline-block; font-size: 11px; font-weight: 700; padding: 3px 9px; border-radius: 999px;
+            white-space: nowrap;
         }
         .kk-stok.ada { background: #dcfce7; color: #15803d; }
         .kk-stok.habis { background: #fee2e2; color: #dc2626; }
@@ -98,17 +103,21 @@
             border: 1.5px solid #e5e7eb; background: #fff;
             transition: background .15s, color .15s, border-color .15s;
         }
-        .kk-pagination a:hover { background: #eff6ff; border-color: var(--k-navy2); color: var(--k-navy); }
+        .kk-pagination a:hover { background: #e6f4f4; border-color: var(--k-navy2); color: var(--k-navy); }
         .kk-pagination span.active-page {
             background: var(--k-navy); color: #fff; border-color: var(--k-navy);
         }
         .kk-pagination span.disabled { opacity: .45; pointer-events: none; }
+
+        @media (max-width: 640px) {
+            .kk-hide-mobile { display: none; }
+        }
     </style>
 
     {{-- Top bar --}}
     <div class="kk-top">
-        <a href="{{ route('perpustakaan.index') }}" class="kk-back">
-            <i class="fas fa-arrow-left"></i> Menu
+        <a href="{{ route('perpustakaan.layanan') }}" class="kk-back">
+            <i class="fas fa-arrow-left"></i> Layanan
         </a>
         <div class="kk-search-wrap">
             <form method="GET" action="{{ route('perpustakaan.katalog') }}">
@@ -150,46 +159,54 @@
 
     {{-- Empty state --}}
     @if($books->isEmpty())
-        <div class="kk-empty">
-            <i class="fas fa-book-open"></i>
-            <p>Buku tidak ditemukan.<br>Coba kata kunci yang berbeda.</p>
+        <div class="kk-card">
+            <div class="kk-empty">
+                <i class="fas fa-book-open"></i>
+                <p>Buku tidak ditemukan.<br>Coba kata kunci yang berbeda.</p>
+            </div>
         </div>
     @else
 
-    {{-- Book grid --}}
-    <div class="kk-grid">
-        @foreach($books as $book)
-        <div class="kk-book">
-            @if($book->cover)
-                <img src="{{ \Illuminate\Support\Facades\Storage::url($book->cover) }}"
-                     alt="{{ $book->judul }}" class="kk-cover">
-            @else
-                <div class="kk-cover-placeholder">
-                    <i class="fas fa-book"></i>
-                </div>
-            @endif
-            <div class="kk-info">
-                <div class="kk-judul">{{ $book->judul }}</div>
-                <div class="kk-pengarang">{{ $book->penulis }}</div>
-                @if($book->penerbit || $book->tahun)
-                <div style="font-size:11px;color:#94a3b8;">
-                    {{ implode(' · ', array_filter([$book->penerbit, $book->tahun])) }}
-                </div>
-                @endif
-                <div class="kk-meta-row">
-                    @if($book->kategori)
-                    <span class="kk-kategori">{{ $book->kategori }}</span>
-                    @else
-                    <span></span>
-                    @endif
-                    @php $tersedia = $book->stok_tersedia; @endphp
-                    <span class="kk-stok {{ $tersedia > 0 ? 'ada' : 'habis' }}">
-                        {{ $tersedia > 0 ? "Tersedia ($tersedia)" : 'Habis' }}
-                    </span>
-                </div>
-            </div>
+    {{-- Book table --}}
+    <div class="kk-card">
+        <div class="kk-tbl-wrap">
+        <table class="kk-tbl">
+            <thead>
+                <tr>
+                    <th class="center kk-hide-mobile">No</th>
+                    <th>Judul Buku</th>
+                    <th class="kk-hide-mobile">Kategori</th>
+                    <th>Status</th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach($books as $i => $book)
+                @php $tersedia = $book->stok_tersedia; @endphp
+                <tr>
+                    <td class="no kk-hide-mobile">{{ $books->firstItem() + $i }}</td>
+                    <td>
+                        <div class="kk-judul">{{ $book->judul }}</div>
+                        <div class="kk-pengarang">
+                            {{ implode(' · ', array_filter([$book->penulis, $book->penerbit, $book->tahun])) }}
+                        </div>
+                    </td>
+                    <td class="kk-hide-mobile">
+                        @if($book->kategori)
+                            <span class="kk-kategori">{{ $book->kategori }}</span>
+                        @else
+                            <span style="color:#cbd5e1;">—</span>
+                        @endif
+                    </td>
+                    <td>
+                        <span class="kk-stok {{ $tersedia > 0 ? 'ada' : 'habis' }}">
+                            {{ $tersedia > 0 ? "Tersedia ($tersedia)" : 'Habis' }}
+                        </span>
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
         </div>
-        @endforeach
     </div>
 
     {{-- Pagination --}}

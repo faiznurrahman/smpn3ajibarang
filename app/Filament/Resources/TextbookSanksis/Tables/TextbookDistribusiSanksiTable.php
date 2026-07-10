@@ -25,7 +25,8 @@ class TextbookDistribusiSanksiTable
                     ->label('No')
                     ->rowIndex()
                     ->alignCenter()
-                    ->width('50px'),
+                    ->width('50px')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('member.nama')
                     ->label('Siswa')
@@ -61,7 +62,8 @@ class TextbookDistribusiSanksiTable
                         'rusak_berat' => 'danger',
                         'hilang'      => 'danger',
                         default       => 'gray',
-                    }),
+                    })
+                    ->visibleFrom('md'),
 
                 TextColumn::make('jenis_sanksi')
                     ->label('Jenis Sanksi')
@@ -75,7 +77,8 @@ class TextbookDistribusiSanksiTable
                         'bayar_harga' => 'danger',
                         'ganti_buku'  => 'warning',
                         default       => 'gray',
-                    }),
+                    })
+                    ->visibleFrom('md'),
 
                 TextColumn::make('nominal_sanksi')
                     ->label('Nominal')

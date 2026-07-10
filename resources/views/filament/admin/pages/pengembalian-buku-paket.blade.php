@@ -179,12 +179,18 @@
     .pbp-select, .pbp-input, .pbp-mselect { font-size:16px !important; height:46px; }
     .pbp-textarea { font-size:16px !important; }
     .pbp-tbl th, .pbp-tbl td { padding:9px 10px; }
+    .pbp-hide-mobile { display:none; }
     .pbp-modal-lg { max-width:100%; }
     .pbp-modal-body.scroll { max-height:300px; }
     .pbp-modal-foot { flex-direction:column-reverse; }
     .pbp-modal-foot .pbp-btn { width:100%; justify-content:center; height:44px; }
     .pbp-search-bar { padding:10px 16px; }
     .pbp-search-input { font-size:16px !important; height:42px; }
+}
+
+@media (max-width:767px) {
+    /* Judul halaman bawaan Filament disembunyikan agar tidak duplikat dengan judul kartu di dalam konten */
+    header.fi-header { display:none; }
 }
 </style>
 
@@ -314,7 +320,7 @@
             <table class="pbp-tbl">
                 <thead>
                     <tr>
-                        <th class="center" style="width:44px;">No</th>
+                        <th class="center pbp-hide-mobile" style="width:44px;">No</th>
                         <th>Nama Siswa</th>
                         <th class="center" style="width:120px;">Jumlah Buku</th>
                         <th style="width:170px;">Status</th>
@@ -324,7 +330,7 @@
                 <tbody>
                     @foreach($items as $i => $member)
                     <tr x-show="!search || {{ json_encode(strtolower($member['nama'])) }}.includes(search.toLowerCase())">
-                        <td class="no">{{ $i + 1 }}</td>
+                        <td class="no pbp-hide-mobile">{{ $i + 1 }}</td>
 
                         <td>
                             <div class="cell-main">{{ $member['nama'] }}</div>
@@ -398,7 +404,7 @@
                         <tr>
                             <th>Buku Paket</th>
                             <th style="width:140px;">Kondisi Kembali</th>
-                            <th style="width:95px;">Tgl Kembali</th>
+                            <th class="pbp-hide-mobile" style="width:95px;">Tgl Kembali</th>
                             <th style="width:115px;">Status Sanksi</th>
                             <th class="center" style="width:100px;">Aksi</th>
                         </tr>
@@ -427,7 +433,7 @@
                                 @endif
                             </td>
 
-                            <td class="muted" style="font-size:12px;">
+                            <td class="muted pbp-hide-mobile" style="font-size:12px;">
                                 {{ $book['tgl_kembali_aktual'] ?? '—' }}
                             </td>
 

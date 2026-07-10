@@ -59,6 +59,8 @@
 .vdb-tbl td { padding:9px 14px; color:var(--t1); vertical-align:middle; }
 .vdb-tbl td.center { text-align:center; }
 .vdb-tbl td.mono { font-family:'SF Mono','Fira Code',ui-monospace,monospace; font-size:12px; letter-spacing:.02em; }
+.vdb-tbl .cell-main { font-weight:600; margin-bottom:2px; }
+.vdb-tbl .cell-sub  { font-size:12px; color:var(--t3); font-weight:400; }
 
 /* Badges */
 .vdb-badge {
@@ -74,6 +76,12 @@
 .vdb-empty {
     padding:36px 20px; text-align:center;
     font-size:13px; color:var(--t3);
+}
+
+@media (max-width:1023px) {
+    .vdb-info { padding:14px 16px; gap:16px; }
+    .vdb-tbl th, .vdb-tbl td { padding:8px 10px; }
+    .vdb-hide-mobile { display:none; }
 }
 </style>
 
@@ -142,22 +150,23 @@
                 <table class="vdb-tbl">
                     <thead>
                         <tr>
-                            <th class="center" style="width:50px">No</th>
+                            <th class="center vdb-hide-mobile" style="width:50px">No</th>
                             <th>Nama Siswa</th>
-                            <th>Kelas</th>
-                            <th>Kode Eksemplar</th>
+                            <th class="vdb-hide-mobile">Kode Eksemplar</th>
                             <th>Kondisi Kembali</th>
-                            <th>Tgl Kembali</th>
+                            <th class="vdb-hide-mobile">Tgl Kembali</th>
                             <th>Status</th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach($activeItems as $item)
                         <tr>
-                            <td class="center" style="font-size:12px;color:var(--t3)">{{ $item['no'] }}</td>
-                            <td style="font-weight:600">{{ $item['nama'] }}</td>
-                            <td>{{ $item['kelas'] }}</td>
-                            <td class="mono">{{ $item['kode_item'] }}</td>
+                            <td class="center vdb-hide-mobile" style="font-size:12px;color:var(--t3)">{{ $item['no'] }}</td>
+                            <td>
+                                <div class="cell-main">{{ $item['nama'] }}</div>
+                                <div class="cell-sub">Kelas {{ $item['kelas'] }}</div>
+                            </td>
+                            <td class="mono vdb-hide-mobile">{{ $item['kode_item'] }}</td>
                             <td>
                                 @php $k = $item['kondisi_kembali']; @endphp
                                 @if($k)
@@ -173,7 +182,7 @@
                                     <span style="color:var(--t3);font-size:12px">Belum kembali</span>
                                 @endif
                             </td>
-                            <td style="font-size:12.5px">{{ $item['tgl_kembali'] ?? '—' }}</td>
+                            <td class="vdb-hide-mobile" style="font-size:12.5px">{{ $item['tgl_kembali'] ?? '—' }}</td>
                             <td>
                                 @php $ss = $item['status_sanksi']; @endphp
                                 @if($ss === 'belum_lunas')

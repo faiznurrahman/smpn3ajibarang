@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Models\Book;
+use App\Models\KioskProfile;
 use App\Models\Member;
+use App\Models\Setting;
 use App\Models\Visit;
 use Illuminate\Http\Request;
 
@@ -11,7 +13,32 @@ class LibraryKioskController extends Controller
 {
     public function index()
     {
-        return view('perpustakaan.index');
+        $hariMap = [
+            1 => 'Senin', 2 => 'Selasa', 3 => 'Rabu', 4 => 'Kamis',
+            5 => 'Jumat', 6 => 'Sabtu', 7 => 'Minggu',
+        ];
+        $operatingDays = config('perpustakaan.kiosk.operating_days', []);
+        sort($operatingDays);
+
+        if (count($operatingDays) >= 2 && $operatingDays === range($operatingDays[0], end($operatingDays))) {
+            $hariLayanan = $hariMap[$operatingDays[0]] . ' - ' . $hariMap[end($operatingDays)];
+        } else {
+            $hariLayanan = collect($operatingDays)->map(fn ($d) => $hariMap[$d] ?? null)->filter()->implode(', ');
+        }
+
+        return view('perpustakaan.index', [
+            'kiosk'          => KioskProfile::first(),
+            'settings'       => Setting::first(),
+            'jumlahBuku'     => Book::where('is_active', true)->count(),
+            'jumlahAnggota'  => Member::where('is_active', true)->count(),
+            'jamOperasional' => config('perpustakaan.kiosk.operating_start') . ' - ' . config('perpustakaan.kiosk.operating_end'),
+            'hariLayanan'    => $hariLayanan ?: '-',
+        ]);
+    }
+
+    public function layanan()
+    {
+        return view('perpustakaan.layanan');
     }
 
     public function hadir()
@@ -27,8 +54,19 @@ class LibraryKioskController extends Controller
             'keperluan' => ['required', 'string', 'max:100'],
         ]);
 
+        $nama = trim($request->nama);
+
+        $sudahHadir = Visit::whereDate('tgl_kunjungan', now()->toDateString())
+            ->whereRaw('LOWER(nama) = ?', [mb_strtolower($nama)])
+            ->exists();
+
+        if ($sudahHadir) {
+            return redirect()->route('perpustakaan.hadir')
+                ->with('kiosk_error', "{$nama} sudah mengisi daftar hadir hari ini. Satu orang hanya dapat mengisi daftar hadir satu kali per hari.");
+        }
+
         Visit::create([
-            'nama'              => $request->nama,
+            'nama'              => $nama,
             'jenis_pengunjung'  => $request->jenis_pengunjung ?: 'umum',
             'kelas'             => $request->kelas ?: null,
             'keperluan'         => $request->keperluan,
@@ -37,7 +75,7 @@ class LibraryKioskController extends Controller
         ]);
 
         return redirect()->route('perpustakaan.hadir.sukses', [
-            'nama' => $request->nama,
+            'nama' => $nama,
         ]);
     }
 

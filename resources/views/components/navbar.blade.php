@@ -102,6 +102,16 @@
                 </ul>
             </li>
 
+            {{-- Perpustakaan --}}
+            <li>
+                <a href="{{ route('perpustakaan.index') }}"
+                   class="nav-link transition-colors duration-300
+                          {{ request()->routeIs('home') ? 'text-white' : 'text-gray-600 hover:text-[#0d7377]' }}
+                          {{ request()->routeIs('perpustakaan.*') ? '!text-[#0d7377]' : '' }}">
+                    Perpustakaan
+                </a>
+            </li>
+
             {{-- Galeri --}}
             <li>
                 <a href="{{ route('gallery') }}"
@@ -174,6 +184,12 @@
             </a>
             @endforeach
         </div>
+
+        <a href="{{ route('perpustakaan.index') }}"
+           class="flex items-center py-3 border-b border-gray-100 text-sm font-medium transition
+                  {{ request()->routeIs('perpustakaan.*') ? 'text-[#0d7377]' : 'text-gray-600 hover:text-[#0d7377]' }}">
+            Perpustakaan
+        </a>
 
         <a href="{{ route('gallery') }}"
            class="flex items-center py-3 border-b border-gray-100 text-sm font-medium transition

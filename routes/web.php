@@ -10,6 +10,8 @@ use App\Http\Controllers\LibraryKioskController;
 use App\Http\Controllers\LibraryTabExcelController;
 use App\Http\Controllers\LibraryPdfController;
 use App\Http\Controllers\PageController;
+use App\Http\Middleware\RestrictKioskOperatingHours;
+use App\Http\Middleware\RestrictKioskToSchoolNetwork;
 use App\Http\Middleware\TrackWebsiteVisit;
 use Illuminate\Support\Facades\Route;
 use Maatwebsite\Excel\Facades\Excel;
@@ -101,10 +103,15 @@ Route::middleware(['auth'])->prefix('/admin/anggota/template')->name('anggota.te
 
 // Kiosk Perpustakaan
 Route::prefix('perpustakaan')->name('perpustakaan.')->group(function () {
-    Route::get('/',             [LibraryKioskController::class, 'index'])->name('index');
-    Route::get('/hadir',           [LibraryKioskController::class, 'hadir'])->name('hadir');
-    Route::post('/hadir',          [LibraryKioskController::class, 'simpanHadir'])->middleware(['throttle:10,1'])->name('hadir.simpan');
-    Route::get('/hadir/sukses',    [LibraryKioskController::class, 'hadirSukses'])->name('hadir.sukses');
-    Route::get('/anggota/cari',    [LibraryKioskController::class, 'cariAnggota'])->name('anggota.cari');
-    Route::get('/katalog',      [LibraryKioskController::class, 'katalog'])->name('katalog');
+    Route::get('/',         [LibraryKioskController::class, 'index'])->name('index');
+    Route::get('/layanan',  [LibraryKioskController::class, 'layanan'])->name('layanan');
+    Route::get('/katalog',  [LibraryKioskController::class, 'katalog'])->name('katalog'); // publik, tanpa batas
+
+    // Daftar Hadir — dibatasi jaringan sekolah + jam operasional
+    Route::middleware([RestrictKioskToSchoolNetwork::class, RestrictKioskOperatingHours::class])->group(function () {
+        Route::get('/hadir',        [LibraryKioskController::class, 'hadir'])->name('hadir');
+        Route::post('/hadir',       [LibraryKioskController::class, 'simpanHadir'])->middleware(['throttle:10,1'])->name('hadir.simpan');
+        Route::get('/hadir/sukses', [LibraryKioskController::class, 'hadirSukses'])->name('hadir.sukses');
+        Route::get('/anggota/cari', [LibraryKioskController::class, 'cariAnggota'])->name('anggota.cari');
+    });
 });

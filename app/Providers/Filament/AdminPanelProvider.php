@@ -29,6 +29,10 @@ class AdminPanelProvider extends PanelProvider
             ->path('admin')
             ->login(Login::class)
             ->brandName('SMPN 3 Ajibarang')
+            ->favicon(function () {
+                $logo = \App\Models\Setting::first()?->logo;
+                return $logo ? \Illuminate\Support\Facades\Storage::url($logo) : null;
+            })
             ->viteTheme('resources/css/filament/admin/theme.css')
             ->colors([
                 'primary' => Color::Blue,
@@ -41,7 +45,9 @@ class AdminPanelProvider extends PanelProvider
             )
             ->renderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-                fn () => view('filament.admin.components.notification-bell'),
+                fn () => auth()->user()?->role === \App\Enums\UserRole::Admin
+                    ? view('filament.admin.components.notification-bell')
+                    : '',
             )
             ->renderHook(
                 PanelsRenderHook::TOPBAR_START,

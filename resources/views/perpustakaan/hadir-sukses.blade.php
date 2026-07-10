@@ -8,7 +8,7 @@
         .ks-card {
             background: #fff; border-radius: 18px;
             padding: 52px 32px;
-            box-shadow: 0 4px 20px rgba(30,58,138,.09);
+            box-shadow: 0 4px 20px rgba(13,115,119,.09);
         }
         .ks-icon {
             width: 88px; height: 88px;
@@ -47,9 +47,9 @@
                 Daftar hadir Anda telah berhasil dicatat.<br>
                 Selamat berkunjung di Perpustakaan SMPN 3 Ajibarang.
             </div>
-            <div class="ks-countdown" id="countdown-text">Kembali ke menu utama dalam <strong id="ctr">8</strong> detik...</div>
-            <a href="{{ route('perpustakaan.index') }}" class="ks-btn" id="back-btn">
-                Kembali ke Menu Utama
+            <div class="ks-countdown" id="countdown-text">Kembali ke layanan dalam <strong id="ctr">8</strong> detik...</div>
+            <a href="{{ route('perpustakaan.layanan') }}" class="ks-btn" id="back-btn">
+                Kembali ke Layanan
             </a>
             <div class="ks-progress">
                 <div class="ks-progress-bar" id="prog"></div>
@@ -72,7 +72,7 @@
             ctr.textContent = sisa;
             if (sisa <= 0) {
                 clearInterval(iv);
-                window.location.href = '{{ route('perpustakaan.index') }}';
+                window.location.href = '{{ route('perpustakaan.layanan') }}';
             }
         }, 1000);
 

@@ -28,7 +28,8 @@ class TextbookItemsTable
                     ->label('No')
                     ->rowIndex()
                     ->alignCenter()
-                    ->width('50px'),
+                    ->width('50px')
+                    ->visibleFrom('md'),
 
                 TextColumn::make('kode_item')
                     ->label('Kode Eksemplar')
@@ -55,7 +56,8 @@ class TextbookItemsTable
                         9 => 'warning',
                         default => 'gray',
                     })
-                    ->sortable(),
+                    ->sortable()
+                    ->visibleFrom('md'),
 
                 TextColumn::make('kondisi')
                     ->label('Kondisi')
